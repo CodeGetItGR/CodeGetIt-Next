@@ -1,0 +1,9 @@
+[
+    {
+        "title": "Pado Living",
+        "description": "A brief description of Project Alpha and what it does.",
+        "tags": ["React", "TypeScript", "Tailwind"],
+        "logo": "/src/assets/projects/logos/PadoLivingLogo.png",
+        "url": "https://www.padoliving.com/"
+    }
+]
