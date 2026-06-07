@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kinetic Hero — Chevron Choreography</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --ink: #0f172a;
+    --muted: #94a3b8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  /* subtle brand atmosphere */
+  .atmos {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(60% 50% at 14% 40%, rgba(20,184,166,0.06) 0%, transparent 62%),
+      radial-gradient(50% 45% at 88% 70%, rgba(246,137,86,0.05) 0%, transparent 64%);
+  }
+
+  .stage {
+    position: relative;
+    height: 100dvh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ── The drifting chevrons (behind the type) ── */
+  .chev {
+    position: absolute;
+    top: 50%;
+    will-change: transform;
+    z-index: 1;
+    opacity: 0.9;
+  }
+  .chev svg { display: block; height: 46vh; width: auto; }
+
+  /* Left teal chevron — its own slow independent loop */
+  .chev--left {
+    left: 50%;
+    animation: driftLeft 26s ease-in-out infinite;
+  }
+  /* Right orange chevron — different duration → they're never in lockstep */
+  .chev--right {
+    left: 50%;
+    animation: driftRight 34s ease-in-out infinite;
+  }
+
+  /* paths cross near center mid-cycle, slide past, rotate slowly */
+  @keyframes driftLeft {
+    0%   { transform: translate(-118%, -64%) rotate(-12deg) scale(1.00); }
+    25%  { transform: translate( -10%, -38%) rotate(  6deg) scale(1.10); }
+    50%  { transform: translate(  70%, -60%) rotate( 18deg) scale(0.96); }
+    75%  { transform: translate(   4%, -86%) rotate( -4deg) scale(1.06); }
+    100% { transform: translate(-118%, -64%) rotate(-12deg) scale(1.00); }
+  }
+  @keyframes driftRight {
+    0%   { transform: translate(  60%, -42%) rotate( 14deg) scale(1.04); }
+    25%  { transform: translate( -28%, -70%) rotate( -8deg) scale(0.94); }
+    50%  { transform: translate(-104%, -40%) rotate(-20deg) scale(1.12); }
+    75%  { transform: translate( -18%, -22%) rotate(  4deg) scale(1.00); }
+    100% { transform: translate(  60%, -42%) rotate( 14deg) scale(1.04); }
+  }
+
+  /* ── Full-width kinetic headline ── */
+  .headline {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 0 5vw;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.96;
+    font-size: clamp(48px, 11vw, 168px);
+    text-wrap: balance;
+    mix-blend-mode: normal;
+  }
+  .headline .line { display: block; }
+  .headline .dim { color: #cbd5e1; }
+  .headline .ink { color: #0f172a; }
+
+  /* faint front-echo of each chevron so they read as passing THROUGH the type */
+  .echo {
+    position: absolute; top: 50%; left: 50%;
+    z-index: 3; pointer-events: none;
+    mix-blend-mode: multiply; opacity: 0.10;
+  }
+  .echo svg { display: block; height: 46vh; width: auto; }
+  .echo--left  { animation: driftLeft 26s ease-in-out infinite; }
+  .echo--right { animation: driftRight 34s ease-in-out infinite; }
+
+  .caption {
+    position: fixed; left: 0; right: 0; bottom: 22px;
+    text-align: center; z-index: 5;
+    font-size: 13px; letter-spacing: 0.02em; color: var(--muted);
+  }
+  .caption b { color: #0f766e; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chev, .echo { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="atmos"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="teal" x1="-5.66" y1="-5.13" x2="215" y2="219.64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1cbcc0"/><stop offset=".18" stop-color="#1cb8bc"/>
+      <stop offset=".66" stop-color="#008092"/><stop offset=".94" stop-color="#1cbcc0"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="75.7" y1="-81.65" x2="311.58" y2="154.23" gradientUnits="userSpaceOnUse">
+      <stop offset=".47" stop-color="#fff568"/><stop offset=".99" stop-color="#f68956"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="stage">
+
+  <!-- drifting chevrons behind the type -->
+  <div class="chev chev--left" aria-hidden="true">
+    <svg viewBox="95 29 66 99" xmlns="http://www.w3.org/2000/svg">
+      <path fill="url(#teal)" d="M133.14,81.42c-1.5-1.5-1.5-3.94,0-5.44l24.53-24.53c1.71-1.71,1.71-4.49,0-6.2l-14.22-14.22c-1.71-1.71-4.49-1.71-6.2,0l-25.45,25.45.04.04-14.94,14.94c-4.05,4.05-4.05,10.62,0,14.67l10.68,10.68c.08.05.16.11.24.15l29.06,29.06c1.71,1.71,4.49,1.71,6.2,0l14.22-14.22c1.71-1.71,1.71-4.49,0-6.2l-24.16-24.16Z"/>
+    </svg>
+  </div>
+
+  <div class="chev chev--right" aria-hidden="true">
+    <svg viewBox="163 27 142 120" xmlns="http://www.w3.org/2000/svg">
+      <path fill="url(#orange)" d="M300.11,106.84s0,0,0,0c-3.3,8.85-8.24,16.5-14.67,22.74-6.08,5.89-12.95,10.15-20.44,12.67-7.37,2.48-17.24,3.73-29.32,3.73h-32.15c-1.89,0-3.57-1.13-4.3-2.87-.72-1.74-.33-3.73,1.01-5.07l14.97-14.97c3.47-3.47,8.27-5.38,13.19-5.22,3.03.09,6.02.14,6.03.14,12.27,0,21.89-3.5,28.61-10.41,6.74-6.93,10.16-16.9,10.16-29.61,0-13.91-3.1-24.17-9.22-30.51-6.09-6.31-15.91-9.51-29.13-9.51-.04,0-3.56.07-6.89.2-4.8.18-9.51-1.66-12.92-5.07l-15.45-15.45c-.83-.83-1.07-2.07-.63-3.15l1.21-2.92c.45-1.08,1.5-1.78,2.67-1.78h33.56c10.17,0,18.42.78,24.54,2.33,6.25,1.58,11.98,4.27,17.01,7.98,8.78,6.29,15.58,14.43,20.19,24.18,4.58,9.69,6.91,20.79,6.91,32.99,0,10.86-1.66,20.82-4.93,29.59Z"/>
+      <path fill="url(#orange)" d="M214.6,96.62l10.5-10.5c4.05-4.05,4.05-10.62,0-14.67l-10.96-10.96s-.04-.03-.07-.04l-28.93-28.93c-1.71-1.71-4.49-1.71-6.2,0l-14.22,14.22c-1.71,1.71-1.71,4.49,0,6.2l24.03,24.03c1.5,1.5,1.5,3.94,0,5.44l-24.82,24.82c-1.71,1.71-1.71,4.49,0,6.2l14.22,14.22c1.71,1.71,4.49,1.71,6.2,0l29.71-29.71c.18-.1.36-.21.53-.33Z"/>
+    </svg>
+  </div>
+
+  <!-- full-width headline -->
+  <h1 class="headline">
+    <span class="line dim">Your business,</span>
+    <span class="line ink">online. Done right.</span>
+  </h1>
+
+  <!-- faint front echoes so chevrons feel like they pass THROUGH the words -->
+  <div class="echo echo--left" aria-hidden="true">
+    <svg viewBox="95 29 66 99" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#0d9488" d="M133.14,81.42c-1.5-1.5-1.5-3.94,0-5.44l24.53-24.53c1.71-1.71,1.71-4.49,0-6.2l-14.22-14.22c-1.71-1.71-4.49-1.71-6.2,0l-25.45,25.45.04.04-14.94,14.94c-4.05,4.05-4.05,10.62,0,14.67l10.68,10.68c.08.05.16.11.24.15l29.06,29.06c1.71,1.71,4.49,1.71,6.2,0l14.22-14.22c1.71-1.71,1.71-4.49,0-6.2l-24.16-24.16Z"/>
+    </svg>
+  </div>
+  <div class="echo echo--right" aria-hidden="true">
+    <svg viewBox="163 27 142 120" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#f68956" d="M300.11,106.84s0,0,0,0c-3.3,8.85-8.24,16.5-14.67,22.74-6.08,5.89-12.95,10.15-20.44,12.67-7.37,2.48-17.24,3.73-29.32,3.73h-32.15c-1.89,0-3.57-1.13-4.3-2.87-.72-1.74-.33-3.73,1.01-5.07l14.97-14.97c3.47-3.47,8.27-5.38,13.19-5.22,3.03.09,6.02.14,6.03.14,12.27,0,21.89-3.5,28.61-10.41,6.74-6.93,10.16-16.9,10.16-29.61,0-13.91-3.1-24.17-9.22-30.51-6.09-6.31-15.91-9.51-29.13-9.51-.04,0-3.56.07-6.89.2-4.8.18-9.51-1.66-12.92-5.07l-15.45-15.45c-.83-.83-1.07-2.07-.63-3.15l1.21-2.92c.45-1.08,1.5-1.78,2.67-1.78h33.56c10.17,0,18.42.78,24.54,2.33,6.25,1.58,11.98,4.27,17.01,7.98,8.78,6.29,15.58,14.43,20.19,24.18,4.58,9.69,6.91,20.79,6.91,32.99,0,10.86-1.66,20.82-4.93,29.59Z"/>
+      <path fill="#f68956" d="M214.6,96.62l10.5-10.5c4.05-4.05,4.05-10.62,0-14.67l-10.96-10.96s-.04-.03-.07-.04l-28.93-28.93c-1.71-1.71-4.49-1.71-6.2,0l-14.22,14.22c-1.71,1.71-1.71,4.49,0,6.2l24.03,24.03c1.5,1.5,1.5,3.94,0,5.44l-24.82,24.82c-1.71,1.71-1.71,4.49,0,6.2l14.22,14.22c1.71,1.71,4.49,1.71,6.2,0l29.71-29.71c.18-.1.36-.21.53-.33Z"/>
+    </svg>
+  </div>
+
+</div>
+
+<div class="caption">Direction sketch — teal <b>&lt;</b> and orange <b>&gt;</b> drift on independent loops, crossing through &amp; behind the type. Rough timing; we'd refine paths, speed, and crossings.</div>
+</body>
+</html>

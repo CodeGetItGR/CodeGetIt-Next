@@ -11,11 +11,9 @@ export function SectionHeading({
 }) {
     return (
         <div className={centered ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
-            <div className="mb-4 inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-1 text-[11px] font-semibold tracking-[0.24em] text-slate-300 uppercase">
-                {eyebrow}
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight text-balance text-white md:text-5xl">{title}</h2>
-            <p className="mt-4 text-base leading-7 text-pretty text-slate-300 md:text-lg">{description}</p>
+            <span className="section-kicker">{eyebrow}</span>
+            <h2 className="section-title">{title}</h2>
+            <p className={`section-subtitle ${centered ? 'mx-auto' : ''}`}>{description}</p>
         </div>
     );
 }

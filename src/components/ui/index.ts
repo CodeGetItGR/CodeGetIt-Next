@@ -1,4 +1,5 @@
 export * from './Input'
 export * from './MagneticButton'
+export * from './MorphingText'
 export * from './Spotlight'
 export * from './Textarea'

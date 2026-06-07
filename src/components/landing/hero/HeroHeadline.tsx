@@ -36,9 +36,9 @@ export function HeroHeadline({ prefix, highlight, suffix }: HeroHeadlineProps) {
       initial="hidden"
       animate="visible"
       className={cn(
-        'mb-6 font-black leading-[1.02] tracking-[-0.045em]',
-        'text-[clamp(48px,7.2vw,76px)]',
-        'flex flex-wrap items-baseline gap-x-[0.22em] gap-y-1 text-balance',
+        'mb-6 font-black leading-[1.06] tracking-[-0.035em]',
+        'text-[clamp(28px,4.4vw,52px)]',
+        'flex flex-wrap items-baseline justify-center gap-x-[0.22em] gap-y-1 text-balance',
       )}
     >
       {prefixWords.map((word, i) => (
@@ -46,7 +46,7 @@ export function HeroHeadline({ prefix, highlight, suffix }: HeroHeadlineProps) {
           key={`pre-${i}`}
           variants={wordVariants}
           style={{ display: 'inline-block' }}
-          className="text-zinc-400"
+          className="text-slate-400"
         >
           {word}
         </motion.span>
@@ -57,7 +57,7 @@ export function HeroHeadline({ prefix, highlight, suffix }: HeroHeadlineProps) {
           key={`hl-${i}`}
           variants={wordVariants}
           style={{ display: 'inline-block' }}
-          className="relative text-teal-400"
+          className="relative text-brand-600"
         >
           {word}
           {/* Animated underline — delays until headline words are in */}
@@ -65,7 +65,7 @@ export function HeroHeadline({ prefix, highlight, suffix }: HeroHeadlineProps) {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 24, delay: 0.58 }}
-            className="absolute -bottom-1 left-0 right-0 h-[3px] origin-left rounded-full bg-teal-500/35"
+            className="absolute -bottom-1 left-0 right-0 h-[3px] origin-left rounded-full bg-brand-500/40"
             aria-hidden="true"
           />
         </motion.span>
@@ -76,7 +76,7 @@ export function HeroHeadline({ prefix, highlight, suffix }: HeroHeadlineProps) {
           key={`sf-${i}`}
           variants={wordVariants}
           style={{ display: 'inline-block' }}
-          className="text-white"
+          className="text-slate-900"
         >
           {word}
         </motion.span>

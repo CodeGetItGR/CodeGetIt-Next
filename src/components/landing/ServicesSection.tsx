@@ -1,92 +1,97 @@
-import { motion } from 'framer-motion';
+'use client'
+
+import { motion, useInView } from 'framer-motion';
 import { useCallback, useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Code2, Database, Globe } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/api';
 import { settingsApi } from '@/api/settings';
 import { useContactRequest } from '@/providers';
 import { getServiceContactPreset } from '@/components/landing/service-contact-presets';
-import {cn} from "@/lib/utils";
-import {SectionHeading} from "@/components/landing/SectionHeading";
+import { cn } from '@/lib/utils';
+import { SectionHeading } from '@/components/landing/SectionHeading';
 
-const serviceIcons = [Globe, Code2, Database];
+// Ultra-light inline SVG icons (1.5 stroke — Phosphor-style)
+function GlobeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+function LayersIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2" />
+      <polyline points="2 17 12 22 22 17" />
+      <polyline points="2 12 12 17 22 12" />
+    </svg>
+  );
+}
+function DatabaseIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="5"  rx="9" ry="3" />
+      <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
+      <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" />
+    </svg>
+  );
+}
+function ArrowLeftIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 12H5M12 5l-7 7 7 7" />
+    </svg>
+  );
+}
+
+const serviceIcons = [GlobeIcon, LayersIcon, DatabaseIcon];
 
 const featureMatrix = [
     ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Basic Integrations'],
     ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'User Authentication', 'API Integrations', 'Dashboard UI'],
-    [
-        'Responsive Design',
-        'SEO Optimization',
-        'Fast Loading',
-        'User Authentication',
-        'API Integrations',
-        'Dashboard UI',
-        'Backend Architecture',
-        'Database Design',
-        'Admin Panel',
-    ],
+    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'User Authentication', 'API Integrations', 'Dashboard UI', 'Backend Architecture', 'Database Design', 'Admin Panel'],
 ];
 
 const serviceTimelines = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
 
+// Middle card (index 1) is the recommended / highlighted tier
+const RECOMMENDED_INDEX = 1;
+
 export function ServicesSection() {
-    const { t } = useLocale();
+    const { t }               = useLocale();
     const { openContactRequest } = useContactRequest();
+    const containerRef        = useRef<HTMLDivElement | null>(null);
+    const ref                 = useRef(null);
+    const isInView            = useInView(ref, { once: true, margin: '-80px' });
 
-    const containerRef = useRef<HTMLDivElement | null>(null);
-
-    const [hoverFeature, setHoverFeature] = useState<string | null>(null);
+    const [hoverFeature,  setHoverFeature]  = useState<string | null>(null);
     const [lockedFeature, setLockedFeature] = useState<string | null>(null);
-
     const activeFeature = lockedFeature ?? hoverFeature;
 
     const settingsQuery = useQuery({
         queryKey: queryKeys.settings.list,
-        queryFn: () => settingsApi.getPublic(),
+        queryFn:  () => settingsApi.getPublic(),
     });
 
     const services = t.landing.services;
 
     const formatPrice = useCallback(
         (value: string) =>
-            services.from.replace(
-                '{price}',
-                new Intl.NumberFormat('el-GR').format(Number.parseInt(value))
-            ),
+            services.from.replace('{price}', new Intl.NumberFormat('el-GR').format(Number.parseInt(value))),
         [services.from]
     );
 
-    const toggleLock = useCallback((feature: string) => {
-        setLockedFeature((prev) => (prev === feature ? null : feature));
-    }, []);
-
-    const handleFeatureEnter = useCallback(
-        (feature: string) => {
-            if (!lockedFeature) setHoverFeature(feature);
-        },
-        [lockedFeature]
-    );
-
-    const handleFeatureLeave = useCallback(() => {
-        if (!lockedFeature) setHoverFeature(null);
-    }, [lockedFeature]);
-
-    const handleOutsideClick = useCallback((event: MouseEvent) => {
-        if (!containerRef.current) return;
-
-        if (!containerRef.current.contains(event.target as Node)) {
-            setLockedFeature(null);
-            setHoverFeature(null);
+    const toggleLock          = useCallback((f: string) => setLockedFeature((p) => (p === f ? null : f)), []);
+    const handleFeatureEnter  = useCallback((f: string) => { if (!lockedFeature) setHoverFeature(f); }, [lockedFeature]);
+    const handleFeatureLeave  = useCallback(() => { if (!lockedFeature) setHoverFeature(null); }, [lockedFeature]);
+    const handleOutsideClick  = useCallback((e: MouseEvent) => {
+        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+            setLockedFeature(null); setHoverFeature(null);
         }
     }, []);
-
-    const handleGetStarted = useCallback(
-        (index: number) => {
-            openContactRequest(getServiceContactPreset(index));
-        },
-        [openContactRequest]
-    );
+    const handleGetStarted    = useCallback((i: number) => openContactRequest(getServiceContactPreset(i)), [openContactRequest]);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleOutsideClick);
@@ -94,135 +99,122 @@ export function ServicesSection() {
     }, [handleOutsideClick]);
 
     return (
-        <section id="services" className="px-6 py-24">
+        <section ref={ref} id="services" className="px-6 py-28 ambient-mesh">
             <div className="mx-auto max-w-6xl">
-                <SectionHeading
-                    eyebrow={services.eyebrow}
-                    title={services.title}
-                    description={services.description}
-                />
+                <SectionHeading eyebrow={services.eyebrow} title={services.title} description={services.description} />
 
-                <div ref={containerRef} className="mt-14 grid gap-6 md:grid-cols-3">
+                {/* Asymmetric bento — recommended tier is wider on lg */}
+                <div ref={containerRef} className="mt-16 grid gap-5 md:grid-cols-3">
                     {services.items.map((service, index) => {
-                        const Icon = serviceIcons[index] ?? serviceIcons[0];
-                        const features = featureMatrix[index];
-
-                        const price =
-                            settingsQuery.data?.[service.priceKey] ??
-                            service.defaultPrice;
-
-                        const isDimmed =
-                            activeFeature !== null &&
-                            !features.includes(activeFeature);
-
-                        const handleMouseEnter = (feature: string) =>
-                            handleFeatureEnter(feature);
-
-                        const handleMouseLeave = () => handleFeatureLeave();
-
-                        const handleClickFeature = (feature: string) =>
-                            toggleLock(feature);
-
-                        const handleClickGetStarted = () =>
-                            handleGetStarted(index);
+                        const Icon        = serviceIcons[index] ?? serviceIcons[0];
+                        const features    = featureMatrix[index] ?? [];
+                        const price       = settingsQuery.data?.[service.priceKey] ?? service.defaultPrice;
+                        const isRecommended = index === RECOMMENDED_INDEX;
+                        const isDimmed    = activeFeature !== null && !features.includes(activeFeature);
 
                         return (
                             <motion.article
                                 key={service.title}
-                                whileHover={{ y: -6 }}
-                                transition={{ duration: 0.35, ease: 'easeOut' }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={isInView ? { opacity: isDimmed ? 0.38 : 1, y: 0 } : { opacity: 0, y: 20 }}
+                                transition={{ duration: 0.55, delay: index * 0.1, ease: [0.32, 0.72, 0, 1] }}
+                                whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
                                 className={cn(
-                                    'relative isolate flex h-full flex-col rounded-3xl border p-8',
-                                    'transition-all duration-500 ease-out',
-                                    'border-white/10 bg-slate-900/30 backdrop-blur-md',
-                                    isDimmed ? 'opacity-40' : 'opacity-100'
+                                    'relative flex flex-col rounded-[1.5rem] p-[6px] transition-opacity duration-500',
+                                    isRecommended
+                                        ? 'ring-2 ring-brand-500/40 soft-shadow-lg'
+                                        : 'ring-1 ring-slate-900/[0.06] soft-shadow',
                                 )}
                             >
-                                {/* ICON */}
-                                <div className="mb-6 inline-flex w-fit rounded-2xl bg-white/10 p-3">
-                                    <Icon className="h-6 w-6 text-cyan-300" />
-                                </div>
+                                {/* Recommended badge */}
+                                {isRecommended && (
+                                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-4 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
+                                        Most popular
+                                    </div>
+                                )}
 
-                                {/* TITLE */}
-                                <h3 className="text-2xl font-bold text-white">
-                                    {service.title}
-                                </h3>
+                                {/* Inner core */}
+                                <div className={cn(
+                                    'flex flex-1 flex-col rounded-[calc(1.5rem-6px)] p-7',
+                                    isRecommended ? 'bg-brand-600/[0.03]' : 'bg-white',
+                                    'shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
+                                )}>
+                                    {/* Icon */}
+                                    <div className={cn(
+                                        'mb-5 inline-flex w-fit rounded-xl p-2.5',
+                                        isRecommended ? 'bg-brand-500/10 text-brand-600' : 'bg-slate-100 text-slate-600'
+                                    )}>
+                                        <Icon />
+                                    </div>
 
-                                {/* DESCRIPTION */}
-                                <p className="mt-3 text-sm leading-7 text-slate-300">
-                                    {service.description}
-                                </p>
+                                    <h3 className="font-display text-xl font-semibold text-slate-900">{service.title}</h3>
+                                    <p className="mt-2 text-sm leading-7 text-slate-500">{service.description}</p>
 
-                                {/* FEATURES */}
-                                <ul className="mt-6 flex-1 space-y-3">
-                                    {features.map((feature) => {
-                                        const isActive =
-                                            activeFeature === feature;
-
-                                        return (
-                                            <li
-                                                key={feature}
-                                                onMouseEnter={() =>
-                                                    handleMouseEnter(feature)
-                                                }
-                                                onMouseLeave={handleMouseLeave}
-                                                onClick={() =>
-                                                    handleClickFeature(feature)
-                                                }
-                                                className={cn(
-                                                    'flex cursor-pointer items-start gap-2 text-sm select-none',
-                                                    'transition-colors duration-500 ease-out',
-                                                    isActive
-                                                        ? 'text-cyan-200'
-                                                        : 'text-slate-300'
-                                                )}
-                                            >
-                                                <div
+                                    {/* Features */}
+                                    <ul className="mt-6 flex-1 space-y-2.5">
+                                        {features.map((feature) => {
+                                            const isActive = activeFeature === feature;
+                                            return (
+                                                <li
+                                                    key={feature}
+                                                    onMouseEnter={() => handleFeatureEnter(feature)}
+                                                    onMouseLeave={handleFeatureLeave}
+                                                    onClick={() => toggleLock(feature)}
                                                     className={cn(
-                                                        'mt-1 h-1.5 w-1.5 rounded-full',
-                                                        'transition-all duration-500 ease-out',
-                                                        isActive
-                                                            ? 'scale-125 bg-cyan-300'
-                                                            : 'scale-100 bg-white/40'
+                                                        'flex cursor-pointer items-start gap-2.5 text-sm select-none',
+                                                        'transition-colors duration-300',
+                                                        isActive ? 'text-brand-700' : 'text-slate-500'
                                                     )}
-                                                />
-                                                {feature}
+                                                >
+                                                    <div className={cn(
+                                                        'mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-300',
+                                                        isActive ? 'scale-125 bg-brand-500' : 'bg-slate-300'
+                                                    )} />
+                                                    <span>{feature}</span>
+                                                    {lockedFeature === feature && (
+                                                        <span className="ml-auto text-brand-500">
+                                                            <ArrowLeftIcon />
+                                                        </span>
+                                                    )}
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
 
-                                                {lockedFeature === feature && (
-                                                    <span className="ml-auto text-xs text-cyan-300">
-                                                        <ArrowLeft
-                                                            width={15}
-                                                            height={15}
-                                                        />
-                                                    </span>
-                                                )}
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
+                                    {/* Price + CTA — pinned to bottom */}
+                                    <div className="mt-auto pt-6">
+                                        <p className={cn('font-display text-2xl font-bold', isRecommended ? 'text-brand-600' : 'text-slate-900')}>
+                                            {formatPrice(price)}
+                                        </p>
+                                        <p className="mt-1 text-xs text-slate-400">
+                                            Estimated timeline: {serviceTimelines[index]}
+                                        </p>
+                                        <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
+                                            {t.landing.services.timeEstimateDisclaimer}
+                                        </p>
 
-                                {/* PRICE */}
-                                <div className="mt-auto">
-                                    <div className="mt-8 text-2xl font-bold text-cyan-300">
-                                        {formatPrice(price)}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleGetStarted(index)}
+                                            className={cn(
+                                                'group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold',
+                                                'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]',
+                                                isRecommended
+                                                    ? 'bg-brand-600 text-white hover:bg-brand-700'
+                                                    : 'bg-slate-100 text-slate-800 hover:bg-slate-200',
+                                            )}
+                                        >
+                                            {services.getStarted}
+                                            <span className={cn(
+                                                'flex h-6 w-6 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-0.5',
+                                                isRecommended ? 'bg-white/15' : 'bg-slate-200',
+                                            )}>
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M7 17 17 7M9 7h8v8" />
+                                                </svg>
+                                            </span>
+                                        </button>
                                     </div>
-
-                                    <div className="mt-2 text-xs text-slate-400">
-                                        Estimated timeline: {serviceTimelines[index]}
-                                    </div>
-
-                                    {/* DISCLAIMER */}
-                                    <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
-                                        {t.landing.services.timeEstimateDisclaimer}
-                                    </p>
-
-                                    <button
-                                        type="button"
-                                        onClick={handleClickGetStarted}
-                                        className="mt-6 w-full rounded-xl bg-white/10 px-4 py-3 font-semibold text-white transition-colors duration-300 ease-out hover:bg-cyan-300 hover:text-slate-950"
-                                    >
-                                        {services.getStarted}
-                                    </button>
                                 </div>
                             </motion.article>
                         );

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kinetic Hero v5 — Unified Orbit + Morph</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #fafafa; color: #0f172a;
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+  .atmos {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(55% 50% at 20% 40%, rgba(20,184,166,0.06) 0%, transparent 62%),
+      radial-gradient(50% 45% at 82% 66%, rgba(246,137,86,0.045) 0%, transparent 64%);
+  }
+
+  .stage {
+    position: relative; z-index: 1;
+    height: 100dvh; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* morphing center (brand + offerings) */
+  .morph {
+    position: relative; z-index: 2;
+    height: 1.15em; width: 100%; max-width: 64rem; margin: 0 auto;
+    text-align: center; font-weight: 800; letter-spacing: -0.035em;
+    font-size: clamp(40px, 7.4vw, 104px); color: #0f172a;
+    filter: url(#threshold) blur(0.6px);
+  }
+  .morph span { position: absolute; inset-inline: 0; top: 0; margin: auto; display: inline-block; width: 100%; }
+
+  /* orbiting chevrons — each rendered as a front copy (over text) and back copy (under text) */
+  .chev { position: absolute; top: 50%; left: 50%; will-change: transform, opacity; }
+  .chev svg { display: block; height: 14vh; width: auto; }
+
+  .chev.front { z-index: 3; }
+  .chev.back  { z-index: 1; }
+
+  .chev.teal.front   { animation: orbit 16s linear infinite, frontVis 16s linear infinite; }
+  .chev.teal.back    { animation: orbit 16s linear infinite, backVis  16s linear infinite; }
+  .chev.orange.front { animation: orbit 16s linear infinite, frontVis 16s linear infinite; animation-delay: -8s, -8s; }
+  .chev.orange.back  { animation: orbit 16s linear infinite, backVis  16s linear infinite; animation-delay: -8s, -8s; }
+
+  /* elliptical orbit: x sweeps ±30vw, scale 1.45 (near) → 0.55 (far) */
+  @keyframes orbit {
+    0%    { transform: translate(-50%,-50%) translateX(0)       scale(1.45) rotateZ(0deg);  }
+    12.5% { transform: translate(-50%,-50%) translateX(21.2vw)  scale(1.32) rotateZ(4deg);  }
+    25%   { transform: translate(-50%,-50%) translateX(30vw)    scale(1.0)  rotateZ(6deg);  }
+    37.5% { transform: translate(-50%,-50%) translateX(21.2vw)  scale(0.68) rotateZ(4deg);  }
+    50%   { transform: translate(-50%,-50%) translateX(0)       scale(0.55) rotateZ(0deg);  }
+    62.5% { transform: translate(-50%,-50%) translateX(-21.2vw) scale(0.68) rotateZ(-4deg); }
+    75%   { transform: translate(-50%,-50%) translateX(-30vw)   scale(1.0)  rotateZ(-6deg); }
+    87.5% { transform: translate(-50%,-50%) translateX(-21.2vw) scale(1.32) rotateZ(-4deg); }
+    100%  { transform: translate(-50%,-50%) translateX(0)       scale(1.45) rotateZ(0deg);  }
+  }
+  /* front copy visible only on the near half; swaps to back copy at the word's edge */
+  @keyframes frontVis {
+    0% {opacity:.95} 24% {opacity:.95} 26% {opacity:0} 74% {opacity:0} 76% {opacity:.95} 100% {opacity:.95}
+  }
+  @keyframes backVis {
+    0% {opacity:0} 24% {opacity:0} 26% {opacity:.6} 50% {opacity:.48} 74% {opacity:.6} 76% {opacity:0} 100% {opacity:0}
+  }
+
+  .caption {
+    position: fixed; left: 0; right: 0; bottom: 20px; text-align: center;
+    z-index: 5; font-size: 13px; color: #94a3b8;
+  }
+  .caption b { color: #0f766e; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chev { animation: none !important; }
+    .chev.back { opacity: 0; }
+    .chev.teal.front   { opacity: 1; transform: translate(-50%,-50%) translateX(-30vw) scale(1); }
+    .chev.orange.front { opacity: 1; transform: translate(-50%,-50%) translateX(30vw)  scale(1); }
+  }
+</style>
+</head>
+<body>
+<div class="atmos"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="teal" x1="-5.66" y1="-5.13" x2="215" y2="219.64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1cbcc0"/><stop offset=".18" stop-color="#1cb8bc"/>
+      <stop offset=".66" stop-color="#008092"/><stop offset=".94" stop-color="#1cbcc0"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="48.31" y1="-54.25" x2="284.19" y2="181.63" gradientUnits="userSpaceOnUse">
+      <stop offset=".47" stop-color="#fff568"/><stop offset=".99" stop-color="#f68956"/>
+    </linearGradient>
+    <filter id="threshold">
+      <feColorMatrix in="SourceGraphic" type="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140" />
+    </filter>
+  </defs>
+</svg>
+
+<div class="stage">
+
+  <!-- back copies (under the word) -->
+  <div class="chev teal back" aria-hidden="true">
+    <svg viewBox="95 29 65 99"><path fill="url(#teal)" d="M133.14,81.42c-1.5-1.5-1.5-3.94,0-5.44l24.53-24.53c1.71-1.71,1.71-4.49,0-6.2l-14.22-14.22c-1.71-1.71-4.49-1.71-6.2,0l-25.45,25.45.04.04-14.94,14.94c-4.05,4.05-4.05,10.62,0,14.67l10.68,10.68c.08.05.16.11.24.15l29.06,29.06c1.71,1.71,4.49,1.71,6.2,0l14.22-14.22c1.71-1.71,1.71-4.49,0-6.2l-24.16-24.16Z"/></svg>
+  </div>
+  <div class="chev orange back" aria-hidden="true">
+    <svg viewBox="162 29 66 100"><path fill="url(#orange)" d="M214.6,96.62l10.5-10.5c4.05-4.05,4.05-10.62,0-14.67l-10.96-10.96s-.04-.03-.07-.04l-28.93-28.93c-1.71-1.71-4.49-1.71-6.2,0l-14.22,14.22c-1.71,1.71-1.71,4.49,0,6.2l24.03,24.03c1.5,1.5,1.5,3.94,0,5.44l-24.82,24.82c-1.71,1.71-1.71,4.49,0,6.2l14.22,14.22c1.71,1.71,4.49,1.71,6.2,0l29.71-29.71c.18-.1.36-.21.53-.33Z"/></svg>
+  </div>
+
+  <!-- morphing word -->
+  <div class="morph"><span id="mt1"></span><span id="mt2"></span></div>
+
+  <!-- front copies (over the word) -->
+  <div class="chev teal front" aria-hidden="true">
+    <svg viewBox="95 29 65 99"><path fill="url(#teal)" d="M133.14,81.42c-1.5-1.5-1.5-3.94,0-5.44l24.53-24.53c1.71-1.71,1.71-4.49,0-6.2l-14.22-14.22c-1.71-1.71-4.49-1.71-6.2,0l-25.45,25.45.04.04-14.94,14.94c-4.05,4.05-4.05,10.62,0,14.67l10.68,10.68c.08.05.16.11.24.15l29.06,29.06c1.71,1.71,4.49,1.71,6.2,0l14.22-14.22c1.71-1.71,1.71-4.49,0-6.2l-24.16-24.16Z"/></svg>
+  </div>
+  <div class="chev orange front" aria-hidden="true">
+    <svg viewBox="162 29 66 100"><path fill="url(#orange)" d="M214.6,96.62l10.5-10.5c4.05-4.05,4.05-10.62,0-14.67l-10.96-10.96s-.04-.03-.07-.04l-28.93-28.93c-1.71-1.71-4.49-1.71-6.2,0l-14.22,14.22c-1.71,1.71-1.71,4.49,0,6.2l24.03,24.03c1.5,1.5,1.5,3.94,0,5.44l-24.82,24.82c-1.71,1.71-1.71,4.49,0,6.2l14.22,14.22c1.71,1.71,4.49,1.71,6.2,0l29.71-29.71c.18-.1.36-.21.53-.33Z"/></svg>
+  </div>
+
+</div>
+
+<div class="caption">v5 — unified. Chevrons orbit in front of &amp; behind the morphing word (<b>code get it &rarr; websites &rarr; stores &rarr; web apps</b>). 2.5D layering keeps the depth.</div>
+
+<script>
+  (function () {
+    var texts = ["code get it", "websites", "online stores", "web apps", "brands"];
+    var morphTime = 1.5, cooldownTime = 0.7;
+    var textIndex = 0, morph = 0, cooldown = cooldownTime, time = new Date();
+    var t1 = document.getElementById("mt1"), t2 = document.getElementById("mt2");
+    t1.textContent = texts[0]; t2.textContent = texts[1];
+
+    function setStyles(fraction) {
+      t2.style.filter = "blur(" + Math.min(8 / fraction - 8, 100) + "px)";
+      t2.style.opacity = Math.pow(fraction, 0.4) * 100 + "%";
+      var inv = 1 - fraction;
+      t1.style.filter = "blur(" + Math.min(8 / inv - 8, 100) + "px)";
+      t1.style.opacity = Math.pow(inv, 0.4) * 100 + "%";
+      t1.textContent = texts[textIndex % texts.length];
+      t2.textContent = texts[(textIndex + 1) % texts.length];
+    }
+    function doMorph() {
+      morph -= cooldown; cooldown = 0;
+      var fraction = morph / morphTime;
+      if (fraction > 1) { cooldown = cooldownTime; fraction = 1; }
+      setStyles(fraction);
+      if (fraction === 1) textIndex++;
+    }
+    function doCooldown() {
+      morph = 0;
+      t2.style.filter = "none"; t2.style.opacity = "100%";
+      t1.style.filter = "none"; t1.style.opacity = "0%";
+    }
+    function animate() {
+      requestAnimationFrame(animate);
+      var now = new Date(), dt = (now - time) / 1000; time = now;
+      cooldown -= dt;
+      if (cooldown <= 0) doMorph(); else doCooldown();
+    }
+    if (!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      animate();
+    } else { t1.textContent = texts[1]; t1.style.opacity = "100%"; t2.style.opacity = "0%"; }
+  })();
+</script>
+</body>
+</html>

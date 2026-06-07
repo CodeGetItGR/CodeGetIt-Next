@@ -434,7 +434,7 @@ export const Contact = () => {
     );
 
     return (
-        <section id="contact" className="marketing-contact-shell section-depth section-divider relative py-28 lg:py-26">
+        <section id="contact" className="section-depth section-divider relative bg-[#f5f6f8] py-28 lg:py-26">
             <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

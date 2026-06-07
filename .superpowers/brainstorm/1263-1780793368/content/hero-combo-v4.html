@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kinetic Hero v4 — Orbit + Morph</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #fafafa; color: #0f172a;
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+  .atmos {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(55% 50% at 20% 40%, rgba(20,184,166,0.06) 0%, transparent 62%),
+      radial-gradient(50% 45% at 82% 66%, rgba(246,137,86,0.045) 0%, transparent 64%);
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    height: 100dvh; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 9vh;
+  }
+
+  /* ── Zone 1: orbiting brand wordmark ── */
+  .scene { position: relative; width: 100%; display: flex; justify-content: center; perspective: 1100px; }
+  .world { position: relative; transform-style: preserve-3d; display: flex; justify-content: center; }
+
+  .lockup {
+    transform: translateZ(0);
+    font-weight: 800; letter-spacing: -0.045em; line-height: 1;
+    font-size: clamp(40px, 7.6vw, 104px);
+    color: #0f172a; white-space: nowrap;
+  }
+
+  .chev { position: absolute; top: 50%; left: 50%; --r: 320px; will-change: transform, opacity; }
+  .chev svg { display: block; height: 15vh; width: auto; }
+  .chev--teal   { animation: orbit 16s linear infinite; }
+  .chev--orange { animation: orbit 16s linear infinite; animation-delay: -8s; }
+
+  @keyframes orbit {
+    0%   { transform: translate(-50%,-50%) rotateY(0deg)   translateZ(var(--r)) rotateY(0deg)    rotateZ(0deg);  opacity: 1;   }
+    25%  { transform: translate(-50%,-54%) rotateY(90deg)  translateZ(var(--r)) rotateY(-90deg)  rotateZ(6deg);  opacity: .82; }
+    50%  { transform: translate(-50%,-50%) rotateY(180deg) translateZ(var(--r)) rotateY(-180deg) rotateZ(0deg);  opacity: .42; }
+    75%  { transform: translate(-50%,-46%) rotateY(270deg) translateZ(var(--r)) rotateY(-270deg) rotateZ(-6deg); opacity: .82; }
+    100% { transform: translate(-50%,-50%) rotateY(360deg) translateZ(var(--r)) rotateY(-360deg) rotateZ(0deg);  opacity: 1;   }
+  }
+
+  /* ── Zone 2: morphing offering line (MagicUI algorithm, ported to vanilla) ── */
+  .tagline { text-align: center; }
+  .tagline .lead {
+    display: block; font-size: clamp(13px, 1.4vw, 16px);
+    font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #94a3b8; margin-bottom: 0.6rem;
+  }
+  .morph {
+    position: relative; height: 1.15em; width: 100%; max-width: 60rem; margin: 0 auto;
+    text-align: center; font-weight: 800; letter-spacing: -0.03em;
+    font-size: clamp(34px, 6vw, 84px); color: #0f766e;
+    filter: url(#threshold) blur(0.6px);
+  }
+  .morph span { position: absolute; inset-inline: 0; top: 0; margin: auto; display: inline-block; width: 100%; }
+
+  .caption {
+    position: fixed; left: 0; right: 0; bottom: 20px; text-align: center;
+    z-index: 5; font-size: 13px; color: #94a3b8;
+  }
+  .caption b { color: #0f766e; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chev--teal   { animation: none; transform: translate(calc(-50% - 320px), -50%); }
+    .chev--orange { animation: none; transform: translate(calc(-50% + 320px), -50%); }
+  }
+</style>
+</head>
+<body>
+<div class="atmos"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="teal" x1="-5.66" y1="-5.13" x2="215" y2="219.64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1cbcc0"/><stop offset=".18" stop-color="#1cb8bc"/>
+      <stop offset=".66" stop-color="#008092"/><stop offset=".94" stop-color="#1cbcc0"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="48.31" y1="-54.25" x2="284.19" y2="181.63" gradientUnits="userSpaceOnUse">
+      <stop offset=".47" stop-color="#fff568"/><stop offset=".99" stop-color="#f68956"/>
+    </linearGradient>
+    <filter id="threshold">
+      <feColorMatrix in="SourceGraphic" type="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140" />
+    </filter>
+  </defs>
+</svg>
+
+<div class="page">
+
+  <!-- Zone 1 -->
+  <div class="scene">
+    <div class="world">
+      <div class="chev chev--teal" aria-hidden="true">
+        <svg viewBox="95 29 65 99" xmlns="http://www.w3.org/2000/svg">
+          <path fill="url(#teal)" d="M133.14,81.42c-1.5-1.5-1.5-3.94,0-5.44l24.53-24.53c1.71-1.71,1.71-4.49,0-6.2l-14.22-14.22c-1.71-1.71-4.49-1.71-6.2,0l-25.45,25.45.04.04-14.94,14.94c-4.05,4.05-4.05,10.62,0,14.67l10.68,10.68c.08.05.16.11.24.15l29.06,29.06c1.71,1.71,4.49,1.71,6.2,0l14.22-14.22c1.71-1.71,1.71-4.49,0-6.2l-24.16-24.16Z"/>
+        </svg>
+      </div>
+      <div class="chev chev--orange" aria-hidden="true">
+        <svg viewBox="162 29 66 100" xmlns="http://www.w3.org/2000/svg">
+          <path fill="url(#orange)" d="M214.6,96.62l10.5-10.5c4.05-4.05,4.05-10.62,0-14.67l-10.96-10.96s-.04-.03-.07-.04l-28.93-28.93c-1.71-1.71-4.49-1.71-6.2,0l-14.22,14.22c-1.71,1.71-1.71,4.49,0,6.2l24.03,24.03c1.5,1.5,1.5,3.94,0,5.44l-24.82,24.82c-1.71,1.71-1.71,4.49,0,6.2l14.22,14.22c1.71,1.71,4.49,1.71,6.2,0l29.71-29.71c.18-.1.36-.21.53-.33Z"/>
+        </svg>
+      </div>
+      <div class="lockup">code get it</div>
+    </div>
+  </div>
+
+  <!-- Zone 2 -->
+  <div class="tagline">
+    <span class="lead">we build</span>
+    <div class="morph"><span id="mt1"></span><span id="mt2"></span></div>
+  </div>
+
+</div>
+
+<div class="caption">v4 — orbit wraps the brand <b>code get it</b> · separate morphing line cycles what you build. Two motions, two jobs.</div>
+
+<script>
+  (function () {
+    var texts = ["websites", "online stores", "web apps", "brands", "anything online"];
+    var morphTime = 1.5, cooldownTime = 0.6;
+    var textIndex = 0, morph = 0, cooldown = cooldownTime, time = new Date();
+    var t1 = document.getElementById("mt1"), t2 = document.getElementById("mt2");
+    t1.textContent = texts[0]; t2.textContent = texts[1];
+
+    function setStyles(fraction) {
+      t2.style.filter = "blur(" + Math.min(8 / fraction - 8, 100) + "px)";
+      t2.style.opacity = Math.pow(fraction, 0.4) * 100 + "%";
+      var inv = 1 - fraction;
+      t1.style.filter = "blur(" + Math.min(8 / inv - 8, 100) + "px)";
+      t1.style.opacity = Math.pow(inv, 0.4) * 100 + "%";
+      t1.textContent = texts[textIndex % texts.length];
+      t2.textContent = texts[(textIndex + 1) % texts.length];
+    }
+    function doMorph() {
+      morph -= cooldown; cooldown = 0;
+      var fraction = morph / morphTime;
+      if (fraction > 1) { cooldown = cooldownTime; fraction = 1; }
+      setStyles(fraction);
+      if (fraction === 1) textIndex++;
+    }
+    function doCooldown() {
+      morph = 0;
+      t2.style.filter = "none"; t2.style.opacity = "100%";
+      t1.style.filter = "none"; t1.style.opacity = "0%";
+    }
+    function animate() {
+      requestAnimationFrame(animate);
+      var now = new Date(), dt = (now - time) / 1000; time = now;
+      cooldown -= dt;
+      if (cooldown <= 0) doMorph(); else doCooldown();
+    }
+    if (!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      animate();
+    } else { t1.style.opacity = "100%"; t2.style.opacity = "0%"; }
+  })();
+</script>
+</body>
+</html>

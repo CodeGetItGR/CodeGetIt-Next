@@ -481,11 +481,11 @@ export const en: Translations = {
             },
             badge: 'Available for new projects',
             headline: {
-                prefix: 'Your business,',
-                highlight: 'online.',
-                suffix: 'Done right.',
+                prefix: 'Websites that',
+                highlight: 'work',
+                suffix: 'for your business.',
             },
-            subtitle: 'We turn your idea into a website that works for you - beautifully designed, easy to manage, built to grow.',
+            subtitle: 'We design, build, and launch websites that get your business noticed.',
             ctas: {
                 primary: 'Get a free quote',
                 secondary: 'See our work →',

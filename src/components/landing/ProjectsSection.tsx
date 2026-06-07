@@ -1,11 +1,12 @@
+'use client'
+
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { ExternalLink, Compass } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import projectsData from '@/assets/projects/projects.json';
 
-const projectColors = ['#e1cc67', '#4ECDC4', '#95E1D3', '#F38181', '#AA96DA', '#FCBAD3'];
+const projectColors = ['#0d9488', '#7c6af7', '#e8855a', '#3b82f6', '#ec4899', '#10b981'];
 
 interface Project {
     title: string;
@@ -15,61 +16,46 @@ interface Project {
     url: string;
 }
 
-// ─── Single-project hero layout ───────────────────────────────────────────────
 function HeroProjectLayout({ project, color, isInView }: { project: Project; color: string; isInView: boolean }) {
     return (
-        <div className="mt-14 grid gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
-            {/* Left: large feature card */}
+        <div className="mt-14 grid gap-10 lg:grid-cols-[1fr_400px] lg:items-center">
+            {/* Left: featured card — showcase with tilt physics */}
             <motion.a
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial="hidden"
-                animate={isInView ? 'visible' : 'hidden'}
-                custom={0}
-                whileHover={{ y: -6, scale: 1.01 }}
-                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-                className="group relative block aspect-4/3 max-h-120 overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-slate-950/40"
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+                whileHover={{ y: -8, scale: 1.01, transition: { type: 'spring', stiffness: 200, damping: 20 } }}
+                className="group relative block overflow-hidden rounded-[1.5rem] ring-1 ring-slate-900/[0.08] soft-shadow-lg aspect-[4/3] max-h-[480px]"
             >
-                {/* Logo used as blurred hero background */}
                 <img
                     src={project.logo}
                     alt={project.title}
-                    className="group-hover:blur-0 absolute inset-0 h-full w-full scale-105 object-cover opacity-90 blur-sm transition-all duration-700 group-hover:scale-100 group-hover:opacity-50"
+                    className="absolute inset-0 h-full w-full scale-105 object-cover opacity-80 blur-[2px] transition-all duration-700 group-hover:scale-100 group-hover:opacity-50 group-hover:blur-0"
                 />
-
-                {/* Gradient overlay */}
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        background: `linear-gradient(160deg, ${color}22 0%, #0d1230cc 60%, #0d1230f0 100%)`,
-                    }}
-                />
-
-                {/* Accent top bar */}
-                <div className="absolute top-0 right-0 left-0 h-1" style={{ backgroundColor: color }} />
+                <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${color}18 0%, rgba(255,255,255,0.04) 40%, rgba(248,250,252,0.92) 100%)` }} />
+                <div className="absolute top-0 right-0 left-0 h-[3px] rounded-t-[1.5rem]" style={{ backgroundColor: color }} />
 
                 {/* Corner badge */}
-                <div className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
-                    <ExternalLink className="h-3 w-3 text-white/70" />
-                    <span className="text-xs font-medium tracking-wide text-white/70 uppercase">Live</span>
+                <div className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full border border-white/40 bg-white/70 px-3 py-1.5 backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3" />
+                    </svg>
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">Live</span>
                 </div>
 
-                {/* Bottom content */}
                 <div className="absolute right-0 bottom-0 left-0 p-8">
-                    <div className="mb-4 flex items-center gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/10 backdrop-blur-sm">
+                    <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white soft-shadow">
                             <img src={project.logo} alt={`${project.title} logo`} className="h-7 w-7 object-contain" />
                         </div>
-                        <h3 className="text-2xl font-bold tracking-tight text-white">{project.title}</h3>
+                        <h3 className="font-display text-2xl font-bold tracking-tight text-slate-900">{project.title}</h3>
                     </div>
-
                     <div className="flex flex-wrap gap-2">
                         {project.tags.map((tag) => (
-                            <span
-                                key={tag}
-                                className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-medium text-slate-200 backdrop-blur-sm"
-                            >
+                            <span key={tag} className="rounded-full border border-slate-900/10 bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 backdrop-blur-sm">
                                 {tag}
                             </span>
                         ))}
@@ -77,119 +63,101 @@ function HeroProjectLayout({ project, color, isInView }: { project: Project; col
                 </div>
             </motion.a>
 
-            {/* Right: editorial text panel */}
-            <motion.div initial="hidden" animate={isInView ? 'visible' : 'hidden'} custom={0.15} className="flex flex-col gap-6 lg:pl-4">
-                {/* Eyebrow */}
+            {/* Right: editorial text */}
+            <motion.div
+                initial={{ opacity: 0, x: 16 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
+                className="flex flex-col gap-5 lg:pl-4"
+            >
                 <div className="flex items-center gap-2">
-                    <div
-                        className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10"
-                        style={{ backgroundColor: `${color}22` }}
-                    >
-                        <Compass className="h-3.5 w-3.5" style={{ color }} />
-                    </div>
-                    <span className="text-xs font-semibold tracking-widest uppercase" style={{ color }}>
-                        Featured Project
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style={{ color, backgroundColor: `${color}12` }}>
+                        <span className="h-1 w-1 rounded-full" style={{ backgroundColor: color }} />
+                        Featured project
                     </span>
                 </div>
 
-                {/* Title */}
-                <h2 className="font-serif text-5xl leading-[1.1] font-bold text-white lg:text-6xl">{project.title}</h2>
+                <h2 className="font-display text-5xl font-bold leading-[1.06] tracking-tight text-slate-900 lg:text-6xl">{project.title}</h2>
+                <p className="text-base leading-8 text-slate-500">{project.description}</p>
 
-                {/* Description */}
-                <p className="text-base leading-8 text-slate-300">{project.description}</p>
-
-                {/* CTA */}
-                <div className="flex flex-col gap-3 pt-2">
-                    <a
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/cta inline-flex items-center gap-2 text-sm font-semibold tracking-widest uppercase transition-all"
-                        style={{ color }}
-                    >
-                        <span className="border-b border-current pb-0.5 transition-all group-hover/cta:pb-1">Explore the Project</span>
-                        <span className="transition-transform group-hover/cta:translate-x-1">→</span>
-                    </a>
-                </div>
+                <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/cta inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest transition-all"
+                    style={{ color }}
+                >
+                    <span className="border-b border-current pb-0.5 transition-all group-hover/cta:pb-1">Explore the project</span>
+                    <span className="transition-transform group-hover/cta:translate-x-1">→</span>
+                </a>
             </motion.div>
         </div>
     );
 }
 
-// ─── Multi-project grid layout ────────────────────────────────────────────────
 function GridProjectLayout({ projects, isInView }: { projects: Project[]; isInView: boolean }) {
     return (
-        <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {projects.map((project, index) => {
                 const color = projectColors[index] ?? projectColors[0];
                 return (
-                    <motion.article
+                    <motion.a
                         key={project.title}
-                        initial="hidden"
-                        animate={isInView ? 'visible' : 'hidden'}
-                        custom={index * 0.08}
-                        whileHover={{ y: -6 }}
-                        className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-slate-950/20"
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.5, delay: index * 0.07, ease: [0.32, 0.72, 0, 1] }}
+                        whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 22 } }}
+                        className="group relative overflow-hidden rounded-[1.25rem] ring-1 ring-slate-900/[0.06] soft-shadow block"
                     >
-                        <div className="h-1.5 w-full" style={{ backgroundColor: color }} />
-                        <div className="p-6">
-                            <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/10">
-                                    <img src={project.logo} alt={`${project.title} logo`} className="h-8 w-8 object-contain" />
+                        <div className="h-1 w-full" style={{ backgroundColor: color }} />
+                        <div className="bg-white p-6">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-50 ring-1 ring-slate-100">
+                                    <img src={project.logo} alt={`${project.title} logo`} className="h-7 w-7 object-contain" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white transition-colors group-hover:text-cyan-300">{project.title}</h3>
+                                <h3 className="font-display text-lg font-semibold text-slate-900 transition-colors group-hover:text-brand-600">{project.title}</h3>
                             </div>
-                            <p className="mt-4 text-sm leading-7 text-slate-300">{project.description}</p>
-                            <div className="mt-6 flex flex-wrap gap-2">
+                            <p className="mt-3 text-sm leading-7 text-slate-500">{project.description}</p>
+                            <div className="mt-5 flex flex-wrap gap-2">
                                 {project.tags.map((tag) => (
-                                    <span key={tag} className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-slate-200">
+                                    <span key={tag} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
                                         {tag}
                                     </span>
                                 ))}
                             </div>
-                            <a
-                                href={project.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 transition-all group-hover:gap-3"
-                            >
-                                View Project
-                                <ExternalLink className="h-4 w-4" />
-                            </a>
+                            <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5" style={{ color }}>
+                                View project
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3" />
+                                </svg>
+                            </span>
                         </div>
-                        <div
-                            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
-                            style={{
-                                background: `radial-gradient(circle at 50% 0%, ${color}18, transparent 70%)`,
-                            }}
-                        />
-                    </motion.article>
+                        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100" style={{ background: `radial-gradient(circle at 50% 0%, ${color}10, transparent 65%)` }} />
+                    </motion.a>
                 );
             })}
         </div>
     );
 }
 
-// ─── Root section ─────────────────────────────────────────────────────────────
 export function ProjectsSection() {
-    const ref = useRef(null);
+    const ref      = useRef(null);
     const isInView = useInView(ref, { once: true, margin: '-100px' });
-    const { t } = useLocale();
+    const { t }    = useLocale();
     const { eyebrow, title, description } = t.landing.projects;
-
     const projects: Project[] = projectsData;
     const isSingle = projects.length === 1;
 
     return (
-        <section ref={ref} id="projects" className="bg-[#151b3d] px-6 py-26">
+        <section ref={ref} id="projects" className="bg-[#f5f6f8] px-6 py-28">
             <div className="mx-auto max-w-6xl">
                 <SectionHeading eyebrow={eyebrow} title={title} description={description} />
-
-                {isSingle ? (
-                    <HeroProjectLayout project={projects[0]} color={projectColors[0]} isInView={isInView} />
-                ) : (
-                    <GridProjectLayout projects={projects} isInView={isInView} />
-                )}
+                {isSingle
+                    ? <HeroProjectLayout project={projects[0]} color={projectColors[0]} isInView={isInView} />
+                    : <GridProjectLayout projects={projects} isInView={isInView} />}
             </div>
         </section>
     );

@@ -1,184 +1,127 @@
+'use client'
+
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { CheckCircle2, X } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 
-const sectionFade = {
-    hidden: { opacity: 0, y: 24 },
-    visible: (delay = 0) => ({
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, delay },
-    }),
-};
+function CheckIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-brand-600">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+function XIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-slate-300">
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  );
+}
 
 const comparisonMatrix = [
-    { static: true, fullStack: true },
-    { static: true, fullStack: true },
-    { static: false, fullStack: true },
-    { static: false, fullStack: true },
-    { static: false, fullStack: true },
-    { static: false, fullStack: true },
-    { static: false, fullStack: true },
+    { static: true,  fullStack: true  },
+    { static: true,  fullStack: true  },
+    { static: false, fullStack: true  },
+    { static: false, fullStack: true  },
+    { static: false, fullStack: true  },
+    { static: false, fullStack: true  },
+    { static: false, fullStack: true  },
 ];
 
 export function ComparisonSection() {
-    const ref = useRef(null);
+    const ref      = useRef(null);
     const isInView = useInView(ref, { once: true, margin: '-100px' });
-
-    const { t } = useLocale();
+    const { t }    = useLocale();
     const comparison = t.landing.comparison;
 
-    const comparisonMatrixWithLabels = [
+    const rows = [
         ...comparisonMatrix,
-        {
-            static: comparison.maintenanceStatic,
-            fullStack: comparison.maintenanceFull,
-        },
+        { static: comparison.maintenanceStatic, fullStack: comparison.maintenanceFull },
     ];
 
     return (
-        <section ref={ref} className="bg-[#151b3d] px-6 py-24" id="compare">
-            <div className="mx-auto max-w-6xl">
-                <SectionHeading
-                    eyebrow={comparison.eyebrow}
-                    title={comparison.title}
-                    description={comparison.description}
-                />
+        <section ref={ref} id="compare" className="bg-[#f5f6f8] px-6 py-28">
+            <div className="mx-auto max-w-5xl">
+                <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} />
 
                 <motion.div
-                    initial="hidden"
-                    animate={isInView ? 'visible' : 'hidden'}
-                    variants={sectionFade}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.6, delay: 0.1, ease: [0.32, 0.72, 0, 1] }}
                     className="mt-14"
                 >
-                    {/* ================= DESKTOP TABLE ================= */}
-                    <div className="hidden overflow-hidden rounded-3xl border border-white/10 bg-white/5 md:block">
-                        <table className="min-w-full text-left">
-                            <thead className="border-b border-white/10 text-sm tracking-[0.18em] text-slate-300 uppercase">
-                            <tr>
-                                <th className="px-6 py-5 font-semibold">
-                                    {comparison.headers.feature}
-                                </th>
-
-                                <th className="px-6 py-5 text-center font-semibold">
-                                    {comparison.headers.staticWebsite}
-                                </th>
-
-                                <th className="bg-cyan-400/10 px-6 py-5 text-center font-semibold">
-                                    {comparison.headers.fullStackApplication}
-                                </th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            {comparison.rows.map((rowLabel, index) => {
-                                const row = comparisonMatrixWithLabels[index];
-
-                                return (
-                                    <tr
-                                        key={rowLabel}
-                                        className="border-b border-white/5 last:border-none"
-                                    >
-                                        <td className="px-6 py-5 font-medium text-white">
-                                            {rowLabel}
-                                        </td>
-
-                                        <td className="px-6 py-5 text-center text-slate-300">
-                                            {typeof row.static === 'boolean' ? (
-                                                row.static ? (
-                                                    <CheckCircle2 className="mx-auto h-5 w-5 text-emerald-300" />
-                                                ) : (
-                                                    <X className="mx-auto h-5 w-5 text-slate-500" />
-                                                )
-                                            ) : (
-                                                row.static
-                                            )}
-                                        </td>
-
-                                        <td className="bg-cyan-400/5 px-6 py-5 text-center text-slate-200">
-                                            {typeof row.fullStack === 'boolean' ? (
-                                                row.fullStack ? (
-                                                    <CheckCircle2 className="mx-auto h-5 w-5 text-cyan-300" />
-                                                ) : (
-                                                    <X className="mx-auto h-5 w-5 text-slate-500" />
-                                                )
-                                            ) : (
-                                                <span className="font-semibold text-cyan-300">
-                                                        {row.fullStack}
-                                                    </span>
-                                            )}
-                                        </td>
+                    {/* ── Desktop table ── */}
+                    <div className="hidden rounded-[1.5rem] p-[6px] ring-1 ring-slate-900/[0.06] soft-shadow md:block">
+                        <div className="overflow-hidden rounded-[calc(1.5rem-6px)] bg-white">
+                            <table className="min-w-full text-left">
+                                <thead>
+                                    <tr className="border-b border-slate-100">
+                                        <th className="px-7 py-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                            {comparison.headers.feature}
+                                        </th>
+                                        <th className="px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                            {comparison.headers.staticWebsite}
+                                        </th>
+                                        <th className="bg-brand-600/[0.04] px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-brand-700">
+                                            {comparison.headers.fullStackApplication}
+                                        </th>
                                     </tr>
-                                );
-                            })}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {comparison.rows.map((rowLabel, index) => {
+                                        const row = rows[index];
+                                        return (
+                                            <tr key={rowLabel} className="border-b border-slate-50 last:border-none odd:bg-slate-50/40">
+                                                <td className="px-7 py-4 text-sm font-medium text-slate-800">{rowLabel}</td>
+                                                <td className="px-7 py-4 text-center">
+                                                    {typeof row.static === 'boolean'
+                                                        ? (row.static ? <CheckIcon /> : <XIcon />)
+                                                        : <span className="text-sm text-slate-500">{row.static}</span>}
+                                                </td>
+                                                <td className="bg-brand-600/[0.03] px-7 py-4 text-center">
+                                                    {typeof row.fullStack === 'boolean'
+                                                        ? (row.fullStack ? <CheckIcon /> : <XIcon />)
+                                                        : <span className="text-sm font-semibold text-brand-700">{row.fullStack}</span>}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    {/* ================= MOBILE MATRIX ================= */}
-                    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 md:hidden">
-                        <div className="grid grid-cols-[1fr_90px_100px] border-b border-white/10 bg-white/5 items-center">
-                            <div className="px-4 py-3 text-xs font-semibold tracking-[0.15em] text-slate-400 uppercase">
-                                {comparison.headers.feature}
-                            </div>
-
-                            <div className="px-2 py-3 text-center text-[10px] font-semibold tracking-[0.12em] text-slate-300 uppercase">
-                                {comparison.headers.staticWebsite}
-                            </div>
-
-                            <div className="bg-cyan-400/10 px-2 py-3 text-center text-[10px] font-semibold tracking-[0.12em] text-cyan-200 uppercase">
-                                {comparison.headers.fullStackApplication}
-                            </div>
+                    {/* ── Mobile matrix ── */}
+                    <div className="overflow-hidden rounded-2xl ring-1 ring-slate-900/[0.06] soft-shadow md:hidden">
+                        <div className="grid grid-cols-[1fr_80px_96px] items-center border-b border-slate-100 bg-white">
+                            <div className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">{comparison.headers.feature}</div>
+                            <div className="px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">{comparison.headers.staticWebsite}</div>
+                            <div className="bg-brand-600/[0.05] px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-700">{comparison.headers.fullStackApplication}</div>
                         </div>
-
                         {comparison.rows.map((rowLabel, index) => {
-                            const row = comparisonMatrixWithLabels[index];
-
+                            const row = rows[index];
                             return (
-                                <div
-                                    key={rowLabel}
-                                    className="grid grid-cols-[1fr_90px_100px] border-b border-white/5 last:border-none"
-                                >
-                                    <div className="px-4 py-4 text-sm text-white">
-                                        {rowLabel}
-                                    </div>
-
+                                <div key={rowLabel} className="grid grid-cols-[1fr_80px_96px] border-b border-slate-50 bg-white last:border-none odd:bg-slate-50/40">
+                                    <div className="px-4 py-4 text-sm text-slate-800">{rowLabel}</div>
                                     <div className="flex items-center justify-center px-2">
-                                        {typeof row.static === 'boolean' ? (
-                                            row.static ? (
-                                                <CheckCircle2 className="h-5 w-5 text-emerald-300" />
-                                            ) : (
-                                                <X className="h-5 w-5 text-slate-500" />
-                                            )
-                                        ) : (
-                                            <span className="text-xs text-slate-300 text-center">
-                                                {row.static}
-                                            </span>
-                                        )}
+                                        {typeof row.static === 'boolean'
+                                            ? (row.static ? <CheckIcon /> : <XIcon />)
+                                            : <span className="text-center text-xs text-slate-500">{row.static}</span>}
                                     </div>
-
-                                    <div className="flex items-center justify-center bg-cyan-400/5 px-2">
-                                        {typeof row.fullStack === 'boolean' ? (
-                                            row.fullStack ? (
-                                                <CheckCircle2 className="h-5 w-5 text-cyan-300" />
-                                            ) : (
-                                                <X className="h-5 w-5 text-slate-500" />
-                                            )
-                                        ) : (
-                                            <span className="text-xs font-medium text-cyan-300 text-center">
-                                                {row.fullStack}
-                                            </span>
-                                        )}
+                                    <div className="flex items-center justify-center bg-brand-600/[0.03] px-2">
+                                        {typeof row.fullStack === 'boolean'
+                                            ? (row.fullStack ? <CheckIcon /> : <XIcon />)
+                                            : <span className="text-center text-xs font-semibold text-brand-700">{row.fullStack}</span>}
                                     </div>
                                 </div>
                             );
                         })}
                     </div>
 
-                    {/* ================= DISCLAIMER ================= */}
-                    <p className="mt-8 text-xs leading-relaxed text-slate-400 text-center">
+                    <p className="mt-8 text-center text-xs leading-relaxed text-slate-400">
                         {t.landing.comparison.disclaimer}
                     </p>
                 </motion.div>
