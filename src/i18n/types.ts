@@ -80,22 +80,29 @@ export interface Translations {
                 links: [string, string, string];
                 contactButton: string;
             };
-            badge: string;
-            headline: {
-                prefix: string;
-                highlight: string;
-                suffix: string;
-            };
-            subtitle: string;
+            /** Act I — the declaration is set without a trailing period; It is the period. */
+            actLabel: string;
+            line: string;
+            sub: string;
             ctas: {
                 primary: string;
                 secondary: string;
-                note: string;
             };
-            cards: Array<{
-                title: string;
+        };
+        /** The three-act story the name spells out: you bring it, we code it, you get it. */
+        story: {
+            code: {
+                actLabel: string;
+                line: string;
                 sub: string;
-            }>;
+                list: [string, string, string, string];
+            };
+            get: {
+                actLabel: string;
+                line: string;
+                sub: string;
+                cta: string;
+            };
         };
         stats: {
             labels: [string, string, string, string];
@@ -178,6 +185,8 @@ export interface Translations {
         };
         footer: {
             brandName: string;
+            /** Caption under the permanently dotless wordmark: "(you have it now.)" */
+            lentDot: string;
             tagline: string;
             categories: {
                 services: string;

@@ -4,11 +4,14 @@ import { ContactRequestProvider } from '@/providers';
 import { useLocale } from '@/i18n/UseLocale';
 import { PublicSettingsProvider } from '@/settings/PublicSettingsProvider';
 import {
+    ActCodeSection,
+    ActGetSection,
     ComparisonSection,
     FAQSection,
     FooterSection,
     HeroSection,
     HowWeWorkSection,
+    ItProvider,
     ProjectsSection,
     ServicesSection,
     Navbar,
@@ -25,15 +28,20 @@ export default function LandingPage() {
                     <SEO title={t.landing.seo.title} description={t.landing.seo.description} canonicalUrl="https://codegetit.com" />
                     {/* Fixed film-grain overlay — one instance for the whole page */}
                     <div className="page-grain" aria-hidden="true" />
-                    <Navbar />
-                    <HeroSection />
-                    <ServicesSection />
-                    <ComparisonSection />
-                    <HowWeWorkSection />
-                    <ProjectsSection />
-                    <FAQSection />
-                    <Contact />
-                    <FooterSection />
+                    {/* The It journey: Act I (hero) → Act II (hop list) → absence → Act III (handover) */}
+                    <ItProvider>
+                        <Navbar />
+                        <HeroSection />
+                        <ActCodeSection />
+                        <ServicesSection />
+                        <ComparisonSection />
+                        <HowWeWorkSection />
+                        <ProjectsSection />
+                        <FAQSection />
+                        <ActGetSection />
+                        <Contact />
+                        <FooterSection />
+                    </ItProvider>
                 </div>
             </ContactRequestProvider>
         </PublicSettingsProvider>

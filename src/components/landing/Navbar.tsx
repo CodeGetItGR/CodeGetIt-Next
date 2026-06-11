@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { DotlessWordmark } from './it';
 import { Logo } from './Logo';
 
 const links = [
@@ -69,9 +70,12 @@ export function Navbar() {
                 {/* Logo */}
                 <Link href="/" aria-label="CodeGetIt — home" className="group flex shrink-0 items-center gap-2.5">
                     <Logo variant="mark" className="h-[18px] w-auto transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]" />
-                    <span className="font-display text-sm font-semibold tracking-tight text-slate-900">
-                        CodeGetIt
-                    </span>
+                    {/* The wordmark lends its tittle to the page: the journey's origin */}
+                    <DotlessWordmark
+                        before="CodeGet"
+                        origin
+                        className="font-display text-sm font-semibold tracking-tight text-slate-900"
+                    />
                 </Link>
 
                 {/* Desktop nav links */}
@@ -90,7 +94,7 @@ export function Navbar() {
                                 {isActive && (
                                     <motion.span
                                         layoutId="nav-active"
-                                        className="absolute inset-0 -z-10 rounded-full bg-brand-500/10 ring-1 ring-brand-600/15"
+                                        className="absolute inset-0 -z-10 rounded-full bg-slate-900/[0.05] ring-1 ring-slate-900/10"
                                         transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                                     />
                                 )}
@@ -103,7 +107,7 @@ export function Navbar() {
                 {/* Desktop CTA — button-in-button pill */}
                 <a
                     href="#contact"
-                    className="group hidden items-center gap-2 rounded-full bg-brand-600 py-2 pr-2 pl-5 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-brand-700 active:scale-[0.98] md:inline-flex"
+                    className="group hidden items-center gap-2 rounded-full bg-slate-900 py-2 pr-2 pl-5 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-slate-800 active:scale-[0.98] md:inline-flex"
                 >
                     Get a Quote
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
@@ -166,7 +170,7 @@ export function Navbar() {
                                     visible: { opacity: 1, y: 0  },
                                 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-                                className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-brand-600 px-6 py-3 text-base font-semibold text-white"
+                                className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white"
                             >
                                 Get a Quote
                             </motion.a>

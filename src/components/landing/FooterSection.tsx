@@ -1,4 +1,5 @@
 import { useLocale } from '@/i18n/UseLocale';
+import { DotlessWordmark } from './it';
 import { Logo } from './Logo';
 
 function GithubIcon() {
@@ -47,6 +48,14 @@ export function FooterSection() {
     return (
         <footer className="border-t border-slate-900/[0.06] bg-white px-6 py-16">
             <div className="mx-auto max-w-6xl">
+                {/* Epilogue — the wordmark gave the page its dot and never takes it back */}
+                <div className="mb-14 border-b border-slate-900/[0.06] pb-12">
+                    <p className="font-display text-[clamp(2.6rem,8vw,6rem)] font-extrabold leading-none tracking-[-0.03em] text-slate-900">
+                        <DotlessWordmark before="codeget" />
+                    </p>
+                    <p className="mt-4 text-sm italic text-slate-400">{footer.lentDot}</p>
+                </div>
+
                 <div className="grid gap-10 md:grid-cols-4">
                     {/* Brand col */}
                     <div>
@@ -61,7 +70,7 @@ export function FooterSection() {
                                     key={label}
                                     href={href}
                                     aria-label={label}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/[0.08] text-slate-500 transition-all duration-200 hover:bg-brand-600 hover:text-white hover:ring-brand-600"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/[0.08] text-slate-500 transition-all duration-200 hover:bg-slate-900 hover:text-white hover:ring-slate-900"
                                 >
                                     <Icon />
                                 </a>
@@ -76,7 +85,7 @@ export function FooterSection() {
                             <ul className="mt-4 space-y-2.5">
                                 {group.items.map((item) => (
                                     <li key={item}>
-                                        <a href="#" className="text-sm text-slate-500 transition-colors hover:text-brand-600">
+                                        <a href="#" className="text-sm text-slate-500 transition-colors hover:text-slate-900">
                                             {item}
                                         </a>
                                     </li>
@@ -86,11 +95,11 @@ export function FooterSection() {
                     ))}
                 </div>
 
-                <div className="mt-12 flex flex-col gap-3 border-t border-slate-900/[0.06] pt-8 text-xs text-slate-400 md:flex-row md:items-center md:justify-between">
+                <div className="mt-12 flex flex-col gap-3 border-t border-slate-900/6 pt-8 text-xs text-slate-400 md:flex-row md:items-center md:justify-between">
                     <p>© {currentYear} {footer.brandName}. {footer.rights}</p>
                     <div className="flex gap-5">
-                        <a href="#" className="transition-colors hover:text-brand-600">{footer.privacy}</a>
-                        <a href="#" className="transition-colors hover:text-brand-600">{footer.terms}</a>
+                        <a href="#" className="transition-colors hover:text-slate-900">{footer.privacy}</a>
+                        <a href="#" className="transition-colors hover:text-slate-900">{footer.terms}</a>
                     </div>
                 </div>
             </div>

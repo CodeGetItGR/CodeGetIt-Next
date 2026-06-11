@@ -21,7 +21,6 @@
     --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
 
     /* ─── Animations ─────────────────────────────────────────────────────── */
-    --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
     --animate-blob: blob 7s infinite;
     --animate-float: float 6s ease-in-out infinite;
     --animate-grid-pan: gridPan 22s linear infinite;
@@ -31,11 +30,6 @@
 }
 
 /* ─── Keyframes ─────────────────────────────────────────────────────────────── */
-
-@keyframes spotlight {
-    0%   { opacity: 0; transform: translate(-72%, -62%) skewX(10deg); }
-    100% { opacity: 1; transform: translate(-50%, -40%) skewX(10deg); }
-}
 
 @keyframes blob {
     0%, 100% { transform: translate(0px,  0px)  scale(1);   }
@@ -75,21 +69,6 @@
     0%, 100% { transform: translate3d(0,    0,    0) scale(1);    }
     35%       { transform: translate3d(22px, -16px, 0) scale(1.06); }
     70%       { transform: translate3d(-18px, 24px, 0) scale(0.94); }
-}
-
-/* Hero brand mark — the two chevrons orbit on a shared elliptical track, 180° out of phase.
-   translateX sweeps the width, scale fakes depth (near = big), z-index flips at the edges so
-   the near chevron always sits over the far one. Linear timing keeps the loop seamless. */
-@keyframes brandOrbit {
-    0%      { transform: translate(-50%, -50%) translateX(0)                            scale(1.40); z-index: 3; }
-    12.5%   { transform: translate(-50%, -50%) translateX(var(--orbit-x2))              scale(1.26); z-index: 3; }
-    25%     { transform: translate(-50%, -50%) translateX(var(--orbit-x1))              scale(1.00); z-index: 3; }
-    37.5%   { transform: translate(-50%, -50%) translateX(var(--orbit-x2))             scale(0.70); z-index: 1; }
-    50%     { transform: translate(-50%, -50%) translateX(0)                            scale(0.58); z-index: 1; }
-    62.5%   { transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x2)))  scale(0.70); z-index: 1; }
-    75%     { transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x1)))  scale(1.00); z-index: 1; }
-    87.5%   { transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x2)))  scale(1.26); z-index: 3; }
-    100%    { transform: translate(-50%, -50%) translateX(0)                            scale(1.40); z-index: 3; }
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────── */
@@ -328,44 +307,6 @@
         animation: orbitalDrift 18s ease-in-out infinite;
     }
 
-    /* ── Morphing wordmark (gooey alpha-threshold merge) ────────────────── */
-    .morphing-text {
-        filter: url(#morph-threshold) blur(0.6px);
-    }
-
-    /* ── Hero brand mark: orbiting chevron pair ─────────────────────────── */
-    .brand-orbit-stage {
-        position: relative;
-        width: 100%;
-        height: clamp(96px, 13vh, 128px);
-        margin-top: clamp(6px, 1.6vh, 18px);
-    }
-    .brand-chev {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        --orbit-x1: clamp(80px, 10vw, 152px);
-        --orbit-x2: calc(var(--orbit-x1) * 0.707);
-        will-change: transform;
-    }
-    .brand-chev svg {
-        display: block;
-        height: clamp(42px, 6vh, 60px);
-        width: auto;
-    }
-    .brand-chev--teal {
-        transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x1))) scale(1);
-        animation: brandOrbit 16s linear infinite;
-    }
-    .brand-chev--orange {
-        transform: translate(-50%, -50%) translateX(var(--orbit-x1)) scale(1);
-        animation: brandOrbit 16s linear infinite;
-        animation-delay: -8s;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .brand-chev { animation: none; }
-    }
 }
 
 @theme inline {

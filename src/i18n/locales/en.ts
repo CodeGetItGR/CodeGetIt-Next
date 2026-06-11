@@ -479,28 +479,27 @@ export const en: Translations = {
                 links: ['Work', 'Services', 'About'],
                 contactButton: 'Get a free quote',
             },
-            badge: 'Available for new projects',
-            headline: {
-                prefix: 'Websites that',
-                highlight: 'work',
-                suffix: 'for your business.',
-            },
-            subtitle: 'We design, build, and launch websites that get your business noticed.',
+            actLabel: 'Act I',
+            line: 'You bring it',
+            sub: 'An idea. A problem. A napkin sketch. Whatever it is — a full-stack application, a custom platform, a website — it starts as yours, and it stays yours.',
             ctas: {
-                primary: 'Get a free quote',
-                secondary: 'See our work →',
-                note: 'Free consultation · No commitment · Quick response',
+                primary: 'Start a project',
+                secondary: 'See the work',
             },
-            cards: [
-                {
-                    title: 'Business websites',
-                    sub: 'Look professional and get found online',
-                },
-                {
-                    title: 'Customer platforms',
-                    sub: "Give your clients a space that's truly yours",
-                },
-            ],
+        },
+        story: {
+            code: {
+                actLabel: 'Act II',
+                line: 'We code it',
+                sub: 'Design and engineering under one roof, until the thing in your head has a name, a shape, and a URL.',
+                list: ['Full-stack applications', 'Custom websites', 'Landing pages', 'Web platforms'],
+            },
+            get: {
+                actLabel: 'Act III',
+                line: 'You get it',
+                sub: 'Deployed, documented, and in your hands. Not rented, not licensed back to you — owned.',
+                cta: 'Get it',
+            },
         },
         stats: {
             labels: ['Projects Delivered', 'Client Satisfaction', 'Happy Clients', 'Years Experience'],
@@ -668,6 +667,7 @@ export const en: Translations = {
         },
         footer: {
             brandName: 'CodeGetIt',
+            lentDot: '(you have it now.)',
             tagline: 'Building thoughtful web experiences that help teams explain, sell, and operate better online.',
             categories: {
                 services: 'Services',
