@@ -1,6 +1,6 @@
 import { memo, type ReactNode } from 'react';
 import { Clock3, FileText, Lightbulb, ShieldAlert } from 'lucide-react';
-import type { RequestAnalysisText } from 'src/admin/hooks/useRequestAnalysisReport';
+import type { RequestAnalysisText } from '@/hooks';
 import type { RequestAnalysisDataResponse } from '../../../api/types';
 
 interface AnalysisSectionProps {

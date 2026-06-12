@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import {useCallback} from "react";
+import {Suspense, useCallback} from "react";
 import {useNavigation} from "@/hooks";
 import {useAuth} from "@/auth/useAuth";
 
@@ -15,6 +15,12 @@ const links = [
 ];
 
 export default function AdminLayout({children}: { children: React.ReactNode }) {
+    return <Suspense fallback={null}>
+        <AdminLayoutContent>{children}</AdminLayoutContent>
+    </Suspense>
+}
+
+function AdminLayoutContent({children}: { children: React.ReactNode }) {
     const { auth, logout } = useAuth();
     const {location} = useNavigation()
 

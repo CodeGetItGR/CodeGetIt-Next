@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { premiumEase, premiumMotion } from '@/lib/motion.ts';
+import { premiumEase, premiumMotion } from '@/lib/motion';
 
 interface ContactSidebarProps {
     emailLabel: string;
