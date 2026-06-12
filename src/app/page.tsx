@@ -24,7 +24,8 @@ export default function LandingPage() {
     return (
         <PublicSettingsProvider>
             <ContactRequestProvider>
-                <div className="relative min-h-screen overflow-x-hidden bg-[#fafafa] text-slate-900">
+                {/* overflow-x-clip (not -hidden): hidden would make this a scroll container and break the Act II sticky pin */}
+                <div className="relative min-h-screen overflow-x-clip bg-[#fafafa] text-slate-900">
                     <SEO title={t.landing.seo.title} description={t.landing.seo.description} canonicalUrl="https://codegetit.com" />
                     {/* Fixed film-grain overlay — one instance for the whole page */}
                     <div className="page-grain" aria-hidden="true" />

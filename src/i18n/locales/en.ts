@@ -492,7 +492,33 @@ export const en: Translations = {
                 actLabel: 'Act II',
                 line: 'We code it',
                 sub: 'Design and engineering under one roof, until the thing in your head has a name, a shape, and a URL.',
-                list: ['Full-stack applications', 'Custom websites', 'Landing pages', 'Web platforms'],
+                scrollCue: 'Keep scrolling',
+                items: [
+                    {
+                        title: 'Full-stack applications',
+                        description:
+                            'Software with a brain and a face: a polished interface in front; your logic, data, and integrations working behind it. One team owns the whole thing, end to end.',
+                        deliverables: ['Web app + API', 'Admin dashboards', 'Integrations'],
+                    },
+                    {
+                        title: 'Custom websites',
+                        description:
+                            "Designed and built from a blank page — no themes, no template smell. Fast, accessible, and shaped around your content instead of someone else's grid.",
+                        deliverables: ['Bespoke design', 'CMS when needed', 'SEO-ready'],
+                    },
+                    {
+                        title: 'Landing pages',
+                        description:
+                            'One page with one job: turning attention into action. Sharp structure, instant loads, and a clear path to the button that matters.',
+                        deliverables: ['Conversion-first', 'A/B-testable', 'Ships in days'],
+                    },
+                    {
+                        title: 'Web platforms',
+                        description:
+                            'The big ones: multi-user products with roles, billing, and workflows — and room to grow. Built to be operated, not just launched.',
+                        deliverables: ['Multi-tenant', 'Roles & billing', 'Built to scale'],
+                    },
+                ],
             },
             get: {
                 actLabel: 'Act III',

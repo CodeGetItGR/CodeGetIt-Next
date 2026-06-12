@@ -205,11 +205,25 @@ function TheItDot({ activeId, ready, version, pulseTick, pointsRef, originRef }:
   const placedRef = useRef(false);
   const scaleTargetRef = useRef(1);
   const lastKeyRef = useRef('');
+  const bootedRef = useRef(false);
+  const introTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  // The intro timers must only die on unmount — a cleanup tied to the boot
+  // effect itself would fire on the setPhase re-render and strand the dot at
+  // scale 0 before it ever pops.
+  useEffect(
+    () => () => {
+      introTimers.current.forEach(clearTimeout);
+      bootedRef.current = false;
+    },
+    [],
+  );
 
   // Boot: once rests are measured, either play the lent-dot intro (page top)
   // or join the journey wherever the visitor already is.
   useEffect(() => {
-    if (!ready || phase !== 'boot') return;
+    if (!ready || bootedRef.current) return;
+    bootedRef.current = true;
     const origin = originRef.current;
     if (window.scrollY > 80 || !origin) {
       setPhase('live');
@@ -220,15 +234,13 @@ function TheItDot({ activeId, ready, version, pulseTick, pointsRef, originRef }:
     scale.jump(0);
     placedRef.current = true;
     setPhase('intro');
-    const pop = setTimeout(() => {
-      scale.set(Math.max(origin.size, 2) / IT_BASE);
-    }, INTRO.pop);
-    const depart = setTimeout(() => setPhase('live'), INTRO.depart);
-    return () => {
-      clearTimeout(pop);
-      clearTimeout(depart);
-    };
-  }, [ready, phase, x, y, scale, originRef]);
+    introTimers.current.push(
+      setTimeout(() => {
+        scale.set(Math.max(origin.size, 2) / IT_BASE);
+      }, INTRO.pop),
+    );
+    introTimers.current.push(setTimeout(() => setPhase('live'), INTRO.depart));
+  }, [ready, x, y, scale, originRef]);
 
   // Live: spring to the active rest; squash on arrival; stage long re-entries.
   useEffect(() => {

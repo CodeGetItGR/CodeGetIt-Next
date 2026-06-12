@@ -307,6 +307,25 @@
         animation: orbitalDrift 18s ease-in-out infinite;
     }
 
+    /* ── Act II item titles: drafted → inked → done ─────────────────────────
+       Unread items are drafted outlines; the one the dot serves is inked;
+       items already read recede. "We code it", performed by the type. */
+    .act-title {
+        -webkit-text-stroke: 0.016em transparent;
+        transition:
+            color 0.45s var(--ease-premium),
+            -webkit-text-stroke-color 0.45s var(--ease-premium);
+    }
+    .act-title--draft {
+        color: transparent;
+        -webkit-text-stroke-color: rgba(15, 23, 42, 0.3);
+    }
+    .act-title--active { color: #0f172a; }
+    .act-title--done   { color: rgba(100, 116, 139, 0.5); }
+    @supports not (-webkit-text-stroke: 1px #000) {
+        .act-title--draft { color: rgba(148, 163, 184, 0.65); }
+    }
+
 }
 
 @theme inline {

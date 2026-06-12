@@ -95,7 +95,14 @@ export interface Translations {
                 actLabel: string;
                 line: string;
                 sub: string;
-                list: [string, string, string, string];
+                /** Cue shown while the pinned scene waits for the first scroll segment. */
+                scrollCue: string;
+                /** The hop list — the dot serves as each item's period while its spec card swaps in. */
+                items: Array<{
+                    title: string;
+                    description: string;
+                    deliverables: [string, string, string];
+                }>;
             };
             get: {
                 actLabel: string;

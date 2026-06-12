@@ -30,7 +30,7 @@ export function ActGetSection() {
         <ActLine
           text={copy.line}
           restId="act-get"
-          className="mt-5 text-[clamp(2.8rem,9vw,7rem)] leading-[1]"
+          className="mt-5 text-[clamp(2.8rem,9vw,7rem)] leading-none"
         />
 
         <motion.p
