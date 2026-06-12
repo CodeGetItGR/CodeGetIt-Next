@@ -51,8 +51,8 @@ const serviceIcons = [GlobeIcon, LayersIcon, DatabaseIcon];
 
 const featureMatrix = [
     ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Basic Integrations'],
-    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'User Authentication', 'API Integrations', 'Dashboard UI'],
-    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'User Authentication', 'API Integrations', 'Dashboard UI', 'Backend Architecture', 'Database Design', 'Admin Panel'],
+    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Interactive UI & Dashboards', 'Managed Authentication', 'Third-Party Integrations'],
+    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Interactive UI & Dashboards', 'Custom Backend & APIs', 'Database Design', 'Admin Dashboard', 'Custom Authentication'],
 ];
 
 const serviceTimelines = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];

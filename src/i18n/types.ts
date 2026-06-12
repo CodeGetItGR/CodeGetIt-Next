@@ -159,12 +159,16 @@ export interface Translations {
             headers: {
                 feature: string;
                 staticWebsite: string;
+                webApplication: string;
                 fullStackApplication: string;
             };
             rows: [string, string, string, string, string, string, string, string];
             stackTitle: string;
             maintenanceStatic: string;
+            maintenanceWeb: string;
             maintenanceFull: string;
+            managedLabel: string;
+            customLabel: string;
             disclaimer: string;
         };
         process: {

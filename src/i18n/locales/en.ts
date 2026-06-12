@@ -562,15 +562,15 @@ export const en: Translations = {
                 },
                 {
                     title: 'Web Applications',
-                    description: 'Interactive applications with business logic tailored to your needs.',
-                    features: ['All in Static Websites', 'Custom Features', 'User Authentication', 'API Integrations (Optional)'],
+                    description: 'Interactive applications and dashboards that plug into your existing tools and services — no custom backend required.',
+                    features: ['All in Static Websites', 'Interactive UI & Dashboards', 'Managed Authentication', 'Third-Party Integrations'],
                     priceKey: 'marketing.webStartingPrice',
                     defaultPrice: '5000',
                 },
                 {
                     title: 'Full-Stack Solutions',
-                    description: 'End-to-end systems with backend services, databases, admin tools, and custom integrations.',
-                    features: ['All in Web Applications', 'Database Design', 'Backend API', 'Admin Dashboard'],
+                    description: 'End-to-end systems with a custom-built backend, database, and admin tools — designed and owned by you.',
+                    features: ['All in Web Applications', 'Custom Backend & APIs', 'Database Design', 'Admin Dashboard'],
                     priceKey: 'marketing.fullStartingPrice',
                     defaultPrice: '12000',
                 },
@@ -578,13 +578,14 @@ export const en: Translations = {
         },
         comparison: {
             eyebrow: 'Comparison',
-            title: 'Static brochure site or full-stack application?',
+            title: 'Which tier fits your project?',
             description:
-                'Sometimes the best answer is a focused website. Other times, the right move is a custom platform with backend logic and operational workflows.',
+                'Each tier builds on the one before it — from a focused marketing site to a fully custom platform with its own backend, database, and admin tools.',
             headers: {
                 feature: 'Feature',
-                staticWebsite: 'Static Website',
-                fullStackApplication: 'Full-Stack Application (Custom)',
+                staticWebsite: 'Static',
+                webApplication: 'Web App',
+                fullStackApplication: 'Full-Stack',
             },
             rows: [
                 'Design',
@@ -598,8 +599,11 @@ export const en: Translations = {
             ],
             stackTitle: 'Core stack',
             maintenanceStatic: 'Low (Occasional updates)',
+            maintenanceWeb: 'Medium (Managed services)',
             maintenanceFull: 'Ongoing (updates, scaling)',
-            disclaimer: 'Feature availability and implementation complexity vary depending on project scope. Full-stack applications are custom systems and may include additional components not listed above.'
+            managedLabel: 'Managed',
+            customLabel: 'Custom',
+            disclaimer: 'Feature availability and implementation complexity vary depending on project scope. Full-stack solutions are custom systems and may include additional components not listed above.'
         },
         process: {
             eyebrow: 'Process',
