@@ -5,6 +5,8 @@ import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-moti
 
 import { cn } from '@/lib';
 
+import { Socket } from '../it';
+
 import type { HeroCopy } from './hero.types';
 
 interface HeroCtasProps {
@@ -61,11 +63,12 @@ export function HeroCtas({ copy }: HeroCtasProps) {
         className={cn(
           'group cta-polish',
           'inline-flex cursor-pointer items-center gap-2 rounded-full border-none',
-          'bg-slate-900 py-2.5 pr-2 pl-6 no-underline',
+          'bg-slate-900 py-2.5 pr-2 pl-5 no-underline',
           'text-[15px] font-semibold tracking-[-0.01em] text-white',
           'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-slate-800 active:scale-[0.98]',
         )}
       >
+        <Socket />
         {copy.primary}
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

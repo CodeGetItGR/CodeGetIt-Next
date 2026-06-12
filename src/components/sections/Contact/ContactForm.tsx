@@ -1,5 +1,5 @@
-import { type ChangeEvent } from 'react';
-import { motion } from 'framer-motion';
+import { type ChangeEvent, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { HiArrowRight } from 'react-icons/hi';
 import * as React from 'react';
 import {ContactFormData, ContactOptions} from "@/providers";
@@ -7,6 +7,7 @@ import {en} from "@/i18n/locales";
 import {DetailedRequestFormState, SubmitState} from "@/components/sections/Contact/useUIReducer";
 import {premiumEase, premiumMotion} from "@/lib";
 import {DetailedRequestWizard, MagneticButton} from "@/components";
+import {EASE, Socket, TRAVEL} from "@/components/landing/it";
 
 interface ContactFormLabels {
     nameLabel: string;
@@ -113,7 +114,7 @@ const StatusMessage = ({
 }) => {
     if (submitState === 'success') {
         return (
-            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-sm font-medium text-gray-900">
+            <motion.p role="status" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-sm font-medium text-gray-900">
                 {submittedRequestId ? `${submittedWithId} ${submittedRequestId}` : successText}
             </motion.p>
         );
@@ -159,15 +160,45 @@ export const ContactForm = ({
     onNextStep,
     onPreviousStep,
     onSubmit,
-}: ContactFormProps) => (
+}: ContactFormProps) => {
+    const reduced = useReducedMotion();
+    const formRef = useRef<HTMLFormElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
+    const socketRef = useRef<HTMLSpanElement>(null);
+    const wasSubmittingRef = useRef(false);
+    const [ready, setReady] = useState(false);
+    const [flight, setFlight] = useState<{ x: number; y: number } | null>(null);
+
+    // The dot arrives when the form can carry It — native validity, no new rules.
+    useEffect(() => {
+        setReady(formRef.current?.checkValidity() ?? false);
+    }, [formData, detailedRequest, useDetailedRequest, currentStep]);
+
+    // Send-off: as the request leaves, It leaves with it. The flight is pure
+    // theater — the network call is already in motion and is never gated by it.
+    useEffect(() => {
+        if (isSubmitting && !wasSubmittingRef.current && !reduced && socketRef.current && cardRef.current) {
+            const s = socketRef.current.getBoundingClientRect();
+            const c = cardRef.current.getBoundingClientRect();
+            setFlight({ x: s.left - c.left + s.width / 2, y: s.top - c.top + s.height / 2 });
+        }
+        wasSubmittingRef.current = isSubmitting;
+    }, [isSubmitting, reduced]);
+
+    // Ready and idle: It sits in the socket. After success it's gone — handed
+    // over. After an error it pops back in: it didn't go; it's still yours.
+    const docked = ready && !isSubmitting && submitState !== 'success';
+
+    return (
     <motion.div
+        ref={cardRef}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: premiumMotion.normal, ease: premiumEase }}
         className="interactive-card premium-panel premium-texture rounded-3xl p-7 md:p-9 lg:col-span-7"
     >
-        <form onSubmit={onSubmit} className="space-y-8">
+        <form ref={formRef} onSubmit={onSubmit} className="space-y-8">
             <ToggleCard
                 checked={useDetailedRequest}
                 onChange={onDetailedRequestToggle}
@@ -257,11 +288,27 @@ export const ContactForm = ({
                             disabled={isSubmitting}
                             className="cta-polish group inline-flex cursor-pointer items-center gap-3 rounded-full border border-gray-900 bg-gray-800 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black hover:opacity-75 disabled:cursor-not-allowed disabled:opacity-50"
                         >
+                            {/* The socket stays mounted through submit so the flight can launch from it */}
+                            <span ref={socketRef} className="relative inline-flex h-1.5 w-1.5 shrink-0">
+                                <Socket className="absolute inset-0" />
+                                {reduced ? (
+                                    docked && <span className="absolute -inset-px rounded-full bg-brand-600" />
+                                ) : (
+                                    <AnimatePresence>
+                                        {docked && (
+                                            <motion.span
+                                                key="dock"
+                                                initial={{ scale: 0 }}
+                                                animate={{ scale: 1, transition: { duration: 0.24, ease: EASE } }}
+                                                exit={{ scale: 0, transition: { duration: 0.12 } }}
+                                                className="absolute -inset-px rounded-full bg-brand-600"
+                                            />
+                                        )}
+                                    </AnimatePresence>
+                                )}
+                            </span>
                             {isSubmitting ? (
-                                <>
-                                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                    {labels.sendingLabel}
-                                </>
+                                labels.sendingLabel
                             ) : (
                                 <>
                                     {useDetailedRequest ? detailedCopy.submitProjectRequest : labels.sendButtonLabel}
@@ -281,5 +328,23 @@ export const ContactForm = ({
                 successText={labels.successText}
             />
         </form>
+
+        {/* The send-off — It rises out of the socket and leaves with the message */}
+        {flight && (
+            <motion.span
+                aria-hidden
+                className="pointer-events-none absolute z-10 h-2 w-2 rounded-full bg-brand-600"
+                style={{ left: flight.x - 4, top: flight.y - 4 }}
+                initial={{ y: 0, scale: 1.25, opacity: 1 }}
+                animate={{ y: -120, scale: 1, opacity: 0 }}
+                transition={{
+                    y: { type: 'spring', ...TRAVEL },
+                    scale: { duration: 0.15, ease: EASE },
+                    opacity: { duration: 0.3, delay: 0.25, ease: 'easeOut' },
+                }}
+                onAnimationComplete={() => setFlight(null)}
+            />
+        )}
     </motion.div>
-);
+    );
+};

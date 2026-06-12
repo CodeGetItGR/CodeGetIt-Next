@@ -68,6 +68,14 @@ export interface Translations {
         };
     };
 
+    /** The 404 page — an empty field, one lost dot: "This isn't it." */
+    notFound: {
+        /** Declaration without its period glyph — a static dot serves as the period. */
+        line: string;
+        sub: string;
+        back: string;
+    };
+
     landing: {
         seo: {
             title: string;

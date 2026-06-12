@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { DotlessWordmark } from './it';
+import { DotlessWordmark, Socket } from './it';
 import { Logo } from './Logo';
 
 const links = [
@@ -107,8 +107,9 @@ export function Navbar() {
                 {/* Desktop CTA — button-in-button pill */}
                 <a
                     href="#contact"
-                    className="group hidden items-center gap-2 rounded-full bg-slate-900 py-2 pr-2 pl-5 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-slate-800 active:scale-[0.98] md:inline-flex"
+                    className="group hidden items-center gap-2 rounded-full bg-slate-900 py-2 pr-2 pl-4 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-slate-800 active:scale-[0.98] md:inline-flex"
                 >
+                    <Socket />
                     Get a Quote
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

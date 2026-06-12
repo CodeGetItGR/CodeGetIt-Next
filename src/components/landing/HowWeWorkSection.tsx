@@ -56,8 +56,8 @@ export function HowWeWorkSection() {
 
                 {/* Vertical timeline */}
                 <div className="relative mt-16">
-                    {/* Connector line */}
-                    <div className="absolute left-[27px] top-8 bottom-8 w-px bg-gradient-to-b from-brand-200 via-brand-300 to-brand-100 md:left-1/2 md:-translate-x-px" aria-hidden="true" />
+                    {/* Connector line — a plain ink hairline; a teal path that isn't It's would lie */}
+                    <div className="absolute left-[27px] top-8 bottom-8 w-px bg-slate-900/15 md:left-1/2 md:-translate-x-px" aria-hidden="true" />
 
                     <div className="flex flex-col gap-10">
                         {process.steps.map((step, index) => {
@@ -75,11 +75,12 @@ export function HowWeWorkSection() {
                                     {/* Step node — centered on the line at md */}
                                     <div className="relative z-10 flex-shrink-0 md:absolute md:left-1/2 md:-translate-x-1/2">
                                         <div className="flex h-14 w-14 items-center justify-center rounded-full ring-[6px] ring-white bg-white soft-shadow">
-                                            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600/[0.08] text-brand-600">
+                                            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/[0.05] text-slate-700">
                                                 <Icon />
                                             </span>
                                         </div>
-                                        <span className="absolute -top-2.5 -right-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white">
+                                        {/* Squared ink chip — a filled teal circle would impersonate It */}
+                                        <span className="absolute -top-2.5 -right-2.5 flex h-6 w-6 items-center justify-center rounded-md bg-slate-900 text-[10px] font-bold text-white">
                                             {index + 1}
                                         </span>
                                     </div>
