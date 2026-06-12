@@ -58,11 +58,11 @@ interface FieldProps {
 }
 
 const fieldShellClass =
-    'w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3.5 text-lg text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-gray-400 focus:outline-none focus:ring-0';
+    'w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-lg text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-slate-400 focus:outline-none focus:ring-0';
 
 const Field = ({ label, placeholder, value, onChange, error, type = 'text', required }: FieldProps) => (
     <div>
-        <label className="mb-3 block text-sm font-medium tracking-wider text-gray-500 uppercase">{label}</label>
+        <label className="mb-3 block text-sm font-medium tracking-wider text-slate-500 uppercase">{label}</label>
         {type === 'textarea' ? (
             <textarea
                 placeholder={placeholder}
@@ -90,12 +90,12 @@ const ToggleCard = ({
     hint: string;
     title: string;
 }) => (
-    <div className="rounded-2xl border border-gray-200 bg-white/60 p-4">
-        <label className="flex items-start gap-3 text-sm text-gray-700">
-            <input type="checkbox" checked={checked} onChange={onChange} className="mt-0.5 h-4 w-4 rounded border-gray-300" />
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <label className="flex items-start gap-3 text-sm text-slate-700">
+            <input type="checkbox" checked={checked} onChange={onChange} className="mt-0.5 h-4 w-4 rounded border-slate-300" />
             <span>{title}</span>
         </label>
-        {checked && <p className="mt-2 text-xs text-gray-500">{hint}</p>}
+        {checked && <p className="mt-2 text-xs text-slate-500">{hint}</p>}
     </div>
 );
 
@@ -114,7 +114,7 @@ const StatusMessage = ({
 }) => {
     if (submitState === 'success') {
         return (
-            <motion.p role="status" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-sm font-medium text-gray-900">
+            <motion.p role="status" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-sm font-medium text-slate-900">
                 {submittedRequestId ? `${submittedWithId} ${submittedRequestId}` : successText}
             </motion.p>
         );
@@ -196,7 +196,7 @@ export const ContactForm = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: premiumMotion.normal, ease: premiumEase }}
-        className="interactive-card premium-panel premium-texture rounded-3xl p-7 md:p-9 lg:col-span-7"
+        className="relative rounded-3xl border border-slate-900/[0.06] bg-white p-7 soft-shadow md:p-9 lg:col-span-7"
     >
         <form ref={formRef} onSubmit={onSubmit} className="space-y-8">
             <ToggleCard
@@ -268,7 +268,7 @@ export const ContactForm = ({
                         <button
                             type="button"
                             onClick={onPreviousStep}
-                            className="rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100"
+                            className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
                         >
                             {detailedCopy.back}
                         </button>
@@ -278,7 +278,7 @@ export const ContactForm = ({
                         <button
                             type="button"
                             onClick={onNextStep}
-                            className="cursor-pointer rounded-full border border-gray-900 bg-blue-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-black"
+                            className="cursor-pointer rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
                         >
                             {detailedCopy.nextStep}
                         </button>
@@ -286,7 +286,7 @@ export const ContactForm = ({
                         <MagneticButton
                             type="submit"
                             disabled={isSubmitting}
-                            className="cta-polish group inline-flex cursor-pointer items-center gap-3 rounded-full border border-gray-900 bg-gray-800 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black hover:opacity-75 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="cta-polish group inline-flex cursor-pointer items-center gap-3 rounded-full bg-slate-900 px-8 py-4 text-base font-semibold text-white transition-colors duration-300 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {/* The socket stays mounted through submit so the flight can launch from it */}
                             <span ref={socketRef} className="relative inline-flex h-1.5 w-1.5 shrink-0">

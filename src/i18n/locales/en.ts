@@ -2,12 +2,12 @@
 
 export const en: Translations = {
     contact: {
-        title: 'Get In Touch',
-        subtitle: "Let's discuss your project",
-        badge: 'Get In Touch',
+        title: 'Tell us about it',
+        subtitle: 'Three fields and a reply within 24 hours — or the full brief, if you already know the scope.',
+        badge: 'Contact',
         namePlaceholder: 'Your Name',
         emailPlaceholder: 'Your Email',
-        messagePlaceholder: 'Tell us about it.',
+        messagePlaceholder: 'What is it? What should it do? When do you need it?',
         sendButton: 'Send it',
         sending: 'Sending...',
         success: "It's on its way.",

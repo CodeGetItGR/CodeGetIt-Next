@@ -55,13 +55,14 @@ interface SelectProps {
     className?: string;
 }
 
-const fieldShellClass = 'rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900';
+const fieldShellClass =
+    'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-slate-400 focus:outline-none focus:ring-0';
 
 const renderError = (error?: string) => (error ? <p className="mt-1 text-xs text-red-500">{error}</p> : null);
 
 const Field = ({ label, value, field, onChange, error, placeholder, type = 'text', required, maxLength, className = '' }: FieldProps) => (
     <div className={className}>
-        <label className="mb-3 block text-sm font-medium tracking-wider text-gray-500 uppercase">{label}</label>
+        <label className="mb-3 block text-sm font-medium tracking-wider text-slate-500 uppercase">{label}</label>
         <input
             type={type}
             value={value}
@@ -78,7 +79,7 @@ const Field = ({ label, value, field, onChange, error, placeholder, type = 'text
 
 const TextareaField = ({ label, value, field, onChange, error, placeholder, rows = 3, required, maxLength, className = '' }: TextareaProps) => (
     <div className={className}>
-        <label className="mb-3 block text-sm font-medium tracking-wider text-gray-500 uppercase">{label}</label>
+        <label className="mb-3 block text-sm font-medium tracking-wider text-slate-500 uppercase">{label}</label>
         <textarea
             value={value}
             data-request-field={field}
@@ -95,7 +96,7 @@ const TextareaField = ({ label, value, field, onChange, error, placeholder, rows
 
 const SelectField = ({ label, value, field, onChange, options, error, placeholder, required, className = '' }: SelectProps) => (
     <div className={className}>
-        <label className="mb-3 block text-sm font-medium tracking-wider text-gray-500 uppercase">{label}</label>
+        <label className="mb-3 block text-sm font-medium tracking-wider text-slate-500 uppercase">{label}</label>
         <select value={value} data-request-field={field} onChange={onChange} className={`w-full ${fieldShellClass}`} required={required}>
             {placeholder ? (
                 <option value="" hidden>
@@ -131,18 +132,19 @@ export const DetailedRequestWizard = ({
     // onEnterpriseInquiryToggle,
 }: DetailedRequestWizardProps) => (
     <>
-        <div className="rounded-2xl border border-gray-200 bg-white/65 p-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
             <div className="flex flex-wrap items-center gap-3">
                 {stepTitles.map((title, index) => (
                     <div key={title} className="flex items-center gap-2">
+                        {/* Squared ink step chip — matches the approved HowWeWork number-badge treatment */}
                         <span
-                            className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
-                                index <= currentStep ? 'bg-blue-900 text-white' : 'bg-gray-700 text-gray-600'
+                            className={`inline-flex h-7 w-7 items-center justify-center rounded-md text-xs font-semibold ${
+                                index <= currentStep ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-500'
                             }`}
                         >
                             {index + 1}
                         </span>
-                        <span className={`text-xs font-medium ${index === currentStep ? 'text-gray-900' : 'text-gray-500'}`}>{title}</span>
+                        <span className={`text-xs font-medium ${index === currentStep ? 'text-slate-900' : 'text-slate-500'}`}>{title}</span>
                     </div>
                 ))}
             </div>

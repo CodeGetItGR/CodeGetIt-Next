@@ -433,8 +433,10 @@ export const Contact = () => {
         ]
     );
 
+    // Continuity with Act III: same paper field, no divider seam, tightened
+    // top so Contact reads as the next paragraph after "You get it."
     return (
-        <section id="contact" className="section-depth section-divider relative bg-[#f5f6f8] py-28 lg:py-26">
+        <section id="contact" className="relative pt-10 pb-28 lg:pt-16 lg:pb-32">
             <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
