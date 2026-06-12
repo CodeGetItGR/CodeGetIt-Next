@@ -65,6 +65,11 @@
     100% { transform: translateX(130%);  }
 }
 
+@keyframes deliveredPulse {
+    0%, 100% { transform: scale(1);    }
+    45%       { transform: scale(1.35); }
+}
+
 @keyframes orbitalDrift {
     0%, 100% { transform: translate3d(0,    0,    0) scale(1);    }
     35%       { transform: translate3d(22px, -16px, 0) scale(1.06); }
@@ -320,10 +325,20 @@
         color: transparent;
         -webkit-text-stroke-color: rgba(15, 23, 42, 0.3);
     }
-    .act-title--active { color: #0f172a; }
-    .act-title--done   { color: rgba(100, 116, 139, 0.5); }
+    .act-title--active {
+        color: #0f172a;
+        /* inks only after the dot lands — mirrors ACT2.inkDelay in it/beat.ts */
+        transition-delay: 0.28s;
+    }
+    .act-title--done   { color: rgba(100, 116, 139, 0.5); transition-delay: 0s; }
     @supports not (-webkit-text-stroke: 1px #000) {
         .act-title--draft { color: rgba(148, 163, 184, 0.65); }
+    }
+
+    /* ── Delivered periods: the single hover pulse, re-armed per hover ──────
+       The pop-in is Framer-driven; the pulse is pure CSS so it can't loop. */
+    .group:hover .delivered-period {
+        animation: deliveredPulse 0.36s var(--ease-premium) 1;
     }
 
 }

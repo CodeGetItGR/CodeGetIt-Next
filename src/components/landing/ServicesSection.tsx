@@ -10,6 +10,7 @@ import { useContactRequest } from '@/providers';
 import { getServiceContactPreset } from '@/components/landing/service-contact-presets';
 import { cn } from '@/lib/utils';
 import { SectionHeading } from '@/components/landing/SectionHeading';
+import { Whisper } from './it';
 
 // Ultra-light inline SVG icons (1.5 stroke — Phosphor-style)
 function GlobeIcon({ className }: { className?: string }) {
@@ -200,7 +201,7 @@ export function ServicesSection() {
                                                 'group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold',
                                                 'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]',
                                                 isRecommended
-                                                    ? 'bg-brand-600 text-white hover:bg-brand-700'
+                                                    ? 'bg-slate-900 text-white hover:bg-slate-800'
                                                     : 'bg-slate-100 text-slate-800 hover:bg-slate-200',
                                             )}
                                         >
@@ -220,6 +221,8 @@ export function ServicesSection() {
                         );
                     })}
                 </div>
+
+                <Whisper text={t.landing.whispers.services} className="mt-14" />
             </div>
         </section>
     );

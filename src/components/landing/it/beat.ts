@@ -26,6 +26,32 @@ export const T = {
 } as const;
 
 /**
+ * Act II pinned-scene choreography — the causal chain per hop:
+ * scroll moves the dot → its landing inks the title → the ink summons the card.
+ */
+export const ACT2 = {
+  /** Scroll budget (vh): a beat of stillness, one segment per item, resolution. */
+  introVh: 42,
+  perItemVh: 55,
+  closingVh: 35,
+  /** Shorter pin under lg — gesture scrolling makes every pinned vh dearer. */
+  compact: { introVh: 36, perItemVh: 48, closingVh: 28 },
+  /**
+   * Title inks as the dot lands (s). Applied on activation only, so reverse
+   * scrubbing never feels laggy. Mirrored in globals.css `.act-title--active`.
+   */
+  inkDelay: 0.28,
+  /**
+   * Card enter starts this long after the old card finishes exiting (s) —
+   * with the exit, the card lands ≈0.44s after the hop starts, once the ink
+   * has visibly taken. The empty beat is what makes the card feel caused.
+   */
+  cardEnterDelay: 0.26,
+  cardExit: 0.18,
+  cardEnter: 0.42,
+} as const;
+
+/**
  * Fade-and-rise entrance on mount. Pass the `useReducedMotion()` result so the
  * element renders in its final state when the user opts out of motion.
  */

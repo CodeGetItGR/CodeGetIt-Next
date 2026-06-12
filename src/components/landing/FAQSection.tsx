@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
+import { Whisper } from './it';
 
 export function FAQSection() {
     const ref      = useRef(null);
@@ -58,6 +59,8 @@ export function FAQSection() {
                         );
                     })}
                 </div>
+
+                <Whisper text={t.landing.whispers.faq} className="mt-12" />
             </div>
         </section>
     );

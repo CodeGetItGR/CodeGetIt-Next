@@ -5,8 +5,11 @@ import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import projectsData from '@/assets/projects/projects.json';
+import { DeliveredPeriod, Whisper } from './it';
 
-const projectColors = ['#0d9488', '#7c6af7', '#e8855a', '#3b82f6', '#ec4899', '#10b981'];
+// Teal (and its neighbors) belongs to It — the only teal in this section is
+// each title's delivered period. Accent[0] is ink pending the treatment decision.
+const projectColors = ['#0f172a', '#7c6af7', '#e8855a', '#3b82f6', '#ec4899', '#64748b'];
 
 interface Project {
     title: string;
@@ -71,13 +74,16 @@ function HeroProjectLayout({ project, color, isInView }: { project: Project; col
                 className="flex flex-col gap-5 lg:pl-4"
             >
                 <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style={{ color, backgroundColor: `${color}12` }}>
-                        <span className="h-1 w-1 rounded-full" style={{ backgroundColor: color }} />
+                    {/* No dot in the badge — the only dot a project earns is its period */}
+                    <span className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style={{ color, backgroundColor: `${color}12` }}>
                         Featured project
                     </span>
                 </div>
 
-                <h2 className="font-display text-5xl font-bold leading-[1.06] tracking-tight text-slate-900 lg:text-6xl">{project.title}</h2>
+                <h2 className="font-display text-5xl font-bold leading-[1.06] tracking-tight text-slate-900 lg:text-6xl">
+                    {project.title}
+                    <DeliveredPeriod show={isInView} delay={0.55} />
+                </h2>
                 <p className="text-base leading-8 text-slate-500">{project.description}</p>
 
                 <a
@@ -118,7 +124,10 @@ function GridProjectLayout({ projects, isInView }: { projects: Project[]; isInVi
                                 <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-50 ring-1 ring-slate-100">
                                     <img src={project.logo} alt={`${project.title} logo`} className="h-7 w-7 object-contain" />
                                 </div>
-                                <h3 className="font-display text-lg font-semibold text-slate-900 transition-colors group-hover:text-brand-600">{project.title}</h3>
+                                <h3 className="font-display text-lg font-semibold text-slate-900">
+                                    {project.title}
+                                    <DeliveredPeriod show={isInView} delay={0.3 + index * 0.06} />
+                                </h3>
                             </div>
                             <p className="mt-3 text-sm leading-7 text-slate-500">{project.description}</p>
                             <div className="mt-5 flex flex-wrap gap-2">
@@ -158,6 +167,8 @@ export function ProjectsSection() {
                 {isSingle
                     ? <HeroProjectLayout project={projects[0]} color={projectColors[0]} isInView={isInView} />
                     : <GridProjectLayout projects={projects} isInView={isInView} />}
+
+                <Whisper text={t.landing.whispers.projects} className="mt-14" />
             </div>
         </section>
     );

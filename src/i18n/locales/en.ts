@@ -527,6 +527,13 @@ export const en: Translations = {
                 cta: 'Get it',
             },
         },
+        whispers: {
+            code: '(taking it into the shop)',
+            services: '(it is being scoped)',
+            process: '(it is being built)',
+            projects: '(yours is next)',
+            faq: "(it's ready)",
+        },
         stats: {
             labels: ['Projects Delivered', 'Client Satisfaction', 'Happy Clients', 'Years Experience'],
         },
@@ -613,7 +620,7 @@ export const en: Translations = {
             ],
         },
         projects: {
-            eyebrow: 'Projects',
+            eyebrow: 'Previous Its',
             title: 'A few examples of what the work can look like',
             description: 'These are sample case-study style entries that show how the page presents proof of capability without getting noisy.',
             viewProject: 'View Project',

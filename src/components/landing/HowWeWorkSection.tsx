@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
+import { Whisper } from './it';
 
 // Ultra-light Phosphor-style step icons
 function DiscoverIcon() {
@@ -100,6 +101,8 @@ export function HowWeWorkSection() {
                         })}
                     </div>
                 </div>
+
+                <Whisper text={t.landing.whispers.process} className="mt-14" />
             </div>
         </section>
     );

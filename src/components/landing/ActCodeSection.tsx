@@ -17,14 +17,10 @@ import { useLocale } from '@/i18n/UseLocale';
 import type { Translations } from '@/i18n/types';
 import { cn } from '@/lib/utils';
 
-import { ActLine, EASE, TRAVEL, fadeRiseInView } from './it';
+import { ACT2, ActLine, EASE, TRAVEL, fadeRiseInView } from './it';
 
 type CodeCopy = Translations['landing']['story']['code'];
 type CodeItem = CodeCopy['items'][number];
-
-/** Scroll budget for the pin: an intro beat, then one segment per item. */
-const INTRO_VH = 30;
-const PER_ITEM_VH = 65;
 
 /* ── Spec-card glyphs ──────────────────────────────────────────────────────
  * Hairline ink line-work, deliberately rectilinear: the only circle on the
@@ -77,7 +73,7 @@ const drawShape = {
   }),
 };
 
-function Glyph({ shapes, animated }: { shapes: Shape[]; animated: boolean }) {
+function Glyph({ shapes, animated, delay = 0 }: { shapes: Shape[]; animated: boolean; delay?: number }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -93,7 +89,7 @@ function Glyph({ shapes, animated }: { shapes: Shape[]; animated: boolean }) {
           variants: drawShape,
           initial: animated ? ('hidden' as const) : (false as const),
           animate: 'visible' as const,
-          custom: 0.15 + i * 0.1,
+          custom: delay + 0.15 + i * 0.1,
         };
         if (shape.kind === 'rect') {
           return <motion.rect key={i} x={shape.x} y={shape.y} width={shape.w} height={shape.h} {...anim} />;
@@ -109,23 +105,19 @@ function Glyph({ shapes, animated }: { shapes: Shape[]; animated: boolean }) {
 
 /* ── Pinned-scene pieces ─────────────────────────────────────────────────── */
 
-/** Directional card swap — enters from the left, leaves the way you scroll. */
+/**
+ * The card swap. Enter waits out ACT2.cardEnterDelay so the ink visibly takes
+ * first — dot, then title, then card. Direction lives in the rolling index;
+ * the card itself keeps one calm axis (no blur, no drift).
+ */
 const cardVariants = {
-  enter: (dir: number) => ({ opacity: 0, x: -72, y: 24 * dir, filter: 'blur(4px)' }),
+  enter: { opacity: 0, x: -48 },
   center: {
     opacity: 1,
     x: 0,
-    y: 0,
-    filter: 'blur(0px)',
-    transition: { duration: 0.5, ease: EASE },
+    transition: { duration: ACT2.cardEnter, ease: EASE, delay: ACT2.cardEnterDelay },
   },
-  exit: (dir: number) => ({
-    opacity: 0,
-    x: 56,
-    y: -20 * dir,
-    filter: 'blur(3px)',
-    transition: { duration: 0.24, ease: EASE },
-  }),
+  exit: { opacity: 0, x: 40, transition: { duration: ACT2.cardExit, ease: EASE } },
 };
 
 /** The persistent counter — the active digit rolls in the scroll direction. */
@@ -151,16 +143,19 @@ function RollingIndex({ index, dir, total }: { index: number; dir: number; total
   );
 }
 
-function SpecCard({ item, index, dir }: { item: CodeItem; index: number; dir: number }) {
+function SpecCard({ item, index }: { item: CodeItem; index: number }) {
+  // Children count time from the card's mount (after the old card's exit) —
+  // adding the enter delay keeps them synced to the card's actual arrival.
+  const base = ACT2.cardEnterDelay;
   return (
-    <motion.div custom={dir} variants={cardVariants} initial="enter" animate="center" exit="exit">
-      <Glyph shapes={GLYPHS[index % GLYPHS.length]} animated />
+    <motion.div variants={cardVariants} initial="enter" animate="center" exit="exit">
+      <Glyph shapes={GLYPHS[index % GLYPHS.length]} animated delay={base} />
 
       {/* Left-to-right wipe — the sentence is typeset in front of you */}
       <motion.p
         initial={{ clipPath: 'inset(0 100% 0 0)', x: -10 }}
         animate={{ clipPath: 'inset(0 -2% 0 0)', x: 0 }}
-        transition={{ duration: 0.55, ease: EASE, delay: 0.12 }}
+        transition={{ duration: 0.55, ease: EASE, delay: base + 0.12 }}
         className="mt-5 max-w-[42ch] text-[0.95rem] leading-[1.7] text-slate-600 text-pretty lg:text-[0.98rem]"
       >
         {item.description}
@@ -172,7 +167,7 @@ function SpecCard({ item, index, dir }: { item: CodeItem; index: number; dir: nu
             key={tag}
             initial={{ opacity: 0, x: -14 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.45, ease: EASE, delay: 0.24 + i * 0.06 }}
+            transition={{ duration: 0.45, ease: EASE, delay: base + 0.24 + i * 0.06 }}
             className="rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500 ring-1 ring-slate-900/10"
           >
             {tag}
@@ -180,6 +175,25 @@ function SpecCard({ item, index, dir }: { item: CodeItem; index: number; dir: nu
         ))}
       </div>
     </motion.div>
+  );
+}
+
+/** The resolution — fills the card slot while the dot returns to the line. */
+function ClosingNote({ text }: { text: string }) {
+  return (
+    <motion.p
+      aria-hidden
+      initial={{ opacity: 0, x: -16 }}
+      animate={{
+        opacity: 1,
+        x: 0,
+        transition: { duration: 0.45, ease: EASE, delay: ACT2.cardEnterDelay },
+      }}
+      exit={{ opacity: 0, transition: { duration: 0.18, ease: EASE } }}
+      className="text-sm italic text-slate-400"
+    >
+      {text}
+    </motion.p>
   );
 }
 
@@ -260,7 +274,8 @@ function ItemRow({ entry, state, progress, segment, periodRef, enterDelay }: Ite
           style={{ scaleX: fill }}
           className={cn(
             'mt-1 block h-px origin-left bg-slate-900/30 transition-opacity duration-300',
-            state === 'active' ? 'opacity-100' : 'opacity-0',
+            // appears with the ink, not before it — same beat as the title
+            state === 'active' ? 'opacity-100 delay-[280ms]' : 'opacity-0',
           )}
         />
       </motion.div>
@@ -283,15 +298,31 @@ interface SpotPoint {
  * its duration while progress drives the sequence — nobody leaves until all
  * four builds have been met. A local stage dot plays It in here (stage
  * coordinates are pin-invariant); the global dot is parked off-screen at the
- * hero until Act III, so only one It is ever visible.
+ * hero until Act III, so only one It is ever visible. The scene resolves with
+ * the dot returning to finish the line — "We code it." — before the pin lets go.
  */
-function PinnedActCode({ copy }: { copy: CodeCopy }) {
+function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: string }) {
   const total = copy.items.length;
-  const introFrac = INTRO_VH / (INTRO_VH + PER_ITEM_VH * total);
-  const perFrac = (1 - introFrac) / total;
+
+  // Pacing: a shorter pin under lg — gesture scrolling tires faster than a wheel.
+  const [compactPin, setCompactPin] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1023px)');
+    const update = () => setCompactPin(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  const { introVh, perItemVh, closingVh } = compactPin ? ACT2.compact : ACT2;
+
+  const trackVh = introVh + perItemVh * total + closingVh;
+  const introFrac = introVh / trackVh;
+  const perFrac = perItemVh / trackVh;
+  const closingFrac = closingVh / trackVh;
 
   const trackRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const lineDotRef = useRef<HTMLSpanElement>(null);
   const itemDotRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const spotsRef = useRef<SpotPoint[]>([]);
@@ -314,8 +345,11 @@ function PinnedActCode({ copy }: { copy: CodeCopy }) {
   const sw = useSpring(dsize, { stiffness: 420, damping: 26 });
   const sq = useSpring(squash, { stiffness: 520, damping: 18 });
 
-  /** Spot for a sequence position: -1 = the act line's period, i = item i. */
-  const spotFor = (i: number) => spotsRef.current[i < 0 ? 0 : i + 1];
+  /**
+   * Spot for a sequence position: items map to their periods; the intro (-1)
+   * and the closing return (total) both rest on the act line's period.
+   */
+  const spotFor = (i: number) => spotsRef.current[i < 0 || i >= total ? 0 : i + 1];
 
   // Stage coordinates don't move while pinned, so a measure on mount/resize
   // and font-load keeps the spots honest without per-frame reads.
@@ -348,9 +382,12 @@ function PinnedActCode({ copy }: { copy: CodeCopy }) {
 
   useEffect(() => {
     measure();
-    const stage = stageRef.current;
     const observer = new ResizeObserver(measure);
-    if (stage) observer.observe(stage);
+    if (stageRef.current) observer.observe(stageRef.current);
+    // The stage content is justify-centered, so a card slot that outgrows its
+    // min-h shifts the whole list without resizing the stage — watching the
+    // grid catches that and re-seats the dot silently.
+    if (gridRef.current) observer.observe(gridRef.current);
     window.addEventListener('resize', measure);
     document.fonts?.ready.then(measure).catch(() => {});
     return () => {
@@ -360,9 +397,13 @@ function PinnedActCode({ copy }: { copy: CodeCopy }) {
   }, [measure]);
 
   // Scroll progress → sequence index (and travel direction for the swaps).
+  // -1 = intro cue · 0..total-1 = items · total = the closing return.
   useEffect(() => {
     const compute = (p: number) => {
-      const next = p <= introFrac ? -1 : Math.min(total - 1, Math.floor((p - introFrac) / perFrac));
+      let next: number;
+      if (p <= introFrac) next = -1;
+      else if (p >= 1 - closingFrac) next = total;
+      else next = Math.min(total - 1, Math.floor((p - introFrac) / perFrac));
       const prev = indexRef.current;
       if (next !== prev) {
         indexRef.current = next;
@@ -372,7 +413,7 @@ function PinnedActCode({ copy }: { copy: CodeCopy }) {
     };
     compute(scrollYProgress.get());
     return scrollYProgress.on('change', compute);
-  }, [scrollYProgress, introFrac, perFrac, total]);
+  }, [scrollYProgress, introFrac, perFrac, closingFrac, total]);
 
   // First sight of the stage: the dot pops in on the line's period.
   useEffect(() => {
@@ -405,7 +446,7 @@ function PinnedActCode({ copy }: { copy: CodeCopy }) {
     <section
       ref={trackRef}
       className="relative"
-      style={{ height: `calc(100vh + ${INTRO_VH + PER_ITEM_VH * total}vh)` }}
+      style={{ height: `calc(100vh + ${trackVh}vh)` }}
     >
       <div ref={stageRef} className="sticky top-0 h-screen overflow-hidden supports-[height:100svh]:h-svh">
         <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-8 pt-20 lg:px-10">
@@ -429,7 +470,7 @@ function PinnedActCode({ copy }: { copy: CodeCopy }) {
             {copy.sub}
           </motion.p>
 
-          <div className="mt-10 grid items-center gap-10 lg:mt-14 lg:grid-cols-12 lg:gap-8">
+          <div ref={gridRef} className="mt-10 grid items-center gap-10 lg:mt-14 lg:grid-cols-12 lg:gap-8">
             {/* The build list — every line gets its own scroll segment */}
             <ul className="order-1 space-y-5 lg:order-2 lg:col-span-7 lg:space-y-6">
               {copy.items.map((entry, i) => (
@@ -450,18 +491,29 @@ function PinnedActCode({ copy }: { copy: CodeCopy }) {
             {/* The spec card — swaps in step with the dot, never leaves sight */}
             <div
               aria-hidden
-              className="relative order-2 min-h-[210px] border-t border-slate-900/10 pt-6 lg:order-1 lg:col-span-5 lg:min-h-[280px]"
+              className="relative order-2 min-h-[300px] border-t border-slate-900/10 pt-6 lg:order-1 lg:col-span-5 lg:min-h-[280px]"
             >
-              {index >= 0 && (
-                <span className="absolute right-0 top-6">
-                  <RollingIndex index={index} dir={dir} total={total} />
-                </span>
-              )}
-              <AnimatePresence mode="wait" custom={dir} initial={false}>
+              <AnimatePresence>
+                {index >= 0 && index < total && (
+                  <motion.span
+                    key="counter"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, ease: EASE }}
+                    className="absolute right-0 top-6"
+                  >
+                    <RollingIndex index={index} dir={dir} total={total} />
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              <AnimatePresence mode="wait" initial={false}>
                 {index < 0 ? (
                   <ScrollCue key="cue" label={copy.scrollCue} />
+                ) : index >= total ? (
+                  <ClosingNote key="closing" text={closingNote} />
                 ) : (
-                  <SpecCard key={index} item={copy.items[index]} index={index} dir={dir} />
+                  <SpecCard key={index} item={copy.items[index]} index={index} />
                 )}
               </AnimatePresence>
             </div>
@@ -531,5 +583,9 @@ export function ActCodeSection() {
   const copy = t.landing.story.code;
   const reduced = useReducedMotion();
 
-  return reduced ? <StaticActCode copy={copy} /> : <PinnedActCode copy={copy} />;
+  return reduced ? (
+    <StaticActCode copy={copy} />
+  ) : (
+    <PinnedActCode copy={copy} closingNote={t.landing.whispers.code} />
+  );
 }

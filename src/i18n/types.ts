@@ -111,6 +111,19 @@ export interface Translations {
                 cta: string;
             };
         };
+        /**
+         * Status whispers — the parenthetical voice that keeps It alive while
+         * it's in the shop. Whispers never end in a period: sentences can't
+         * finish while It is away (the footer's epilogue earns its full stop).
+         */
+        whispers: {
+            /** Act II resolution — shown in the spec-card slot as the pin closes. */
+            code: string;
+            services: string;
+            process: string;
+            projects: string;
+            faq: string;
+        };
         stats: {
             labels: [string, string, string, string];
         };
