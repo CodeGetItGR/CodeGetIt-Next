@@ -184,13 +184,10 @@ export interface Translations {
             eyebrow: string;
             title: string;
             description: string;
-            viewProject: string;
-            viewAll: string;
-            items: Array<{
-                title: string;
-                description: string;
-                tags: string[];
-            }>;
+            challengeLabel: string;
+            solutionLabel: string;
+            visitSite: string;
+            live: string;
         };
         testimonials: {
             eyebrow: string;

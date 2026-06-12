@@ -1,9 +1,10 @@
 [
     {
         "title": "Pado Living",
-        "description": "A brief description of Project Alpha and what it does.",
-        "tags": ["React", "TypeScript", "Tailwind"],
-        "logo": "projects/logos/PadoLivingLogo.png",
+        "lede": "PLACEHOLDER — one sentence summarizing what Pado Living is and who it's for.",
+        "challenge": "PLACEHOLDER — describe the problem Pado Living needed solved, in the client's terms (no tech jargon).",
+        "solution": "PLACEHOLDER — describe how the problem was resolved and what capability it gave the client.",
+        "image": "/projects/logos/PadoLivingLogo.png",
         "url": "https://www.padoliving.com/"
     }
 ]
