@@ -486,7 +486,7 @@ export const en: Translations = {
             },
             actLabel: 'Act I',
             line: 'You bring it',
-            sub: 'An idea. A problem. A napkin sketch. Whatever it is — a full-stack application, a custom platform, a website — it starts as yours, and it stays yours.',
+            sub: 'An idea. A problem. A napkin sketch. Whatever it is — a full-stack application, a website — it starts as yours, and it stays yours.',
             ctas: {
                 primary: 'Start a project',
                 secondary: 'See the work',
@@ -500,10 +500,10 @@ export const en: Translations = {
                 scrollCue: 'Keep scrolling',
                 items: [
                     {
-                        title: 'Full-stack applications',
+                        title: 'Landing pages',
                         description:
-                            'Software with a brain and a face: a polished interface in front; your logic, data, and integrations working behind it. One team owns the whole thing, end to end.',
-                        deliverables: ['Web app + API', 'Admin dashboards', 'Integrations'],
+                            'One page with one job: turning attention into action. Sharp structure, instant loads, and a clear path to the button that matters.',
+                        deliverables: ['Conversion-first', 'A/B-testable', 'Ships in days'],
                     },
                     {
                         title: 'Custom websites',
@@ -512,16 +512,10 @@ export const en: Translations = {
                         deliverables: ['Bespoke design', 'CMS when needed', 'SEO-ready'],
                     },
                     {
-                        title: 'Landing pages',
+                        title: 'Full-stack applications',
                         description:
-                            'One page with one job: turning attention into action. Sharp structure, instant loads, and a clear path to the button that matters.',
-                        deliverables: ['Conversion-first', 'A/B-testable', 'Ships in days'],
-                    },
-                    {
-                        title: 'Web platforms',
-                        description:
-                            'The big ones: multi-user products with roles, billing, and workflows — and room to grow. Built to be operated, not just launched.',
-                        deliverables: ['Multi-tenant', 'Roles & billing', 'Built to scale'],
+                            'Software with a brain and a face: a polished interface in front; your logic, data, and integrations working behind it. One team owns the whole thing, end to end.',
+                        deliverables: ['Web app + API', 'Admin dashboards', 'Integrations'],
                     },
                 ],
             },
@@ -668,7 +662,6 @@ export const en: Translations = {
         faq: {
             eyebrow: 'FAQ',
             title: 'Questions people usually ask',
-            description: 'The FAQ section handles common uncertainty and helps the page feel complete without feeling crowded.',
             items: [
                 {
                     question: 'How long does a typical project take?',
@@ -710,9 +703,9 @@ export const en: Translations = {
                 email: 'Email',
             },
             links: {
-                services: ['Static Websites', 'Web Applications', 'Full-Stack Solutions', 'Maintenance'],
+                services: ['Static Websites', 'Web Applications', 'Full-Stack Solutions'],
                 company: ['About Us', 'Our Process', 'Case Studies', 'Careers'],
-                resources: ['Blog', 'Documentation', 'Support', 'Contact'],
+                resources: ['Contact'],
             },
         },
     },

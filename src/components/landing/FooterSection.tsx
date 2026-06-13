@@ -1,15 +1,9 @@
+import { useCallback } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
+import { useScrollHighlight } from '@/providers';
 import { DotlessWordmark } from './it';
 import { Logo } from './Logo';
 
-function GithubIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.2c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
-    </svg>
-  );
-}
 function LinkedInIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -32,24 +26,30 @@ export function FooterSection() {
     const currentYear = new Date().getFullYear();
     const { t }       = useLocale();
     const footer      = t.landing.footer;
+    const { scrollToSection } = useScrollHighlight();
 
     const links = [
-        { category: footer.categories.services,   items: footer.links.services   },
-        { category: footer.categories.company,    items: footer.links.company    },
-        { category: footer.categories.resources,  items: footer.links.resources  },
+        { id: 'services' as const,  category: footer.categories.services,   items: footer.links.services   },
+        // { id: 'company' as const,    category: footer.categories.company,    items: footer.links.company    },
+        { id: 'resources' as const, category: footer.categories.resources,  items: footer.links.resources  },
     ];
 
+    const handleServiceLinkClick = useCallback(
+        (index: number) => scrollToSection(`service-${index}`),
+        [scrollToSection]
+    );
+
     const socialLinks = [
-        { Icon: GithubIcon,   href: '#', label: footer.social.github   },
+        // { Icon: GithubIcon,   href: '#', label: footer.social.github   },
         { Icon: LinkedInIcon, href: '#', label: footer.social.linkedin },
         { Icon: MailIcon,     href: '#', label: footer.social.email    },
     ];
 
     return (
-        <footer className="border-t border-slate-900/[0.06] bg-white px-6 py-16">
+        <footer className="border-t border-slate-900/6 bg-white px-6 py-16">
             <div className="mx-auto max-w-6xl">
                 {/* Epilogue — the wordmark gave the page its dot and never takes it back */}
-                <div className="mb-14 border-b border-slate-900/[0.06] pb-12">
+                <div className="mb-14 border-b border-slate-900/6 pb-12">
                     <p className="font-display text-[clamp(2.6rem,8vw,6rem)] font-extrabold leading-none tracking-[-0.03em] text-slate-900">
                         <DotlessWordmark before="codeget" />
                     </p>
@@ -63,14 +63,14 @@ export function FooterSection() {
                             <Logo variant="mark" className="h-5 w-auto" />
                             <span className="font-display text-lg font-semibold tracking-tight text-slate-900">{footer.brandName}</span>
                         </div>
-                        <p className="mt-4 max-w-[220px] text-sm leading-7 text-slate-500">{footer.tagline}</p>
+                        <p className="mt-4 max-w-55 text-sm leading-7 text-slate-500">{footer.tagline}</p>
                         <div className="mt-5 flex gap-2">
                             {socialLinks.map(({ Icon, href, label }) => (
                                 <a
                                     key={label}
                                     href={href}
                                     aria-label={label}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/[0.08] text-slate-500 transition-all duration-200 hover:bg-slate-900 hover:text-white hover:ring-slate-900"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/8 text-slate-500 transition-all duration-200 hover:bg-slate-900 hover:text-white hover:ring-slate-900"
                                 >
                                     <Icon />
                                 </a>
@@ -83,11 +83,21 @@ export function FooterSection() {
                         <div key={group.category}>
                             <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">{group.category}</h4>
                             <ul className="mt-4 space-y-2.5">
-                                {group.items.map((item) => (
+                                {group.items.map((item, i) => (
                                     <li key={item}>
-                                        <a href="#" className="text-sm text-slate-500 transition-colors hover:text-slate-900">
-                                            {item}
-                                        </a>
+                                        {group.id === 'services' ? (
+                                            <a
+                                                href={`#service-${i}`}
+                                                onClick={() => handleServiceLinkClick(i)}
+                                                className="text-sm text-slate-500 transition-colors hover:text-slate-900"
+                                            >
+                                                {item}
+                                            </a>
+                                        ) : (
+                                            <a href="#" className="text-sm text-slate-500 transition-colors hover:text-slate-900">
+                                                {item}
+                                            </a>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
@@ -97,10 +107,10 @@ export function FooterSection() {
 
                 <div className="mt-12 flex flex-col gap-3 border-t border-slate-900/6 pt-8 text-xs text-slate-400 md:flex-row md:items-center md:justify-between">
                     <p>© {currentYear} {footer.brandName}. {footer.rights}</p>
-                    <div className="flex gap-5">
-                        <a href="#" className="transition-colors hover:text-slate-900">{footer.privacy}</a>
-                        <a href="#" className="transition-colors hover:text-slate-900">{footer.terms}</a>
-                    </div>
+                    {/*<div className="flex gap-5">*/}
+                    {/*    <a href="#" className="transition-colors hover:text-slate-900">{footer.privacy}</a>*/}
+                    {/*    <a href="#" className="transition-colors hover:text-slate-900">{footer.terms}</a>*/}
+                    {/*</div>*/}
                 </div>
             </div>
         </footer>

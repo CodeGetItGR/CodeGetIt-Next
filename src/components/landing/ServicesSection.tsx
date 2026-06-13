@@ -6,7 +6,7 @@ import { useLocale } from '@/i18n/UseLocale';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/api';
 import { settingsApi } from '@/api/settings';
-import { useContactRequest } from '@/providers';
+import { useContactRequest, useScrollHighlight } from '@/providers';
 import { getServiceContactPreset } from '@/components/landing/service-contact-presets';
 import { cn } from '@/lib/utils';
 import { SectionHeading } from '@/components/landing/SectionHeading';
@@ -60,9 +60,13 @@ const serviceTimelines = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
 // Middle card (index 1) is the recommended / highlighted tier
 const RECOMMENDED_INDEX = 1;
 
+// Matches the `#service-{index}` anchors used by FooterSection's "Services" links
+const SPOTLIGHT_ID_PATTERN = /^service-(\d+)$/;
+
 export function ServicesSection() {
     const { t }               = useLocale();
     const { openContactRequest } = useContactRequest();
+    const { highlightedId }   = useScrollHighlight();
     const containerRef        = useRef<HTMLDivElement | null>(null);
     const ref                 = useRef(null);
     const isInView            = useInView(ref, { once: true, margin: '-80px' });
@@ -77,6 +81,11 @@ export function ServicesSection() {
     });
 
     const services = t.landing.services;
+
+    const spotlightMatch = highlightedId?.match(SPOTLIGHT_ID_PATTERN);
+    const spotlightIndex = spotlightMatch && Number(spotlightMatch[1]) < services.items.length
+        ? Number(spotlightMatch[1])
+        : null;
 
     const formatPrice = useCallback(
         (value: string) =>
@@ -111,20 +120,25 @@ export function ServicesSection() {
                         const features    = featureMatrix[index] ?? [];
                         const price       = settingsQuery.data?.[service.priceKey] ?? service.defaultPrice;
                         const isRecommended = index === RECOMMENDED_INDEX;
-                        const isDimmed    = activeFeature !== null && !features.includes(activeFeature);
+                        const isFeatureDimmed = activeFeature !== null && !features.includes(activeFeature);
+                        const isSpotlight    = index === spotlightIndex;
+                        const isSpotlightDimmed = spotlightIndex !== null && index !== spotlightIndex;
+                        const isDimmed    = isFeatureDimmed || isSpotlightDimmed;
 
                         return (
                             <motion.article
                                 key={service.title}
+                                id={`service-${index}`}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={isInView ? { opacity: isDimmed ? 0.38 : 1, y: 0 } : { opacity: 0, y: 20 }}
                                 transition={{ duration: 0.55, delay: index * 0.1, ease: [0.32, 0.72, 0, 1] }}
                                 whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
                                 className={cn(
-                                    'relative flex flex-col rounded-[1.5rem] p-[6px] transition-opacity duration-500',
+                                    'relative flex flex-col rounded-[1.5rem] p-[6px] scroll-mt-28 transition-all duration-500',
                                     isRecommended
                                         ? 'ring-2 ring-slate-900/80 soft-shadow-lg'
                                         : 'ring-1 ring-slate-900/[0.06] soft-shadow',
+                                    isSpotlight && 'ring-2 ring-slate-900 ring-offset-2 ring-offset-[#fafafa] drop-shadow-[0_0_24px_rgba(15,23,42,0.18)]',
                                 )}
                             >
                                 {/* Recommended badge */}

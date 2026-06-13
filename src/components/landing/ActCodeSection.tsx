@@ -261,7 +261,7 @@ function ItemRow({ entry, state, progress, segment, periodRef, enterDelay }: Ite
             state === 'done' && 'act-title--done',
           )}
         >
-          <span className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-bottom">
+          <span className="inline-block overflow-hidden pb-[0.12em] mb-[-0.12em] align-bottom">
             <motion.span className="inline-block will-change-transform" variants={slideVariants}>
               {entry.title}
             </motion.span>
@@ -275,7 +275,7 @@ function ItemRow({ entry, state, progress, segment, periodRef, enterDelay }: Ite
           className={cn(
             'mt-1 block h-px origin-left bg-slate-900/30 transition-opacity duration-300',
             // appears with the ink, not before it — same beat as the title
-            state === 'active' ? 'opacity-100 delay-[280ms]' : 'opacity-0',
+            state === 'active' ? 'opacity-100 delay-280' : 'opacity-0',
           )}
         />
       </motion.div>
@@ -349,7 +349,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
    * Spot for a sequence position: items map to their periods; the intro (-1)
    * and the closing return (total) both rest on the act line's period.
    */
-  const spotFor = (i: number) => spotsRef.current[i < 0 || i >= total ? 0 : i + 1];
+  const spotFor = useCallback((i: number) => spotsRef.current[i < 0 || i >= total ? 0 : i + 1], [total]);
 
   // Stage coordinates don't move while pinned, so a measure on mount/resize
   // and font-load keeps the spots honest without per-frame reads.
@@ -378,7 +378,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
       dy.set(spot.y - spot.size / 2);
       dsize.set(spot.size);
     }
-  }, [total, dx, dy, dsize]);
+  }, [total, spotFor, dx, dy, dsize]);
 
   useEffect(() => {
     measure();
@@ -427,7 +427,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
     poppedRef.current = true;
     const pop = setTimeout(() => dsize.set(spot.size), 140);
     return () => clearTimeout(pop);
-  }, [engaged, measure, dx, dy, dsize]);
+  }, [engaged, measure, dx, dy, dsize, spotFor]);
 
   // Each hop: spring to the new period with the landing squash.
   useEffect(() => {
@@ -440,7 +440,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
     squash.set(1.28);
     const settle = setTimeout(() => squash.set(1), 150);
     return () => clearTimeout(settle);
-  }, [index, dx, dy, dsize, squash]);
+  }, [index, dx, dy, dsize, squash, spotFor]);
 
   return (
     <section
@@ -491,7 +491,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
             {/* The spec card — swaps in step with the dot, never leaves sight */}
             <div
               aria-hidden
-              className="relative order-2 min-h-[300px] border-t border-slate-900/10 pt-6 lg:order-1 lg:col-span-5 lg:min-h-[280px]"
+              className="relative order-2 min-h-75 border-t border-slate-900/10 pt-6 lg:order-1 lg:col-span-5 lg:min-h-70"
             >
               <AnimatePresence>
                 {index >= 0 && index < total && (

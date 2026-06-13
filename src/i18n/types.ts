@@ -206,7 +206,6 @@ export interface Translations {
         faq: {
             eyebrow: string;
             title: string;
-            description: string;
             items: Array<{
                 question: string;
                 answer: string;
@@ -219,7 +218,7 @@ export interface Translations {
             tagline: string;
             categories: {
                 services: string;
-                company: string;
+                company?: string;
                 resources: string;
             };
             rights: string;
@@ -232,7 +231,7 @@ export interface Translations {
             };
             links: {
                 services: string[];
-                company: string[];
+                company?: string[];
                 resources: string[];
             };
         };
