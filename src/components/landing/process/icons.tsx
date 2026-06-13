@@ -32,5 +32,3 @@ export function LaunchIcon() {
     </svg>
   );
 }
-
-export const stepIcons = [DiscoverIcon, DesignIcon, BuildIcon, LaunchIcon];
