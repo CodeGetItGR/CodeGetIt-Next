@@ -175,9 +175,21 @@ export interface Translations {
             eyebrow: string;
             title: string;
             description: string;
+            deliverablesLabel: string;
+            outcomeLabel: string;
+            badges: {
+                allProjects: { label: string; description: string };
+                webAppPlus: { label: string; description: string };
+                fullStack: { label: string; description: string };
+            };
             steps: Array<{
                 title: string;
                 description: string;
+                deliverables: Array<{
+                    label: string;
+                    badge?: 'allProjects' | 'webAppPlus' | 'fullStack';
+                }>;
+                outcome: string;
             }>;
         };
         projects: {
