@@ -68,6 +68,14 @@ export interface Translations {
         };
     };
 
+    /** The 404 page — an empty field, one lost dot: "This isn't it." */
+    notFound: {
+        /** Declaration without its period glyph — a static dot serves as the period. */
+        line: string;
+        sub: string;
+        back: string;
+    };
+
     landing: {
         seo: {
             title: string;
@@ -80,22 +88,49 @@ export interface Translations {
                 links: [string, string, string];
                 contactButton: string;
             };
-            badge: string;
-            headline: {
-                prefix: string;
-                highlight: string;
-                suffix: string;
-            };
-            subtitle: string;
+            /** Act I — the declaration is set without a trailing period; It is the period. */
+            actLabel: string;
+            line: string;
+            sub: string;
             ctas: {
                 primary: string;
                 secondary: string;
-                note: string;
             };
-            cards: Array<{
-                title: string;
+        };
+        /** The three-act story the name spells out: you bring it, we code it, you get it. */
+        story: {
+            code: {
+                actLabel: string;
+                line: string;
                 sub: string;
-            }>;
+                /** Cue shown while the pinned scene waits for the first scroll segment. */
+                scrollCue: string;
+                /** The hop list — the dot serves as each item's period while its spec card swaps in. */
+                items: Array<{
+                    title: string;
+                    description: string;
+                    deliverables: [string, string, string];
+                }>;
+            };
+            get: {
+                actLabel: string;
+                line: string;
+                sub: string;
+                cta: string;
+            };
+        };
+        /**
+         * Status whispers — the parenthetical voice that keeps It alive while
+         * it's in the shop. Whispers never end in a period: sentences can't
+         * finish while It is away (the footer's epilogue earns its full stop).
+         */
+        whispers: {
+            /** Act II resolution — shown in the spec-card slot as the pin closes. */
+            code: string;
+            services: string;
+            process: string;
+            projects: string;
+            faq: string;
         };
         stats: {
             labels: [string, string, string, string];
@@ -124,12 +159,16 @@ export interface Translations {
             headers: {
                 feature: string;
                 staticWebsite: string;
+                webApplication: string;
                 fullStackApplication: string;
             };
             rows: [string, string, string, string, string, string, string, string];
             stackTitle: string;
             maintenanceStatic: string;
+            maintenanceWeb: string;
             maintenanceFull: string;
+            managedLabel: string;
+            customLabel: string;
             disclaimer: string;
         };
         process: {
@@ -145,13 +184,10 @@ export interface Translations {
             eyebrow: string;
             title: string;
             description: string;
-            viewProject: string;
-            viewAll: string;
-            items: Array<{
-                title: string;
-                description: string;
-                tags: string[];
-            }>;
+            challengeLabel: string;
+            solutionLabel: string;
+            visitSite: string;
+            live: string;
         };
         testimonials: {
             eyebrow: string;
@@ -178,6 +214,8 @@ export interface Translations {
         };
         footer: {
             brandName: string;
+            /** Caption under the permanently dotless wordmark: "(you have it now.)" */
+            lentDot: string;
             tagline: string;
             categories: {
                 services: string;

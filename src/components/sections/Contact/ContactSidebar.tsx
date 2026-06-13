@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { premiumEase, premiumMotion } from '@/lib/motion.ts';
+import { premiumEase, premiumMotion } from '@/lib/motion';
 
 interface ContactSidebarProps {
     emailLabel: string;
@@ -29,38 +29,33 @@ export const ContactSidebar = ({
         transition={{ duration: premiumMotion.normal, delay: 0.1, ease: premiumEase }}
         className={className}
     >
-        <div className="relative sticky top-32 space-y-10 overflow-hidden rounded-3xl border border-gray-800 bg-linear-to-b from-gray-950 via-slate-900 to-gray-950 p-8 text-gray-100 shadow-2xl shadow-slate-900/30">
-            <motion.div
-                className="pointer-events-none absolute -top-20 right-[-2.5rem] h-52 w-52 rounded-full border border-white/10"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 19, repeat: Infinity, ease: 'linear' }}
-            />
-
+        <div className="sticky top-32 space-y-10 rounded-3xl border border-slate-900/[0.06] bg-white p-8 soft-shadow">
             <div>
-                <p className="mb-3 text-sm font-medium tracking-wider text-gray-400 uppercase">{emailLabel}</p>
+                <p className="mb-3 text-sm font-medium tracking-wider text-slate-500 uppercase">{emailLabel}</p>
                 <a
                     href={`mailto:${email}`}
-                    className="text-lg font-semibold text-white underline decoration-gray-700 underline-offset-4 transition-colors duration-200 hover:text-gray-300"
+                    className="text-lg font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4 transition-colors duration-200 hover:text-slate-600"
                 >
                     {email}
                 </a>
             </div>
 
             <div>
-                <p className="mb-3 text-sm font-medium tracking-wider text-gray-400 uppercase">{locationLabel}</p>
-                <p className="text-lg text-white">{locationValue}</p>
+                <p className="mb-3 text-sm font-medium tracking-wider text-slate-500 uppercase">{locationLabel}</p>
+                <p className="text-lg text-slate-900">{locationValue}</p>
             </div>
 
             <div>
-                <p className="mb-3 text-sm font-medium tracking-wider text-gray-400 uppercase">{responseTimeLabel}</p>
-                <p className="inline-flex items-center gap-2 text-lg text-white">
-                    <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.75)]" />
+                <p className="mb-3 text-sm font-medium tracking-wider text-slate-500 uppercase">{responseTimeLabel}</p>
+                <p className="inline-flex items-center gap-2 text-lg text-slate-900">
+                    {/* Availability signal — keeps the green convention, no glow, squared to honor the only-circle-is-It law */}
+                    <span className="inline-block h-2 w-2 rounded-[2px] bg-emerald-500" />
                     {responseTimeValue}
                 </p>
             </div>
 
-            <div className="rounded-2xl border border-gray-800 bg-gray-900/80 px-4 py-4">
-                <p className="text-sm leading-relaxed text-gray-300">{trustNote}</p>
+            <div className="rounded-2xl border border-slate-900/[0.06] bg-slate-50 px-4 py-4">
+                <p className="text-sm leading-relaxed text-slate-600">{trustNote}</p>
             </div>
         </div>
     </motion.div>

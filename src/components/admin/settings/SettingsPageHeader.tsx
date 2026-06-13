@@ -1,6 +1,6 @@
-import type { Translations } from '@/i18n/types.ts';
+import type { Translations } from '@/i18n/types';
 import { CircleAlert, CircleCheck, Eye, PencilLine, Search, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils.ts';
+import { cn } from '@/lib/utils';
 
 export const SettingsPageHeader = ({
     dirtyCount,

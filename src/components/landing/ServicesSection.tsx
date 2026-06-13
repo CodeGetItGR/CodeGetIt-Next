@@ -10,6 +10,7 @@ import { useContactRequest } from '@/providers';
 import { getServiceContactPreset } from '@/components/landing/service-contact-presets';
 import { cn } from '@/lib/utils';
 import { SectionHeading } from '@/components/landing/SectionHeading';
+import { Socket, Whisper } from './it';
 
 // Ultra-light inline SVG icons (1.5 stroke — Phosphor-style)
 function GlobeIcon({ className }: { className?: string }) {
@@ -50,8 +51,8 @@ const serviceIcons = [GlobeIcon, LayersIcon, DatabaseIcon];
 
 const featureMatrix = [
     ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Basic Integrations'],
-    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'User Authentication', 'API Integrations', 'Dashboard UI'],
-    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'User Authentication', 'API Integrations', 'Dashboard UI', 'Backend Architecture', 'Database Design', 'Admin Panel'],
+    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Interactive UI & Dashboards', 'Managed Authentication', 'Third-Party Integrations'],
+    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Interactive UI & Dashboards', 'Custom Backend & APIs', 'Database Design', 'Admin Dashboard', 'Custom Authentication'],
 ];
 
 const serviceTimelines = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
@@ -122,13 +123,13 @@ export function ServicesSection() {
                                 className={cn(
                                     'relative flex flex-col rounded-[1.5rem] p-[6px] transition-opacity duration-500',
                                     isRecommended
-                                        ? 'ring-2 ring-brand-500/40 soft-shadow-lg'
+                                        ? 'ring-2 ring-slate-900/80 soft-shadow-lg'
                                         : 'ring-1 ring-slate-900/[0.06] soft-shadow',
                                 )}
                             >
                                 {/* Recommended badge */}
                                 {isRecommended && (
-                                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-4 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
+                                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-slate-900 px-4 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
                                         Most popular
                                     </div>
                                 )}
@@ -136,13 +137,13 @@ export function ServicesSection() {
                                 {/* Inner core */}
                                 <div className={cn(
                                     'flex flex-1 flex-col rounded-[calc(1.5rem-6px)] p-7',
-                                    isRecommended ? 'bg-brand-600/[0.03]' : 'bg-white',
+                                    isRecommended ? 'bg-slate-900/[0.02]' : 'bg-white',
                                     'shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
                                 )}>
                                     {/* Icon */}
                                     <div className={cn(
                                         'mb-5 inline-flex w-fit rounded-xl p-2.5',
-                                        isRecommended ? 'bg-brand-500/10 text-brand-600' : 'bg-slate-100 text-slate-600'
+                                        isRecommended ? 'bg-slate-900/[0.05] text-slate-700' : 'bg-slate-100 text-slate-600'
                                     )}>
                                         <Icon />
                                     </div>
@@ -163,16 +164,17 @@ export function ServicesSection() {
                                                     className={cn(
                                                         'flex cursor-pointer items-start gap-2.5 text-sm select-none',
                                                         'transition-colors duration-300',
-                                                        isActive ? 'text-brand-700' : 'text-slate-500'
+                                                        isActive ? 'text-slate-900' : 'text-slate-500'
                                                     )}
                                                 >
                                                     <div className={cn(
-                                                        'mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-300',
-                                                        isActive ? 'scale-125 bg-brand-500' : 'bg-slate-300'
+                                                        // square ink tick — a filled circle would counterfeit It
+                                                        'mt-1.5 h-[5px] w-[5px] shrink-0 transition-all duration-300',
+                                                        isActive ? 'scale-125 bg-slate-900' : 'bg-slate-300'
                                                     )} />
                                                     <span>{feature}</span>
                                                     {lockedFeature === feature && (
-                                                        <span className="ml-auto text-brand-500">
+                                                        <span className="ml-auto text-slate-500">
                                                             <ArrowLeftIcon />
                                                         </span>
                                                     )}
@@ -183,7 +185,7 @@ export function ServicesSection() {
 
                                     {/* Price + CTA — pinned to bottom */}
                                     <div className="mt-auto pt-6">
-                                        <p className={cn('font-display text-2xl font-bold', isRecommended ? 'text-brand-600' : 'text-slate-900')}>
+                                        <p className="font-display text-2xl font-bold text-slate-900">
                                             {formatPrice(price)}
                                         </p>
                                         <p className="mt-1 text-xs text-slate-400">
@@ -200,10 +202,11 @@ export function ServicesSection() {
                                                 'group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold',
                                                 'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]',
                                                 isRecommended
-                                                    ? 'bg-brand-600 text-white hover:bg-brand-700'
+                                                    ? 'bg-slate-900 text-white hover:bg-slate-800'
                                                     : 'bg-slate-100 text-slate-800 hover:bg-slate-200',
                                             )}
                                         >
+                                            <Socket />
                                             {services.getStarted}
                                             <span className={cn(
                                                 'flex h-6 w-6 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-0.5',
@@ -220,6 +223,8 @@ export function ServicesSection() {
                         );
                     })}
                 </div>
+
+                <Whisper text={t.landing.whispers.services} className="mt-14" />
             </div>
         </section>
     );

@@ -1,1 +1,1 @@
-export * from './AiChatProvider.tsx';
+export * from './AiChatProvider';

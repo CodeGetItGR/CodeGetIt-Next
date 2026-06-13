@@ -56,6 +56,7 @@ export const RequestAnalysisReport = memo(({ requestId, requestTitle }: RequestA
                     status={status?.status}
                     jobId={status?.job_id}
                     errorMessage={errorMessage}
+                    isEmpty={!analysis}
                 />
 
                 {status?.status === 'FAILED' && status.error_message && (

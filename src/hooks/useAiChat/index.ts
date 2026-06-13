@@ -1,1 +1,1 @@
-export * from './useAiChat.ts';
+export * from './useAiChat';

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Clock3, FileText, Lightbulb, ListChecks } from 'lucide-react';
-import type { RequestAnalysisText } from 'src/admin/hooks/useRequestAnalysisReport';
+import type { RequestAnalysisText } from '@/hooks';
 import type { RequestAnalysisResponse, RequestAnalysisStatusResponse } from '../../../api/types';
 
 interface RequestAnalysisMetadataProps {

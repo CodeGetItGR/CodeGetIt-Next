@@ -1,0 +1,19 @@
+# CodeGetIt
+
+> CodeGetIt is a web development agency based in Thessaloniki, Greece, building static websites, web applications, and full-stack solutions for businesses that need clarity, speed, and momentum.
+
+## Services
+
+- Static Websites: fast, elegant marketing sites with responsive design, SEO optimization, and easy maintenance.
+- Web Applications: managed, third-party-service-backed applications for businesses that need interactivity without a custom backend.
+- Full-Stack Solutions: custom-built backend, database, and admin tooling for businesses that need full control over their application logic and data.
+
+## Process
+
+CodeGetIt follows a structured process from discovery through delivery, with milestone-based plans available for larger projects and ongoing support after launch (bug fixes, security updates, deployment help, and performance checks).
+
+## Contact
+
+- Website: https://codegetit.com
+- Email: info@codegetit.com
+- Location: Thessaloniki, Greece

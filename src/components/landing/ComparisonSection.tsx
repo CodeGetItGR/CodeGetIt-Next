@@ -7,7 +7,7 @@ import { SectionHeading } from '@/components/landing/SectionHeading';
 
 function CheckIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-brand-600">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-slate-700">
       <path d="M20 6 9 17l-5-5" />
     </svg>
   );
@@ -21,25 +21,25 @@ function XIcon() {
   );
 }
 
-const comparisonMatrix = [
-    { static: true,  fullStack: true  },
-    { static: true,  fullStack: true  },
-    { static: false, fullStack: true  },
-    { static: false, fullStack: true  },
-    { static: false, fullStack: true  },
-    { static: false, fullStack: true  },
-    { static: false, fullStack: true  },
-];
-
 export function ComparisonSection() {
     const ref      = useRef(null);
     const isInView = useInView(ref, { once: true, margin: '-100px' });
     const { t }    = useLocale();
     const comparison = t.landing.comparison;
 
+    const comparisonMatrix = [
+        { static: true,  webApp: true,                 fullStack: true  },
+        { static: true,  webApp: true,                 fullStack: true  },
+        { static: false, webApp: comparison.managedLabel, fullStack: comparison.customLabel },
+        { static: false, webApp: false,                fullStack: true  },
+        { static: false, webApp: comparison.managedLabel, fullStack: comparison.customLabel },
+        { static: false, webApp: false,                fullStack: true  },
+        { static: false, webApp: true,                 fullStack: true  },
+    ];
+
     const rows = [
         ...comparisonMatrix,
-        { static: comparison.maintenanceStatic, fullStack: comparison.maintenanceFull },
+        { static: comparison.maintenanceStatic, webApp: comparison.maintenanceWeb, fullStack: comparison.maintenanceFull },
     ];
 
     return (
@@ -65,7 +65,10 @@ export function ComparisonSection() {
                                         <th className="px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
                                             {comparison.headers.staticWebsite}
                                         </th>
-                                        <th className="bg-brand-600/[0.04] px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-brand-700">
+                                        <th className="px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                            {comparison.headers.webApplication}
+                                        </th>
+                                        <th className="bg-slate-900/[0.03] px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-900">
                                             {comparison.headers.fullStackApplication}
                                         </th>
                                     </tr>
@@ -81,10 +84,15 @@ export function ComparisonSection() {
                                                         ? (row.static ? <CheckIcon /> : <XIcon />)
                                                         : <span className="text-sm text-slate-500">{row.static}</span>}
                                                 </td>
-                                                <td className="bg-brand-600/[0.03] px-7 py-4 text-center">
+                                                <td className="px-7 py-4 text-center">
+                                                    {typeof row.webApp === 'boolean'
+                                                        ? (row.webApp ? <CheckIcon /> : <XIcon />)
+                                                        : <span className="text-sm text-slate-500">{row.webApp}</span>}
+                                                </td>
+                                                <td className="bg-slate-900/[0.02] px-7 py-4 text-center">
                                                     {typeof row.fullStack === 'boolean'
                                                         ? (row.fullStack ? <CheckIcon /> : <XIcon />)
-                                                        : <span className="text-sm font-semibold text-brand-700">{row.fullStack}</span>}
+                                                        : <span className="text-sm font-semibold text-slate-900">{row.fullStack}</span>}
                                                 </td>
                                             </tr>
                                         );
@@ -96,25 +104,31 @@ export function ComparisonSection() {
 
                     {/* ── Mobile matrix ── */}
                     <div className="overflow-hidden rounded-2xl ring-1 ring-slate-900/[0.06] soft-shadow md:hidden">
-                        <div className="grid grid-cols-[1fr_80px_96px] items-center border-b border-slate-100 bg-white">
-                            <div className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">{comparison.headers.feature}</div>
-                            <div className="px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">{comparison.headers.staticWebsite}</div>
-                            <div className="bg-brand-600/[0.05] px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-700">{comparison.headers.fullStackApplication}</div>
+                        <div className="grid grid-cols-[1fr_52px_60px_64px] items-center border-b border-slate-100 bg-white">
+                            <div className="px-3 py-3 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-400">{comparison.headers.feature}</div>
+                            <div className="px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-400">{comparison.headers.staticWebsite}</div>
+                            <div className="px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-400">{comparison.headers.webApplication}</div>
+                            <div className="bg-slate-900/[0.04] px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-900">{comparison.headers.fullStackApplication}</div>
                         </div>
                         {comparison.rows.map((rowLabel, index) => {
                             const row = rows[index];
                             return (
-                                <div key={rowLabel} className="grid grid-cols-[1fr_80px_96px] border-b border-slate-50 bg-white last:border-none odd:bg-slate-50/40">
-                                    <div className="px-4 py-4 text-sm text-slate-800">{rowLabel}</div>
-                                    <div className="flex items-center justify-center px-2">
+                                <div key={rowLabel} className="grid grid-cols-[1fr_52px_60px_64px] border-b border-slate-50 bg-white last:border-none odd:bg-slate-50/40">
+                                    <div className="px-3 py-4 text-sm text-slate-800">{rowLabel}</div>
+                                    <div className="flex items-center justify-center px-1">
                                         {typeof row.static === 'boolean'
                                             ? (row.static ? <CheckIcon /> : <XIcon />)
-                                            : <span className="text-center text-xs text-slate-500">{row.static}</span>}
+                                            : <span className="text-center text-[10px] text-slate-500">{row.static}</span>}
                                     </div>
-                                    <div className="flex items-center justify-center bg-brand-600/[0.03] px-2">
+                                    <div className="flex items-center justify-center px-1">
+                                        {typeof row.webApp === 'boolean'
+                                            ? (row.webApp ? <CheckIcon /> : <XIcon />)
+                                            : <span className="text-center text-[10px] text-slate-500">{row.webApp}</span>}
+                                    </div>
+                                    <div className="flex items-center justify-center bg-slate-900/[0.02] px-1">
                                         {typeof row.fullStack === 'boolean'
                                             ? (row.fullStack ? <CheckIcon /> : <XIcon />)
-                                            : <span className="text-center text-xs font-semibold text-brand-700">{row.fullStack}</span>}
+                                            : <span className="text-center text-[10px] font-semibold text-slate-900">{row.fullStack}</span>}
                                     </div>
                                 </div>
                             );

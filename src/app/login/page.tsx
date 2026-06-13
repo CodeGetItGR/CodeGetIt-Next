@@ -1,12 +1,18 @@
 'use client'
 
-import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
+import { Suspense, useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import * as React from 'react';
 import {Input} from "@/components";
 import {useApiErrorState, useNavigation} from "@/hooks";
 import {useAuth} from "@/auth/useAuth";
 
 export default function LoginPage() {
+    return <Suspense fallback={null}>
+        <LoginForm />
+    </Suspense>
+}
+
+function LoginForm() {
     const { login, isAuthenticated } = useAuth();
     const {navigate, searchParams} = useNavigation();
     const [username, setUsername] = useState('');

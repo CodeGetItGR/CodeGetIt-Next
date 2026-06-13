@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Loader2, RefreshCcw, Sparkles } from 'lucide-react';
-import type { RequestAnalysisText } from 'src/admin/hooks/useRequestAnalysisReport';
+import type { RequestAnalysisText } from '@/hooks';
 
 interface RequestAnalysisHeaderProps {
     text: RequestAnalysisText;

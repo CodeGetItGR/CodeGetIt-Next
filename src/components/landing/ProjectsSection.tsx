@@ -5,159 +5,90 @@ import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import projectsData from '@/assets/projects/projects.json';
+import { DeliveredPeriod, Whisper } from './it';
 
-const projectColors = ['#0d9488', '#7c6af7', '#e8855a', '#3b82f6', '#ec4899', '#10b981'];
+// Single-project case study: the story carries the hierarchy, the screenshot
+// is supporting evidence. The only color is the title's delivered period.
 
 interface Project {
     title: string;
-    description: string;
-    tags: string[];
-    logo: string;
+    lede: string;
+    challenge: string;
+    solution: string;
+    image: string;
     url: string;
-}
-
-function HeroProjectLayout({ project, color, isInView }: { project: Project; color: string; isInView: boolean }) {
-    return (
-        <div className="mt-14 grid gap-10 lg:grid-cols-[1fr_400px] lg:items-center">
-            {/* Left: featured card — showcase with tilt physics */}
-            <motion.a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-                whileHover={{ y: -8, scale: 1.01, transition: { type: 'spring', stiffness: 200, damping: 20 } }}
-                className="group relative block overflow-hidden rounded-[1.5rem] ring-1 ring-slate-900/[0.08] soft-shadow-lg aspect-[4/3] max-h-[480px]"
-            >
-                <img
-                    src={project.logo}
-                    alt={project.title}
-                    className="absolute inset-0 h-full w-full scale-105 object-cover opacity-80 blur-[2px] transition-all duration-700 group-hover:scale-100 group-hover:opacity-50 group-hover:blur-0"
-                />
-                <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${color}18 0%, rgba(255,255,255,0.04) 40%, rgba(248,250,252,0.92) 100%)` }} />
-                <div className="absolute top-0 right-0 left-0 h-[3px] rounded-t-[1.5rem]" style={{ backgroundColor: color }} />
-
-                {/* Corner badge */}
-                <div className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full border border-white/40 bg-white/70 px-3 py-1.5 backdrop-blur-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3" />
-                    </svg>
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">Live</span>
-                </div>
-
-                <div className="absolute right-0 bottom-0 left-0 p-8">
-                    <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white soft-shadow">
-                            <img src={project.logo} alt={`${project.title} logo`} className="h-7 w-7 object-contain" />
-                        </div>
-                        <h3 className="font-display text-2xl font-bold tracking-tight text-slate-900">{project.title}</h3>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                            <span key={tag} className="rounded-full border border-slate-900/10 bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 backdrop-blur-sm">
-                                {tag}
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            </motion.a>
-
-            {/* Right: editorial text */}
-            <motion.div
-                initial={{ opacity: 0, x: 16 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
-                className="flex flex-col gap-5 lg:pl-4"
-            >
-                <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style={{ color, backgroundColor: `${color}12` }}>
-                        <span className="h-1 w-1 rounded-full" style={{ backgroundColor: color }} />
-                        Featured project
-                    </span>
-                </div>
-
-                <h2 className="font-display text-5xl font-bold leading-[1.06] tracking-tight text-slate-900 lg:text-6xl">{project.title}</h2>
-                <p className="text-base leading-8 text-slate-500">{project.description}</p>
-
-                <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/cta inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest transition-all"
-                    style={{ color }}
-                >
-                    <span className="border-b border-current pb-0.5 transition-all group-hover/cta:pb-1">Explore the project</span>
-                    <span className="transition-transform group-hover/cta:translate-x-1">→</span>
-                </a>
-            </motion.div>
-        </div>
-    );
-}
-
-function GridProjectLayout({ projects, isInView }: { projects: Project[]; isInView: boolean }) {
-    return (
-        <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {projects.map((project, index) => {
-                const color = projectColors[index] ?? projectColors[0];
-                return (
-                    <motion.a
-                        key={project.title}
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={isInView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.5, delay: index * 0.07, ease: [0.32, 0.72, 0, 1] }}
-                        whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 22 } }}
-                        className="group relative overflow-hidden rounded-[1.25rem] ring-1 ring-slate-900/[0.06] soft-shadow block"
-                    >
-                        <div className="h-1 w-full" style={{ backgroundColor: color }} />
-                        <div className="bg-white p-6">
-                            <div className="flex items-center gap-3">
-                                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-50 ring-1 ring-slate-100">
-                                    <img src={project.logo} alt={`${project.title} logo`} className="h-7 w-7 object-contain" />
-                                </div>
-                                <h3 className="font-display text-lg font-semibold text-slate-900 transition-colors group-hover:text-brand-600">{project.title}</h3>
-                            </div>
-                            <p className="mt-3 text-sm leading-7 text-slate-500">{project.description}</p>
-                            <div className="mt-5 flex flex-wrap gap-2">
-                                {project.tags.map((tag) => (
-                                    <span key={tag} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                            <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5" style={{ color }}>
-                                View project
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3" />
-                                </svg>
-                            </span>
-                        </div>
-                        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100" style={{ background: `radial-gradient(circle at 50% 0%, ${color}10, transparent 65%)` }} />
-                    </motion.a>
-                );
-            })}
-        </div>
-    );
 }
 
 export function ProjectsSection() {
     const ref      = useRef(null);
     const isInView = useInView(ref, { once: true, margin: '-100px' });
     const { t }    = useLocale();
-    const { eyebrow, title, description } = t.landing.projects;
-    const projects: Project[] = projectsData;
-    const isSingle = projects.length === 1;
+    const { eyebrow, title, description, challengeLabel, solutionLabel, visitSite, live } = t.landing.projects;
+    const project: Project = (projectsData as Project[])[0];
 
     return (
         <section ref={ref} id="projects" className="bg-[#f5f6f8] px-6 py-28">
             <div className="mx-auto max-w-6xl">
                 <SectionHeading eyebrow={eyebrow} title={title} description={description} />
-                {isSingle
-                    ? <HeroProjectLayout project={projects[0]} color={projectColors[0]} isInView={isInView} />
-                    : <GridProjectLayout projects={projects} isInView={isInView} />}
+
+                <div className="mt-14 grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+                    {/* Story — leads the hierarchy */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+                        className="flex flex-col gap-6"
+                    >
+                        <h2 className="font-display text-4xl font-bold leading-[1.06] tracking-tight text-slate-900 lg:text-6xl">
+                            {project.title}
+                            <DeliveredPeriod show={isInView} delay={0.3} />
+                        </h2>
+                        <p className="text-lg leading-8 text-slate-500">{project.lede}</p>
+
+                        <div className="space-y-5">
+                            <div>
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{challengeLabel}</p>
+                                <p className="text-base leading-7 text-slate-600">{project.challenge}</p>
+                            </div>
+                            <div>
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{solutionLabel}</p>
+                                <p className="text-base leading-7 text-slate-600">{project.solution}</p>
+                            </div>
+                        </div>
+
+                        <a
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group/cta mt-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-slate-900 transition-all"
+                        >
+                            <span className="border-b border-current pb-0.5 transition-all group-hover/cta:pb-1">{visitSite}</span>
+                            <span className="transition-transform group-hover/cta:translate-x-1">→</span>
+                        </a>
+                    </motion.div>
+
+                    {/* Evidence — supports the story, never leads it */}
+                    <motion.a
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.6, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
+                        whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
+                        className="group relative mx-auto block aspect-[4/3] w-full max-h-[280px] max-w-[440px] overflow-hidden rounded-2xl bg-white ring-1 ring-slate-900/[0.08] soft-shadow lg:mx-0 lg:max-h-none"
+                    >
+                        <img src={project.image} alt={project.title} className="h-full w-full object-contain p-10" />
+
+                        {/* Squared "Live" marker — reachable, not pulsing (only circle on the page is It) */}
+                        <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1.5 backdrop-blur-sm">
+                            <span className="inline-block h-1.5 w-1.5 rounded-[2px] bg-emerald-500" />
+                            <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">{live}</span>
+                        </div>
+                    </motion.a>
+                </div>
+
+                <Whisper text={t.landing.whispers.projects} className="mt-14" />
             </div>
         </section>
     );

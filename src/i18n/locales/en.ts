@@ -2,15 +2,15 @@
 
 export const en: Translations = {
     contact: {
-        title: 'Get In Touch',
-        subtitle: "Let's discuss your project",
-        badge: 'Get In Touch',
+        title: 'Tell us about it',
+        subtitle: 'Three fields and a reply within 24 hours — or the full brief, if you already know the scope.',
+        badge: 'Contact',
         namePlaceholder: 'Your Name',
         emailPlaceholder: 'Your Email',
-        messagePlaceholder: "Tell me about your project, what you need, and when you'd like to launch...",
-        sendButton: 'Send Message',
+        messagePlaceholder: 'What is it? What should it do? When do you need it?',
+        sendButton: 'Send it',
         sending: 'Sending...',
-        success: 'Message sent successfully!',
+        success: "It's on its way.",
         nameLabel: 'Your Name',
         emailLabel: 'Your Email',
         messageLabel: 'Your Message',
@@ -70,8 +70,13 @@ export const en: Translations = {
             back: 'Back',
             nextStep: 'Next step',
             submitProjectRequest: 'Submit project request',
-            submittedWithId: 'Project request submitted successfully. Reference ID:',
+            submittedWithId: "It's on its way. Reference ID:",
         },
+    },
+    notFound: {
+        line: "This isn't it",
+        sub: "The page you're looking for doesn't exist.",
+        back: 'Back to it',
     },
     testimonials: {
         badge: 'Client Stories',
@@ -479,28 +484,60 @@ export const en: Translations = {
                 links: ['Work', 'Services', 'About'],
                 contactButton: 'Get a free quote',
             },
-            badge: 'Available for new projects',
-            headline: {
-                prefix: 'Websites that',
-                highlight: 'work',
-                suffix: 'for your business.',
-            },
-            subtitle: 'We design, build, and launch websites that get your business noticed.',
+            actLabel: 'Act I',
+            line: 'You bring it',
+            sub: 'An idea. A problem. A napkin sketch. Whatever it is — a full-stack application, a custom platform, a website — it starts as yours, and it stays yours.',
             ctas: {
-                primary: 'Get a free quote',
-                secondary: 'See our work →',
-                note: 'Free consultation · No commitment · Quick response',
+                primary: 'Start a project',
+                secondary: 'See the work',
             },
-            cards: [
-                {
-                    title: 'Business websites',
-                    sub: 'Look professional and get found online',
-                },
-                {
-                    title: 'Customer platforms',
-                    sub: "Give your clients a space that's truly yours",
-                },
-            ],
+        },
+        story: {
+            code: {
+                actLabel: 'Act II',
+                line: 'We code it',
+                sub: 'Design and engineering under one roof, until the thing in your head has a name, a shape, and a URL.',
+                scrollCue: 'Keep scrolling',
+                items: [
+                    {
+                        title: 'Full-stack applications',
+                        description:
+                            'Software with a brain and a face: a polished interface in front; your logic, data, and integrations working behind it. One team owns the whole thing, end to end.',
+                        deliverables: ['Web app + API', 'Admin dashboards', 'Integrations'],
+                    },
+                    {
+                        title: 'Custom websites',
+                        description:
+                            "Designed and built from a blank page — no themes, no template smell. Fast, accessible, and shaped around your content instead of someone else's grid.",
+                        deliverables: ['Bespoke design', 'CMS when needed', 'SEO-ready'],
+                    },
+                    {
+                        title: 'Landing pages',
+                        description:
+                            'One page with one job: turning attention into action. Sharp structure, instant loads, and a clear path to the button that matters.',
+                        deliverables: ['Conversion-first', 'A/B-testable', 'Ships in days'],
+                    },
+                    {
+                        title: 'Web platforms',
+                        description:
+                            'The big ones: multi-user products with roles, billing, and workflows — and room to grow. Built to be operated, not just launched.',
+                        deliverables: ['Multi-tenant', 'Roles & billing', 'Built to scale'],
+                    },
+                ],
+            },
+            get: {
+                actLabel: 'Act III',
+                line: 'You get it',
+                sub: 'Deployed, documented, and in your hands. Not rented, not licensed back to you — owned.',
+                cta: 'Get it',
+            },
+        },
+        whispers: {
+            code: '(taking it into the shop)',
+            services: '(it is being scoped)',
+            process: '(it is being built)',
+            projects: '(yours is next)',
+            faq: "(it's ready)",
         },
         stats: {
             labels: ['Projects Delivered', 'Client Satisfaction', 'Happy Clients', 'Years Experience'],
@@ -521,33 +558,34 @@ export const en: Translations = {
                     description: 'Fast, elegant websites for brands that need clarity, speed, and a strong first impression.',
                     features: ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Easy Maintenance'],
                     priceKey: 'marketing.staticStartingPrice',
-                    defaultPrice: '2500',
+                    defaultPrice: '1000',
                 },
                 {
                     title: 'Web Applications',
-                    description: 'Interactive applications with business logic tailored to your needs.',
-                    features: ['All in Static Websites', 'Custom Features', 'User Authentication', 'API Integrations (Optional)'],
+                    description: 'Interactive applications and dashboards that plug into your existing tools and services — no custom backend required.',
+                    features: ['All in Static Websites', 'Interactive UI & Dashboards', 'Managed Authentication', 'Third-Party Integrations'],
                     priceKey: 'marketing.webStartingPrice',
-                    defaultPrice: '5000',
+                    defaultPrice: '3500',
                 },
                 {
                     title: 'Full-Stack Solutions',
-                    description: 'End-to-end systems with backend services, databases, admin tools, and custom integrations.',
-                    features: ['All in Web Applications', 'Database Design', 'Backend API', 'Admin Dashboard'],
+                    description: 'End-to-end systems with a custom-built backend, database, and admin tools — designed and owned by you.',
+                    features: ['All in Web Applications', 'Custom Backend & APIs', 'Database Design', 'Admin Dashboard'],
                     priceKey: 'marketing.fullStartingPrice',
-                    defaultPrice: '12000',
+                    defaultPrice: '10000',
                 },
             ],
         },
         comparison: {
             eyebrow: 'Comparison',
-            title: 'Static brochure site or full-stack application?',
+            title: 'Which tier fits your project?',
             description:
-                'Sometimes the best answer is a focused website. Other times, the right move is a custom platform with backend logic and operational workflows.',
+                'Each tier builds on the one before it — from a focused marketing site to a fully custom platform with its own backend, database, and admin tools.',
             headers: {
                 feature: 'Feature',
-                staticWebsite: 'Static Website',
-                fullStackApplication: 'Full-Stack Application (Custom)',
+                staticWebsite: 'Static',
+                webApplication: 'Web App',
+                fullStackApplication: 'Full-Stack',
             },
             rows: [
                 'Design',
@@ -561,8 +599,11 @@ export const en: Translations = {
             ],
             stackTitle: 'Core stack',
             maintenanceStatic: 'Low (Occasional updates)',
+            maintenanceWeb: 'Medium (Managed services)',
             maintenanceFull: 'Ongoing (updates, scaling)',
-            disclaimer: 'Feature availability and implementation complexity vary depending on project scope. Full-stack applications are custom systems and may include additional components not listed above.'
+            managedLabel: 'Managed',
+            customLabel: 'Custom',
+            disclaimer: 'Feature availability and implementation complexity vary depending on project scope. Full-stack solutions are custom systems and may include additional components not listed above.'
         },
         process: {
             eyebrow: 'Process',
@@ -588,28 +629,13 @@ export const en: Translations = {
             ],
         },
         projects: {
-            eyebrow: 'Projects',
-            title: 'A few examples of what the work can look like',
-            description: 'These are sample case-study style entries that show how the page presents proof of capability without getting noisy.',
-            viewProject: 'View Project',
-            viewAll: 'View All Projects',
-            items: [
-                {
-                    title: 'E-Commerce Platform',
-                    description: 'Online store with payment processing, inventory management, and business analytics.',
-                    tags: ['React', 'Node.js', 'Stripe', 'PostgreSQL'],
-                },
-                {
-                    title: 'Restaurant Booking System',
-                    description: 'Reservation flow with confirmations, calendar updates, and customer notifications.',
-                    tags: ['React', 'Firebase', 'Twilio'],
-                },
-                {
-                    title: 'Healthcare Dashboard',
-                    description: 'Secure operations dashboard built for sensitive data, reporting, and team workflows.',
-                    tags: ['React', 'Node.js', 'MongoDB', 'AWS'],
-                },
-            ],
+            eyebrow: 'Previous It',
+            title: 'One idea, delivered',
+            description: 'A closer look at how a single idea became a finished product — the problem, the approach, and the result.',
+            challengeLabel: 'The Challenge',
+            solutionLabel: 'The Solution',
+            visitSite: 'Visit the live site',
+            live: 'Live',
         },
         testimonials: {
             eyebrow: 'Testimonials',
@@ -668,6 +694,7 @@ export const en: Translations = {
         },
         footer: {
             brandName: 'CodeGetIt',
+            lentDot: '(you have it now.)',
             tagline: 'Building thoughtful web experiences that help teams explain, sell, and operate better online.',
             categories: {
                 services: 'Services',

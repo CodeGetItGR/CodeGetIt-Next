@@ -25,8 +25,17 @@ function readStoredAuth(): AuthState | null {
 }
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-    const [auth, setAuth] = useState<AuthState | null>(() => readStoredAuth());
+    const [auth, setAuth] = useState<AuthState | null>(null);
     const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Hydrate from localStorage on the client only — this runs during SSR
+    // where localStorage is undefined.
+    useEffect(() => {
+        const stored = readStoredAuth();
+        if (stored) {
+            setAuth(stored);
+        }
+    }, []);
 
     const logout = useCallback(() => {
         if (refreshTimeoutRef.current) {

@@ -21,7 +21,6 @@
     --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
 
     /* ─── Animations ─────────────────────────────────────────────────────── */
-    --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
     --animate-blob: blob 7s infinite;
     --animate-float: float 6s ease-in-out infinite;
     --animate-grid-pan: gridPan 22s linear infinite;
@@ -31,11 +30,6 @@
 }
 
 /* ─── Keyframes ─────────────────────────────────────────────────────────────── */
-
-@keyframes spotlight {
-    0%   { opacity: 0; transform: translate(-72%, -62%) skewX(10deg); }
-    100% { opacity: 1; transform: translate(-50%, -40%) skewX(10deg); }
-}
 
 @keyframes blob {
     0%, 100% { transform: translate(0px,  0px)  scale(1);   }
@@ -71,25 +65,15 @@
     100% { transform: translateX(130%);  }
 }
 
+@keyframes deliveredPulse {
+    0%, 100% { transform: scale(1);    }
+    45%       { transform: scale(1.35); }
+}
+
 @keyframes orbitalDrift {
     0%, 100% { transform: translate3d(0,    0,    0) scale(1);    }
     35%       { transform: translate3d(22px, -16px, 0) scale(1.06); }
     70%       { transform: translate3d(-18px, 24px, 0) scale(0.94); }
-}
-
-/* Hero brand mark — the two chevrons orbit on a shared elliptical track, 180° out of phase.
-   translateX sweeps the width, scale fakes depth (near = big), z-index flips at the edges so
-   the near chevron always sits over the far one. Linear timing keeps the loop seamless. */
-@keyframes brandOrbit {
-    0%      { transform: translate(-50%, -50%) translateX(0)                            scale(1.40); z-index: 3; }
-    12.5%   { transform: translate(-50%, -50%) translateX(var(--orbit-x2))              scale(1.26); z-index: 3; }
-    25%     { transform: translate(-50%, -50%) translateX(var(--orbit-x1))              scale(1.00); z-index: 3; }
-    37.5%   { transform: translate(-50%, -50%) translateX(var(--orbit-x2))             scale(0.70); z-index: 1; }
-    50%     { transform: translate(-50%, -50%) translateX(0)                            scale(0.58); z-index: 1; }
-    62.5%   { transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x2)))  scale(0.70); z-index: 1; }
-    75%     { transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x1)))  scale(1.00); z-index: 1; }
-    87.5%   { transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x2)))  scale(1.26); z-index: 3; }
-    100%    { transform: translate(-50%, -50%) translateX(0)                            scale(1.40); z-index: 3; }
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────── */
@@ -127,14 +111,20 @@
     .text-balance { text-wrap: balance; }
     .text-pretty  { text-wrap: pretty;  }
 
-    /* ── Soft, highly-diffused tinted ambient shadows (never harsh black) ── */
+    /* ── Soft, highly-diffused tinted ambient shadows (never harsh black) ──
+       The ring vars must be composed in, or these override Tailwind ring-*
+       utilities (both are box-shadow) and rings silently never render. */
     .soft-shadow {
         box-shadow:
+            var(--tw-ring-offset-shadow, 0 0 #0000),
+            var(--tw-ring-shadow, 0 0 #0000),
             0 1px 2px -1px rgba(15,23,42,0.08),
             0 18px 40px -24px rgba(15,23,42,0.22);
     }
     .soft-shadow-lg {
         box-shadow:
+            var(--tw-ring-offset-shadow, 0 0 #0000),
+            var(--tw-ring-shadow, 0 0 #0000),
             0 2px 4px -2px rgba(15,23,42,0.08),
             0 40px 80px -32px rgba(15,23,42,0.28);
     }
@@ -214,19 +204,19 @@
     .cta-polish:hover { filter: saturate(1.08); }
     .cta-polish:hover::after { animation: ctaSheen 1.05s ease; }
 
-    /* ── Section kicker pill ─────────────────────────────────────────────── */
+    /* ── Section kicker pill — ink, not teal: teal belongs to It ─────────── */
     .section-kicker {
         display: inline-flex;
         align-items: center;
         border-radius: 9999px;
-        border: 1px solid rgba(13,148,136,0.2);
-        background: rgba(13,148,136,0.06);
+        border: 1px solid rgba(15,23,42,0.15);
+        background: transparent;
         padding: 0.35rem 0.85rem;
         font-size: 0.68rem;
         font-weight: 600;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: #0f766e;
+        color: #475569;
         margin-bottom: 1rem;
     }
 
@@ -257,12 +247,16 @@
 
     .lux-shadow {
         box-shadow:
+            var(--tw-ring-offset-shadow, 0 0 #0000),
+            var(--tw-ring-shadow, 0 0 #0000),
             0 1px 3px -1px rgba(15,23,42,0.08),
             0 14px 40px -20px rgba(15,23,42,0.22);
     }
 
     .lux-shadow-lg {
         box-shadow:
+            var(--tw-ring-offset-shadow, 0 0 #0000),
+            var(--tw-ring-shadow, 0 0 #0000),
             0 2px 6px -2px rgba(15,23,42,0.08),
             0 26px 60px -28px rgba(15,23,42,0.28);
     }
@@ -328,44 +322,35 @@
         animation: orbitalDrift 18s ease-in-out infinite;
     }
 
-    /* ── Morphing wordmark (gooey alpha-threshold merge) ────────────────── */
-    .morphing-text {
-        filter: url(#morph-threshold) blur(0.6px);
+    /* ── Act II item titles: drafted → inked → done ─────────────────────────
+       Unread items are drafted outlines; the one the dot serves is inked;
+       items already read recede. "We code it", performed by the type. */
+    .act-title {
+        -webkit-text-stroke: 0.016em transparent;
+        transition:
+            color 0.45s var(--ease-premium),
+            -webkit-text-stroke-color 0.45s var(--ease-premium);
+    }
+    .act-title--draft {
+        color: transparent;
+        -webkit-text-stroke-color: rgba(15, 23, 42, 0.3);
+    }
+    .act-title--active {
+        color: #0f172a;
+        /* inks only after the dot lands — mirrors ACT2.inkDelay in it/beat.ts */
+        transition-delay: 0.28s;
+    }
+    .act-title--done   { color: rgba(100, 116, 139, 0.5); transition-delay: 0s; }
+    @supports not (-webkit-text-stroke: 1px #000) {
+        .act-title--draft { color: rgba(148, 163, 184, 0.65); }
     }
 
-    /* ── Hero brand mark: orbiting chevron pair ─────────────────────────── */
-    .brand-orbit-stage {
-        position: relative;
-        width: 100%;
-        height: clamp(96px, 13vh, 128px);
-        margin-top: clamp(6px, 1.6vh, 18px);
-    }
-    .brand-chev {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        --orbit-x1: clamp(80px, 10vw, 152px);
-        --orbit-x2: calc(var(--orbit-x1) * 0.707);
-        will-change: transform;
-    }
-    .brand-chev svg {
-        display: block;
-        height: clamp(42px, 6vh, 60px);
-        width: auto;
-    }
-    .brand-chev--teal {
-        transform: translate(-50%, -50%) translateX(calc(-1 * var(--orbit-x1))) scale(1);
-        animation: brandOrbit 16s linear infinite;
-    }
-    .brand-chev--orange {
-        transform: translate(-50%, -50%) translateX(var(--orbit-x1)) scale(1);
-        animation: brandOrbit 16s linear infinite;
-        animation-delay: -8s;
+    /* ── Delivered periods: the single hover pulse, re-armed per hover ──────
+       The pop-in is Framer-driven; the pulse is pure CSS so it can't loop. */
+    .group:hover .delivered-period {
+        animation: deliveredPulse 0.36s var(--ease-premium) 1;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-        .brand-chev { animation: none; }
-    }
 }
 
 @theme inline {
