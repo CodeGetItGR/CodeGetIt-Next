@@ -70,15 +70,24 @@ The `service-N` id namespace is owned and parsed by `ServicesSection` itself
 (see below) — the provider stays fully generic with no notion of "groups", so
 any future section can adopt the same primitive for its own ids.
 
+**Memoization** — following `ContactRequestProvider`'s existing pattern:
+`scrollToSection` (and the hash-sync internals it shares) are wrapped in
+`useCallback`, and the context `value` object is wrapped in `useMemo`, so
+`highlightedId`/`scrollToSection` stay referentially stable for consumers
+across unrelated re-renders.
+
 ### 3. Wiring it up
 
 - **`FooterSection`** — services link group gets both:
   - `href="#service-{index}"` (real anchor: deep-linkable, shareable, works
     without JS), **and**
-  - `onClick={() => scrollToSection('service-{index}')}` (no
-    `preventDefault`) — re-runs the scroll+highlight even when the hash
-    doesn't change (e.g. clicking the same footer link twice in a row), which
-    the native anchor alone can't do.
+  - an `onClick` (no `preventDefault`) that re-runs the scroll+highlight even
+    when the hash doesn't change (e.g. clicking the same footer link twice in
+    a row), which the native anchor alone can't do. Following the
+    `handleGetStarted` pattern already in `ServicesSection`, this is a single
+    `useCallback`'d `handleServiceLinkClick(index: number)` (deps:
+    `scrollToSection`) called from a small per-item arrow in `.map()` —
+    `onClick={() => handleServiceLinkClick(i)}`.
 - **`ServicesSection`** — each card gets `id={`service-${index}`}` +
   `scroll-mt-*`. Reads `highlightedId` from `useScrollHighlight()` and derives:
   - `spotlightIndex` = the numeric index if `highlightedId` matches
