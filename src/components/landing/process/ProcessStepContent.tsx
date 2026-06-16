@@ -16,7 +16,7 @@ interface ProcessStepContentProps {
 
 export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badges }: ProcessStepContentProps) {
     const ref = useRef(null);
-    const inView = useInView(ref, { amount: 0.5 });
+    const inView = useInView(ref, { amount: 0.15 });
     const reduced = useReducedMotion();
     const active = reduced ? true : inView;
 

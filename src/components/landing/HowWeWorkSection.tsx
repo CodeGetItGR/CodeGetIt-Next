@@ -23,13 +23,22 @@ export function HowWeWorkSection() {
     const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     useEffect(() => {
-        const compute = (p: number) => {
-            const next = Math.min(process.steps.length - 1, Math.max(0, Math.floor(p * process.steps.length)));
+        const update = () => {
+            const trigger = window.innerHeight * 0.4;
+            let next = 0;
+            for (let i = contentRefs.current.length - 1; i >= 0; i--) {
+                const el = contentRefs.current[i];
+                if (el && el.getBoundingClientRect().top <= trigger) {
+                    next = i;
+                    break;
+                }
+            }
             setActiveIndex(next);
         };
-        compute(scrollYProgress.get());
-        return scrollYProgress.on('change', compute);
-    }, [scrollYProgress, process.steps.length]);
+        window.addEventListener('scroll', update, { passive: true });
+        update();
+        return () => window.removeEventListener('scroll', update);
+    }, []);
 
     const handleStepClick = (index: number) => {
         contentRefs.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -65,7 +74,7 @@ export function HowWeWorkSection() {
                     </div>
 
                     {/* Right column: one detail block per step */}
-                    <div className="mt-12 flex flex-col gap-28 lg:col-span-8 lg:mt-0">
+                    <div className="mt-12 flex flex-col gap-y-[clamp(6rem,22vh,14rem)] lg:col-span-8 lg:mt-0">
                         {process.steps.map((step, index) => (
                             <div key={step.title} ref={(el) => { contentRefs.current[index] = el; }}>
                                 <ProcessStepContent
