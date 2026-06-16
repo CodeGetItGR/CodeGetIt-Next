@@ -65,16 +65,11 @@ export function HowWeWorkSection() {
                     </div>
 
                     {/* Right column: one detail block per step */}
-                    <div className="mt-12 flex flex-col gap-12 lg:col-span-8 lg:mt-0">
+                    <div className="mt-12 flex flex-col gap-28 lg:col-span-8 lg:mt-0">
                         {process.steps.map((step, index) => (
-                            <div
-                                key={step.title}
-                                ref={(el) => { contentRefs.current[index] = el; }}
-                                className="lg:flex lg:min-h-[70vh] lg:flex-col lg:justify-center"
-                            >
+                            <div key={step.title} ref={(el) => { contentRefs.current[index] = el; }}>
                                 <ProcessStepContent
                                     step={step}
-                                    isActive={reduced ? true : index === activeIndex}
                                     deliverablesLabel={process.deliverablesLabel}
                                     outcomeLabel={process.outcomeLabel}
                                     badges={process.badges}

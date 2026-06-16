@@ -542,10 +542,20 @@ export const en: Translations = {
             title: 'Choose the right build for the job',
             description:
                 'From streamlined marketing sites to full-scale web applications, we design and build solutions tailored to what actually moves your business forward.  Each tier builds on the previous one, unlocking more capability and business impact.',
-            featured: 'Most Popular',
+            featured: 'Most requested',
             getStarted: 'Get Started',
-            priceDisclaimer: 'Final price is indicative and may adjust based on selected features and technical requirements.',
-            timeEstimateDisclaimer: 'Final estimate is indicative and will be refined after discovery, scope clarification, current workload and technical assessment.',
+            priceDisclaimer: 'These are honest starting points — not fixed quotes. Every project is scoped in a brief discovery call, so the number you pay reflects what you actually need.',
+            timeEstimateDisclaimer: 'Timelines are refined after discovery, scope clarification, and an assessment of technical complexity and current availability.',
+            pricingFactorsLabel: 'What shapes the final number',
+            pricingFactors: [
+                { label: 'Scope & features', description: 'More screens, user flows, and functionality add design and build time.' },
+                { label: 'Design complexity', description: 'Custom motion, illustration, and branding systems require more craft time.' },
+                { label: 'Integrations', description: 'Payment systems, APIs, and third-party services each add coordination overhead.' },
+                { label: 'Timeline', description: 'Compressed delivery windows require dedicated focus and can affect scheduling.' },
+                { label: 'Content volume', description: 'More pages, languages, or content types affect build and QA scope.' },
+                { label: 'Tech stack', description: 'Specific platforms, constraints, or legacy systems shape architecture decisions.' },
+                { label: 'Post-launch support', description: 'Maintenance, monitoring, and updates are scoped separately per project.' },
+            ],
             items: [
                 {
                     title: 'Static Websites',

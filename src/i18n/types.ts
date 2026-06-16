@@ -143,7 +143,9 @@ export interface Translations {
             featured: string;
             getStarted: string;
             priceDisclaimer: string;
-            timeEstimateDisclaimer:string;
+            timeEstimateDisclaimer: string;
+            pricingFactorsLabel: string;
+            pricingFactors: Array<{ label: string; description: string }>;
             items: Array<{
                 title: string;
                 description: string;

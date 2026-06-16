@@ -57,6 +57,23 @@ const featureMatrix = [
 
 const serviceTimelines = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
 
+const FACTOR_ICONS = [
+    // Scope & features
+    <svg key="scope" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
+    // Design complexity
+    <svg key="design" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
+    // Integrations
+    <svg key="integrations" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
+    // Timeline
+    <svg key="timeline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    // Content volume
+    <svg key="content" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    // Tech stack
+    <svg key="tech" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+    // Post-launch support
+    <svg key="support" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+];
+
 // Middle card (index 1) is the recommended / highlighted tier
 const RECOMMENDED_INDEX = 1;
 
@@ -144,7 +161,7 @@ export function ServicesSection() {
                                 {/* Recommended badge */}
                                 {isRecommended && (
                                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-slate-900 px-4 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
-                                        Most popular
+                                        {services.featured}
                                     </div>
                                 )}
 
@@ -205,9 +222,6 @@ export function ServicesSection() {
                                         <p className="mt-1 text-xs text-slate-400">
                                             Estimated timeline: {serviceTimelines[index]}
                                         </p>
-                                        <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
-                                            {t.landing.services.timeEstimateDisclaimer}
-                                        </p>
 
                                         <button
                                             type="button"
@@ -236,6 +250,34 @@ export function ServicesSection() {
                             </motion.article>
                         );
                     })}
+                </div>
+
+                {/* Pricing context — factors + reassurance */}
+                <div className="mt-10 rounded-2xl bg-white px-8 py-8 shadow-[0_4px_24px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/[0.08]">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                        {services.pricingFactorsLabel}
+                    </p>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                        {services.priceDisclaimer}
+                    </p>
+
+                    <div className="mt-7 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-slate-100 pt-7 sm:grid-cols-2 lg:grid-cols-3">
+                        {services.pricingFactors.map((factor, i) => (
+                            <div key={factor.label} className="flex gap-3.5">
+                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                                    {FACTOR_ICONS[i]}
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-slate-800">{factor.label}</p>
+                                    <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{factor.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <p className="mt-7 border-t border-slate-100 pt-5 text-xs leading-5 text-slate-400">
+                        {services.timeEstimateDisclaimer}
+                    </p>
                 </div>
 
                 <Whisper text={t.landing.whispers.services} className="mt-14" />

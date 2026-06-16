@@ -1,52 +1,95 @@
+'use client'
+
+import { useRef } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import type { Translations } from '@/i18n/types';
-import { cn } from '@/lib/utils';
 import { ProjectTypeBadge } from './ProjectTypeBadge';
+
+const EASE = [0.32, 0.72, 0, 1] as const;
 
 interface ProcessStepContentProps {
     step: Translations['landing']['process']['steps'][number];
-    isActive: boolean;
     deliverablesLabel: string;
     outcomeLabel: string;
     badges: Translations['landing']['process']['badges'];
 }
 
-export function ProcessStepContent({ step, isActive, deliverablesLabel, outcomeLabel, badges }: ProcessStepContentProps) {
+export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badges }: ProcessStepContentProps) {
+    const ref = useRef(null);
+    const inView = useInView(ref, { amount: 0.5 });
+    const reduced = useReducedMotion();
+    const active = reduced ? true : inView;
+
+    const fadeUp = (delay: number) => ({
+        initial: reduced ? false : { opacity: 0, y: 14 },
+        animate: { opacity: active ? 1 : 0, y: active ? 0 : 14 },
+        transition: { duration: reduced ? 0 : 0.45, ease: EASE, delay: reduced ? 0 : delay },
+    });
+
     return (
-        <div
-            className={cn(
-                'rounded-[1.25rem] p-[6px] ring-1 ring-slate-900/[0.06] soft-shadow transition-all duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
-                isActive ? 'translate-y-0 opacity-100' : 'translate-y-1.5 opacity-40',
-            )}
-        >
-            <div className="rounded-[calc(1.25rem-6px)] bg-white p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] sm:p-8">
-                <h3 className="font-display text-xl font-semibold text-slate-900">{step.title}</h3>
-                <p className="mt-2.5 text-sm leading-7 text-slate-500">{step.description}</p>
+        <div ref={ref} className="max-w-[460px]">
+            <motion.h3 {...fadeUp(0)} className="font-display text-2xl font-semibold text-slate-900">
+                {step.title}
+            </motion.h3>
+            <motion.p {...fadeUp(0.07)} className="mt-3 text-sm leading-7 text-slate-500">
+                {step.description}
+            </motion.p>
 
-                <h4 className="mt-6 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
-                    {deliverablesLabel}
-                </h4>
-                <ul className="mt-3 space-y-2.5">
-                    {step.deliverables.map((deliverable) => (
-                        <li key={deliverable.label} className="flex items-center gap-2.5 text-sm text-slate-600">
-                            {/* square ink tick — a filled circle would counterfeit It */}
-                            <span className="h-[5px] w-[5px] shrink-0 bg-slate-300" />
-                            <span>{deliverable.label}</span>
-                            {deliverable.badge && (
-                                <ProjectTypeBadge
-                                    label={badges[deliverable.badge].label}
-                                    description={badges[deliverable.badge].description}
-                                    className="ml-auto"
-                                />
-                            )}
-                        </li>
-                    ))}
-                </ul>
+            <motion.h4 {...fadeUp(0.14)} className="mt-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                {deliverablesLabel}
+            </motion.h4>
+            <ul className="mt-3.5 space-y-2.5">
+                {step.deliverables.map((deliverable, index) => (
+                    <motion.li key={deliverable.label} {...fadeUp(0.19 + index * 0.05)} className="flex items-center gap-2.5 text-sm text-slate-600">
+                        {/* square ink tick — a filled circle would counterfeit It */}
+                        <span className="h-[5px] w-[5px] shrink-0 bg-slate-300" />
+                        <span>{deliverable.label}</span>
+                        {deliverable.badge && (
+                            <ProjectTypeBadge
+                                label={badges[deliverable.badge].label}
+                                description={badges[deliverable.badge].description}
+                                className="ml-auto"
+                            />
+                        )}
+                    </motion.li>
+                ))}
+            </ul>
 
-                <p className="mt-6 border-t border-slate-900/[0.06] pt-4 text-sm text-slate-900">
-                    <span className="font-semibold text-slate-400">{outcomeLabel}: </span>
-                    {step.outcome}
-                </p>
+            {/* "It" travels left-to-right, drawing the rule behind it, then settles as the Outcome's period */}
+            <div className="relative mt-6 mb-3.5 h-2">
+                <motion.span
+                    className="absolute top-1/2 left-0 h-px w-full origin-left -translate-y-1/2 bg-slate-900/[0.14]"
+                    initial={reduced ? false : { scaleX: 0 }}
+                    animate={{ scaleX: active ? 1 : 0 }}
+                    transition={{ duration: reduced ? 0 : 0.8, ease: EASE, delay: reduced ? 0 : 0.47 }}
+                />
+                <motion.span
+                    className="absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600"
+                    initial={reduced ? false : { left: '0%', opacity: 0, scale: 0.4, boxShadow: '0 0 0 0 rgba(13,148,136,0)' }}
+                    animate={active
+                        ? { left: '100%', opacity: 1, scale: 1, boxShadow: '0 0 0 4px rgba(13,148,136,0.12)' }
+                        : { left: '0%', opacity: 0, scale: 0.4, boxShadow: '0 0 0 0 rgba(13,148,136,0)' }}
+                    transition={reduced ? { duration: 0 } : {
+                        left: { duration: 0.8, ease: EASE, delay: 0.47 },
+                        opacity: { duration: 0.25, delay: 0.47 },
+                        scale: { duration: 0.25, delay: 0.47 },
+                        boxShadow: { duration: 0.4, delay: 1.27 },
+                    }}
+                />
             </div>
+            <motion.p
+                initial={reduced ? false : { opacity: 0, y: 14, color: '#94a3b8' }}
+                animate={{ opacity: active ? 1 : 0, y: active ? 0 : 14, color: active ? '#0f172a' : '#94a3b8' }}
+                transition={reduced ? { duration: 0 } : {
+                    opacity: { duration: 0.45, ease: EASE, delay: 0.47 },
+                    y: { duration: 0.45, ease: EASE, delay: 0.47 },
+                    color: { duration: 0.4, delay: 1.27 },
+                }}
+                className="text-sm leading-7"
+            >
+                <span className="font-semibold text-slate-400">{outcomeLabel}: </span>
+                {step.outcome}
+            </motion.p>
         </div>
     );
 }
