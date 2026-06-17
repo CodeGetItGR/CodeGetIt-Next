@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, useInView, useReducedMotion, useScroll, useSpring } from 'framer-motion';
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import { Whisper } from './it';
 import { ProcessStepContent, ProcessTimeline, ProjectTypeBadge } from './process';
+import { cn } from '@/lib/utils';
 
 export function HowWeWorkSection() {
     const ref      = useRef(null);
@@ -20,6 +21,7 @@ export function HowWeWorkSection() {
     const fillProgress = reduced ? scrollYProgress : springProgress;
 
     const [activeIndex, setActiveIndex] = useState(0);
+    const [inSection, setInSection]     = useState(false);
     const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     useEffect(() => {
@@ -34,6 +36,14 @@ export function HowWeWorkSection() {
                 }
             }
             setActiveIndex(next);
+
+            const first = contentRefs.current[0];
+            const last  = contentRefs.current[contentRefs.current.length - 1];
+            if (first && last) {
+                const firstTop    = first.getBoundingClientRect().top;
+                const lastBottom  = last.getBoundingClientRect().bottom;
+                setInSection(firstTop < window.innerHeight * 0.9 && lastBottom > window.innerHeight * 0.15);
+            }
         };
         window.addEventListener('scroll', update, { passive: true });
         update();
@@ -63,8 +73,8 @@ export function HowWeWorkSection() {
                 </div>
 
                 <div ref={sectionRef} className="mt-16 lg:grid lg:grid-cols-12 lg:gap-12">
-                    {/* Left column: sticky step timeline. On mobile this sits in normal flow above the content stack. */}
-                    <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+                    {/* Left column: sticky step timeline — hidden on mobile where the floating pill takes over */}
+                    <div className="hidden lg:sticky lg:top-28 lg:col-span-4 lg:block lg:self-start">
                         <ProcessTimeline
                             steps={process.steps}
                             activeIndex={activeIndex}
@@ -90,6 +100,43 @@ export function HowWeWorkSection() {
 
                 <Whisper text={t.landing.whispers.process} className="mt-14" />
             </div>
+
+            {/* Floating step navigator — mobile only, appears while scrolling through step content */}
+            <AnimatePresence>
+                {inSection && (
+                    <motion.div
+                        key="mobile-step-nav"
+                        className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 lg:hidden"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 16 }}
+                        transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                    >
+                        <div className="flex items-center gap-1 rounded-full bg-slate-900 px-3 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
+                            {process.steps.map((step, i) => (
+                                <button
+                                    key={step.title}
+                                    type="button"
+                                    onClick={() => handleStepClick(i)}
+                                    aria-label={step.title}
+                                    className={cn(
+                                        'flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold transition-colors duration-200',
+                                        i === activeIndex
+                                            ? 'bg-white text-slate-900'
+                                            : 'text-slate-500 hover:text-slate-300',
+                                    )}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <span className="mx-2 h-4 w-px bg-white/20" aria-hidden="true" />
+                            <span className="max-w-[140px] truncate pr-2 text-xs font-medium text-white/80">
+                                {process.steps[activeIndex]?.title}
+                            </span>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
 }

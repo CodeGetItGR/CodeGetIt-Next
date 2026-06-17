@@ -139,8 +139,19 @@ export function Navbar() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.28 }}
-                        className="fixed inset-0 -z-0 flex flex-col justify-center bg-white/85 px-8 backdrop-blur-2xl md:hidden"
+                        className="fixed inset-0 z-40 flex flex-col justify-center bg-white/65 px-8 backdrop-blur-xl md:hidden"
                     >
+                        {/* Close button — top-right, always reachable */}
+                        <button
+                            onClick={() => setMobileOpen(false)}
+                            aria-label="Close menu"
+                            className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+
                         <motion.nav
                             initial="hidden"
                             animate="visible"

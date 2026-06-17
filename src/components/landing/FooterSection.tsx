@@ -31,7 +31,7 @@ export function FooterSection() {
     const links = [
         { id: 'services' as const,  category: footer.categories.services,   items: footer.links.services   },
         // { id: 'company' as const,    category: footer.categories.company,    items: footer.links.company    },
-        { id: 'resources' as const, category: footer.categories.resources,  items: footer.links.resources  },
+        // { id: 'resources' as const, category: footer.categories.resources,  items: footer.links.resources  },
     ];
 
     const handleServiceLinkClick = useCallback(
@@ -63,7 +63,7 @@ export function FooterSection() {
                             <Logo variant="mark" className="h-5 w-auto" />
                             <span className="font-display text-lg font-semibold tracking-tight text-slate-900">{footer.brandName}</span>
                         </div>
-                        <p className="mt-4 max-w-55 text-sm leading-7 text-slate-500">{footer.tagline}</p>
+                        {/*<p className="mt-4 max-w-55 text-sm leading-7 text-slate-500">{footer.tagline}</p>*/}
                         <div className="mt-5 flex gap-2">
                             {socialLinks.map(({ Icon, href, label }) => (
                                 <a
@@ -76,6 +76,27 @@ export function FooterSection() {
                                 </a>
                             ))}
                         </div>
+                    </div>
+
+                    {/* Page navigation col */}
+                    <div>
+                        <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Navigate</h4>
+                        <ul className="mt-4 space-y-2.5">
+                            {[
+                                { label: 'Services', href: '#services' },
+                                { label: 'Compare',  href: '#compare'  },
+                                { label: 'Process',  href: '#process'  },
+                                { label: 'Work',     href: '#projects' },
+                                { label: 'FAQ',      href: '#faq'      },
+                                { label: 'Contact',  href: '#contact'  },
+                            ].map(({ label, href }) => (
+                                <li key={label}>
+                                    <a href={href} className="text-sm text-slate-500 transition-colors hover:text-slate-900">
+                                        {label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
 
                     {/* Link cols */}
