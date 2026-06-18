@@ -160,7 +160,7 @@ export function ServicesSection() {
                             >
                                 {/* Recommended badge */}
                                 {isRecommended && (
-                                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-slate-900 px-4 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
+                                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-amber-50 px-4 py-1 text-[11px] font-semibold tracking-wide text-amber-700 ring-1 ring-amber-200 shadow-sm">
                                         {services.featured}
                                     </div>
                                 )}

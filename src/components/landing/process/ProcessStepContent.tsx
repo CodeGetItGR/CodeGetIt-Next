@@ -64,11 +64,11 @@ export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badg
                     transition={{ duration: reduced ? 0 : 0.8, ease: EASE, delay: reduced ? 0 : 0.47 }}
                 />
                 <motion.span
-                    className="absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600"
-                    initial={reduced ? false : { left: '0%', opacity: 0, scale: 0.4, boxShadow: '0 0 0 0 rgba(13,148,136,0)' }}
+                    className="absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500"
+                    initial={reduced ? false : { left: '0%', opacity: 0, scale: 0.4, boxShadow: '0 0 0 0 rgba(245,158,11,0)' }}
                     animate={active
-                        ? { left: '100%', opacity: 1, scale: 1, boxShadow: '0 0 0 4px rgba(13,148,136,0.12)' }
-                        : { left: '0%', opacity: 0, scale: 0.4, boxShadow: '0 0 0 0 rgba(13,148,136,0)' }}
+                        ? { left: '100%', opacity: 1, scale: 1, boxShadow: '0 0 0 4px rgba(245,158,11,0.18)' }
+                        : { left: '0%', opacity: 0, scale: 0.4, boxShadow: '0 0 0 0 rgba(245,158,11,0)' }}
                     transition={reduced ? { duration: 0 } : {
                         left: { duration: 0.8, ease: EASE, delay: 0.47 },
                         opacity: { duration: 0.25, delay: 0.47 },

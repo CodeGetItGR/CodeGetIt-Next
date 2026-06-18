@@ -122,7 +122,7 @@ export function HowWeWorkSection() {
                                     className={cn(
                                         'flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold transition-colors duration-200',
                                         i === activeIndex
-                                            ? 'bg-white text-slate-900'
+                                            ? 'bg-brand-500 text-white'
                                             : 'text-slate-500 hover:text-slate-300',
                                     )}
                                 >
