@@ -18,7 +18,7 @@ export function Whisper({ text, className }: { text: string; className?: string 
     <motion.p
       {...fadeRiseInView(0, reduced)}
       aria-hidden
-      className={cn('text-sm italic text-slate-400', className)}
+      className={cn('text-sm italic text-brand-600/55', className)}
     >
       {text}
     </motion.p>

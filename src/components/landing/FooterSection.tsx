@@ -70,7 +70,7 @@ export function FooterSection() {
                                     key={label}
                                     href={href}
                                     aria-label={label}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/8 text-slate-500 transition-all duration-200 hover:bg-slate-900 hover:text-white hover:ring-slate-900"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/8 text-slate-500 transition-all duration-200 hover:bg-brand-600 hover:text-white hover:ring-brand-600"
                                 >
                                     <Icon />
                                 </a>
@@ -83,6 +83,7 @@ export function FooterSection() {
                         <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Navigate</h4>
                         <ul className="mt-4 space-y-2.5">
                             {[
+                                {label:'Build', href: '#build'},
                                 { label: 'Services', href: '#services' },
                                 { label: 'Compare',  href: '#compare'  },
                                 { label: 'Process',  href: '#process'  },

@@ -445,6 +445,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
   return (
     <section
       ref={trackRef}
+      id="build"
       className="relative"
       style={{ height: `calc(100vh + ${trackVh}vh)` }}
     >
@@ -534,7 +535,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
 /** Reduced motion: no pin, no traveler — the story survives as punctuation. */
 function StaticActCode({ copy }: { copy: CodeCopy }) {
   return (
-    <section className="relative py-28 lg:py-36">
+    <section id="build" className="relative py-28 lg:py-36">
       <div className="mx-auto w-full max-w-6xl px-6 lg:px-10">
         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">{copy.actLabel}</p>
         <ActLine text={copy.line} restId="act-code" className="mt-5 text-[clamp(2.5rem,7vw,5rem)] leading-[1.02]" />

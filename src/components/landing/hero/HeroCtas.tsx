@@ -63,9 +63,9 @@ export function HeroCtas({ copy }: HeroCtasProps) {
         className={cn(
           'group cta-polish',
           'inline-flex cursor-pointer items-center gap-2 rounded-full border-none',
-          'bg-slate-900 py-2.5 pr-2 pl-5 no-underline',
+          'bg-brand-600 py-2.5 pr-2 pl-5 no-underline',
           'text-[15px] font-semibold tracking-[-0.01em] text-white',
-          'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-slate-800 active:scale-[0.98]',
+          'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-brand-700 active:scale-[0.98]',
         )}
       >
         <Socket />

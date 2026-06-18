@@ -58,7 +58,7 @@ interface FieldProps {
 }
 
 const fieldShellClass =
-    'w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-lg text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-slate-400 focus:outline-none focus:ring-0';
+    'w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-lg text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20';
 
 const Field = ({ label, placeholder, value, onChange, error, type = 'text', required }: FieldProps) => (
     <div>
@@ -278,7 +278,7 @@ export const ContactForm = ({
                         <button
                             type="button"
                             onClick={onNextStep}
-                            className="cursor-pointer rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                            className="cursor-pointer rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
                         >
                             {detailedCopy.nextStep}
                         </button>
@@ -286,7 +286,7 @@ export const ContactForm = ({
                         <MagneticButton
                             type="submit"
                             disabled={isSubmitting}
-                            className="cta-polish group inline-flex cursor-pointer items-center gap-3 rounded-full bg-slate-900 px-8 py-4 text-base font-semibold text-white transition-colors duration-300 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="cta-polish group inline-flex cursor-pointer items-center gap-3 rounded-full bg-brand-600 px-8 py-4 text-base font-semibold text-white transition-colors duration-300 hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {/* The socket stays mounted through submit so the flight can launch from it */}
                             <span ref={socketRef} className="relative inline-flex h-1.5 w-1.5 shrink-0">

@@ -64,7 +64,7 @@ export function StatsBar() {
                         custom={index * 0.08}
                         className="text-center"
                     >
-                        <div className="text-4xl font-black text-cyan-300 md:text-5xl">
+                        <div className="text-4xl font-black text-brand-400 md:text-5xl">
                             {isInView ? <AnimatedCounter end={stat.value} suffix={stat.suffix} /> : '0'}
                         </div>
                         <div className="mt-2 text-sm text-slate-300 md:text-base">{stat.label}</div>

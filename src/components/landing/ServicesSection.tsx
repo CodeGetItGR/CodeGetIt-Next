@@ -168,7 +168,7 @@ export function ServicesSection() {
                                 {/* Inner core */}
                                 <div className={cn(
                                     'flex flex-1 flex-col rounded-[calc(1.5rem-6px)] p-7',
-                                    isRecommended ? 'bg-slate-900/[0.02]' : 'bg-white',
+                                    isRecommended ? 'bg-brand-600/[0.04]' : 'bg-white',
                                     'shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
                                 )}>
                                     {/* Icon */}
@@ -201,7 +201,7 @@ export function ServicesSection() {
                                                     <div className={cn(
                                                         // square ink tick — a filled circle would counterfeit It
                                                         'mt-1.5 h-[5px] w-[5px] shrink-0 transition-all duration-300',
-                                                        isActive ? 'scale-125 bg-slate-900' : 'bg-slate-300'
+                                                        isActive ? 'scale-125 bg-brand-600' : 'bg-slate-300'
                                                     )} />
                                                     <span>{feature}</span>
                                                     {lockedFeature === feature && (
@@ -230,7 +230,7 @@ export function ServicesSection() {
                                                 'group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold',
                                                 'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]',
                                                 isRecommended
-                                                    ? 'bg-slate-900 text-white hover:bg-slate-800'
+                                                    ? 'bg-brand-600 text-white hover:bg-brand-700'
                                                     : 'bg-slate-100 text-slate-800 hover:bg-slate-200',
                                             )}
                                         >

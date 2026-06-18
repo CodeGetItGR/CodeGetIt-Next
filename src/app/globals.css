@@ -204,10 +204,11 @@
     .cta-polish:hover { filter: saturate(1.08); }
     .cta-polish:hover::after { animation: ctaSheen 1.05s ease; }
 
-    /* ── Section kicker pill — ink, not teal: teal belongs to It ─────────── */
+    /* ── Section kicker pill — ink body, teal dot accent ────────────────── */
     .section-kicker {
         display: inline-flex;
         align-items: center;
+        gap: 0.45rem;
         border-radius: 9999px;
         border: 1px solid rgba(15,23,42,0.15);
         background: transparent;
@@ -218,6 +219,20 @@
         text-transform: uppercase;
         color: #475569;
         margin-bottom: 1rem;
+    }
+    .section-kicker::before {
+        content: '';
+        display: block;
+        width: 5px;
+        height: 5px;
+        border-radius: 9999px;
+        background-color: #0d9488;
+        flex-shrink: 0;
+    }
+
+    /* ── Ambient golden wash — for the closing CTA section ───────────────── */
+    .ambient-gold {
+        background-image: radial-gradient(65% 55% at 50% 50%, rgba(245,158,11,0.07) 0%, transparent 72%);
     }
 
     /* ── Section heading scale ───────────────────────────────────────────── */
@@ -340,7 +355,7 @@
         /* inks only after the dot lands — mirrors ACT2.inkDelay in it/beat.ts */
         transition-delay: 0.28s;
     }
-    .act-title--done   { color: rgba(100, 116, 139, 0.5); transition-delay: 0s; }
+    .act-title--done   { color: rgba(13, 148, 136, 0.38); transition-delay: 0s; }
     @supports not (-webkit-text-stroke: 1px #000) {
         .act-title--draft { color: rgba(148, 163, 184, 0.65); }
     }

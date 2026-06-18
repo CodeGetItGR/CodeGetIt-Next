@@ -8,8 +8,9 @@ import { DotlessWordmark, Socket } from './it';
 import { Logo } from './Logo';
 
 const links = [
+    { label: 'Build',    href: '#build',    id: 'build'    },
     { label: 'Services', href: '#services', id: 'services' },
-    { label: 'Compare', href: '#compare',   id: 'compare'  },
+    { label: 'Compare',  href: '#compare',  id: 'compare'  },
     { label: 'Process',  href: '#process',  id: 'process'  },
     { label: 'Work',     href: '#projects', id: 'projects' },
     { label: 'FAQ',      href: '#faq',      id: 'faq'      },
@@ -94,7 +95,7 @@ export function Navbar() {
                                 {isActive && (
                                     <motion.span
                                         layoutId="nav-active"
-                                        className="absolute inset-0 -z-10 rounded-full bg-slate-900/[0.05] ring-1 ring-slate-900/10"
+                                        className="absolute inset-0 -z-10 rounded-full bg-brand-600/[0.08] ring-1 ring-brand-600/20"
                                         transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                                     />
                                 )}
@@ -107,7 +108,7 @@ export function Navbar() {
                 {/* Desktop CTA — button-in-button pill */}
                 <a
                     href="#contact"
-                    className="group hidden items-center gap-2 rounded-full bg-slate-900 py-2 pr-2 pl-4 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-slate-800 active:scale-[0.98] md:inline-flex"
+                    className="group hidden items-center gap-2 rounded-full bg-brand-600 py-2 pr-2 pl-4 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-brand-700 active:scale-[0.98] md:inline-flex"
                 >
                     <Socket />
                     Get a Quote
@@ -182,7 +183,7 @@ export function Navbar() {
                                     visible: { opacity: 1, y: 0  },
                                 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-                                className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white"
+                                className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-brand-600 px-6 py-3 text-base font-semibold text-white"
                             >
                                 Get a Quote
                             </motion.a>

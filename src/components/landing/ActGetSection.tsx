@@ -18,7 +18,7 @@ export function ActGetSection() {
   const { pulse } = useIt();
 
   return (
-    <section className="relative py-28 lg:py-40">
+    <section className="relative py-28 lg:py-40 ambient-gold">
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center px-6 text-center lg:px-10">
         <motion.p
           {...fadeRiseInView(0, reduced)}
@@ -44,7 +44,7 @@ export function ActGetSection() {
           <a
             href="#contact"
             onMouseEnter={() => pulse('act-get-cta')}
-            className="group inline-flex cursor-pointer items-center gap-3 rounded-full bg-slate-900 py-4 pl-6 pr-8 text-[17px] font-semibold tracking-[-0.01em] text-white no-underline transition-colors duration-300 hover:bg-slate-800"
+            className="group inline-flex cursor-pointer items-center gap-3 rounded-full bg-brand-600 py-4 pl-6 pr-8 text-[17px] font-semibold tracking-[-0.01em] text-white no-underline transition-colors duration-300 hover:bg-brand-700"
           >
             {/* The dock — the journey ends in your hands */}
             <ItRest id="act-get-cta" className="h-2.5 w-2.5" />
