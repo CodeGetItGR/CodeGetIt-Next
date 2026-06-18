@@ -70,6 +70,9 @@ export default function SettingsPage(){
             'marketing.staticStartingPrice': labels.pricing.staticStartingPrice,
             'marketing.webStartingPrice': labels.pricing.webStartingPrice,
             'marketing.fullStartingPrice': labels.pricing.fullStartingPrice,
+            'marketing.staticDiscount': labels.pricing.staticDiscount,
+            'marketing.webDiscount': labels.pricing.webDiscount,
+            'marketing.fullDiscount': labels.pricing.fullDiscount,
         };
 
         return BASE_DEFINITIONS.map((definition) => ({
@@ -97,6 +100,12 @@ export default function SettingsPage(){
         [deferredSearchValue, localizedDefinitions]
     );
 
+    const pricingPairs = useMemo(() => {
+        const prices    = pricingDefinitions.filter((d) => d.control !== 'percent');
+        const discounts = pricingDefinitions.filter((d) => d.control === 'percent');
+        return prices.map((price, i) => ({ price, discount: discounts[i] ?? null }));
+    }, [pricingDefinitions]);
+
     const configurableOptionGroups = useMemo(
         () => (optionsQuery.data?.groups ?? []).filter((group) => group.configurable && optionGroupMatchesQuery(group, deferredSearchValue)),
         [deferredSearchValue, optionsQuery.data?.groups]
@@ -116,7 +125,7 @@ export default function SettingsPage(){
                     type: definition.type,
                     value: `${draftValues[definition.key]}`,
                 }));
-
+            console.log(items)
             await settingsApi.batchUpdate({ items });
             return items.map((item) => item.key);
         },
@@ -275,10 +284,10 @@ export default function SettingsPage(){
                                                         {copy.tables.plan}
                                                     </th>
                                                     <th className="px-4 py-3 text-left text-xs font-semibold tracking-[0.14em] text-gray-500 uppercase">
-                                                        {copy.tables.default}
+                                                        Starting price
                                                     </th>
                                                     <th className="px-4 py-3 text-left text-xs font-semibold tracking-[0.14em] text-gray-500 uppercase">
-                                                        {copy.tables.current}
+                                                        Discount
                                                     </th>
                                                     <th className="px-4 py-3 text-right text-xs font-semibold tracking-[0.14em] text-gray-500 uppercase">
                                                         {copy.tables.action}
@@ -286,45 +295,86 @@ export default function SettingsPage(){
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 bg-white">
-                                                {pricingDefinitions.map((definition) => {
-                                                    const value = displayValues[definition.key] ?? `${definition.defaultValue}`;
-                                                    const dirty = draftValues[definition.key] !== undefined;
+                                                {pricingPairs.map(({ price, discount }) => {
+                                                    const priceValue    = displayValues[price.key] ?? `${price.defaultValue}`;
+                                                    const discountValue = discount ? (displayValues[discount.key] ?? `${discount.defaultValue}`) : '0';
+                                                    const priceDirty    = draftValues[price.key] !== undefined;
+                                                    const discountDirty = discount ? draftValues[discount.key] !== undefined : false;
+                                                    const rowDirty      = priceDirty || discountDirty;
 
                                                     return (
-                                                        <tr key={definition.key} className={cn('transition', dirty && 'bg-amber-50/40')}>
+                                                        <tr key={price.key} className={cn('transition', rowDirty && 'bg-amber-50/40')}>
                                                             <td className="px-4 py-4">
-                                                                <div>
-                                                                    <p className="text-sm font-semibold text-gray-900">{definition.label}</p>
-                                                                </div>
+                                                                <p className="text-sm font-semibold text-gray-900">{price.label}</p>
                                                             </td>
-                                                            <td className="px-4 py-4 text-sm text-gray-600">
-                                                                {formatFieldValue(definition, definition.defaultValue, copy)}
-                                                            </td>
+
+                                                            {/* Starting price */}
                                                             <td className="px-4 py-4">
+                                                                <p className="mb-1.5 text-xs text-gray-400">
+                                                                    Default: {formatFieldValue(price, price.defaultValue, copy)}
+                                                                </p>
                                                                 <input
                                                                     type="number"
                                                                     inputMode="numeric"
                                                                     step={1}
-                                                                    value={value}
+                                                                    value={priceValue}
                                                                     disabled={mode === 'published'}
-                                                                    onChange={(event) => updateValue(definition.key, event.currentTarget.value)}
-                                                                    className={cn(
-                                                                        INPUT_CLASS,
-                                                                        'max-w-40',
-                                                                        dirty && 'border-amber-300 bg-amber-50/40'
-                                                                    )}
+                                                                    onChange={(e) => updateValue(price.key, e.currentTarget.value)}
+                                                                    className={cn(INPUT_CLASS, 'max-w-36', priceDirty && 'border-amber-300 bg-amber-50/40')}
                                                                 />
                                                             </td>
+
+                                                            {/* Discount */}
+                                                            <td className="px-4 py-4">
+                                                                {discount ? (
+                                                                    <>
+                                                                        <p className="mb-1.5 text-xs text-gray-400">
+                                                                            Default: {formatFieldValue(discount, discount.defaultValue, copy)}
+                                                                        </p>
+                                                                        <div className="relative max-w-28">
+                                                                            <input
+                                                                                type="number"
+                                                                                inputMode="numeric"
+                                                                                step={1}
+                                                                                min={0}
+                                                                                max={100}
+                                                                                value={discountValue}
+                                                                                disabled={mode === 'published'}
+                                                                                onChange={(e) => updateValue(discount.key, e.currentTarget.value)}
+                                                                                className={cn(INPUT_CLASS, 'w-full pr-8', discountDirty && 'border-amber-300 bg-amber-50/40')}
+                                                                            />
+                                                                            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">%</span>
+                                                                        </div>
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="text-sm text-gray-400">—</span>
+                                                                )}
+                                                            </td>
+
+                                                            {/* Actions */}
                                                             <td className="px-4 py-4 text-right">
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => resetValue(definition.key)}
-                                                                    disabled={mode === 'published' || !dirty}
-                                                                    className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                                                                >
-                                                                    <RotateCcw className="h-3.5 w-3.5" />
-                                                                    {copy.states.resetToDefault}
-                                                                </button>
+                                                                <div className="flex flex-col items-end gap-1.5">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => resetValue(price.key)}
+                                                                        disabled={mode === 'published' || !priceDirty}
+                                                                        className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                                                    >
+                                                                        <RotateCcw className="h-3 w-3" />
+                                                                        Price
+                                                                    </button>
+                                                                    {discount && (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => resetValue(discount.key)}
+                                                                            disabled={mode === 'published' || !discountDirty}
+                                                                            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                                                        >
+                                                                            <RotateCcw className="h-3 w-3" />
+                                                                            Discount
+                                                                        </button>
+                                                                    )}
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     );

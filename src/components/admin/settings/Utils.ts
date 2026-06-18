@@ -5,7 +5,7 @@ import { ArrowRight, DollarSign, Globe2, type LucideIcon, Mail, Megaphone, Spark
 export const GROUP_ORDER: SettingGroup[] = ['Availability', 'Pricing', 'Marketing Hero', 'CTA', 'Banner', 'Contact'];
 export const DEFAULT_BANNER_SEVERITIES = ['INFO', 'SUCCESS', 'WARNING', 'ERROR'] as const;
 export type SettingGroup = 'Availability' | 'Pricing' | 'Marketing Hero' | 'CTA' | 'Banner' | 'Contact';
-export type SettingControl = 'toggle' | 'text' | 'number' | 'select' | 'textarea';
+export type SettingControl = 'toggle' | 'text' | 'number' | 'percent' | 'select' | 'textarea';
 
 const NUMBER_FORMAT = new Intl.NumberFormat('en-US');
 
@@ -32,6 +32,10 @@ export const formatFieldValue = (definition: SettingDefinition, rawValue: string
 
     if (definition.control === 'number') {
         return `€ ${NUMBER_FORMAT.format(Number(rawValue) || 0)}`;
+    }
+
+    if (definition.control === 'percent') {
+        return `${Number(rawValue) || 0}%`;
     }
 
     return `${rawValue}` || '—';
@@ -163,6 +167,27 @@ export const BASE_DEFINITIONS: Omit<SettingDefinition, 'label'>[] = [
         type: 'INTEGER',
         defaultValue: 13000,
         control: 'number',
+    },
+    {
+        key: 'marketing.staticDiscount',
+        group: 'Pricing',
+        type: 'INTEGER',
+        defaultValue: 0,
+        control: 'percent',
+    },
+    {
+        key: 'marketing.webDiscount',
+        group: 'Pricing',
+        type: 'INTEGER',
+        defaultValue: 0,
+        control: 'percent',
+    },
+    {
+        key: 'marketing.fullDiscount',
+        group: 'Pricing',
+        type: 'INTEGER',
+        defaultValue: 0,
+        control: 'percent',
     },
 ];
 

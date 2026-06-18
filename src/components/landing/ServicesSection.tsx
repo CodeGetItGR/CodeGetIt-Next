@@ -55,7 +55,8 @@ const featureMatrix = [
     ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Interactive UI & Dashboards', 'Custom Backend & APIs', 'Database Design', 'Admin Dashboard', 'Custom Authentication'],
 ];
 
-const serviceTimelines = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
+const serviceTimelines    = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
+const serviceDiscountKeys = ['marketing.staticDiscount', 'marketing.webDiscount', 'marketing.fullDiscount'];
 
 const FACTOR_ICONS = [
     // Scope & features
@@ -135,7 +136,11 @@ export function ServicesSection() {
                     {services.items.map((service, index) => {
                         const Icon        = serviceIcons[index] ?? serviceIcons[0];
                         const features    = featureMatrix[index] ?? [];
-                        const price       = settingsQuery.data?.[service.priceKey] ?? service.defaultPrice;
+                        const price         = settingsQuery.data?.[service.priceKey] ?? service.defaultPrice;
+                        const discountPct   = Number.parseInt(settingsQuery.data?.[serviceDiscountKeys[index] ?? ''] ?? '0') || 0;
+                        const discountedPrice = discountPct > 0
+                            ? Math.floor(Number.parseInt(price) * (1 - discountPct / 100))
+                            : null;
                         const isRecommended = index === RECOMMENDED_INDEX;
                         const isFeatureDimmed = activeFeature !== null && !features.includes(activeFeature);
                         const isSpotlight    = index === spotlightIndex;
@@ -216,9 +221,25 @@ export function ServicesSection() {
 
                                     {/* Price + CTA — pinned to bottom */}
                                     <div className="mt-auto pt-6">
-                                        <p className="font-display text-2xl font-bold text-slate-900">
-                                            {formatPrice(price)}
-                                        </p>
+                                        {discountedPrice !== null ? (
+                                            <div>
+                                                <p className="font-display text-sm text-slate-400 line-through">
+                                                    {formatPrice(price)}
+                                                </p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="font-display text-2xl font-bold text-slate-900">
+                                                        {formatPrice(String(discountedPrice))}
+                                                    </p>
+                                                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200">
+                                                        -{discountPct}%
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <p className="font-display text-2xl font-bold text-slate-900">
+                                                {formatPrice(price)}
+                                            </p>
+                                        )}
                                         <p className="mt-1 text-xs text-slate-400">
                                             Estimated timeline: {serviceTimelines[index]}
                                         </p>

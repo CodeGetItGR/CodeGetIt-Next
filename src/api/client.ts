@@ -121,14 +121,18 @@ apiClient.interceptors.response.use(
             return Promise.reject(error);
         }
 
+        if (isPublicEndpoint(originalRequest)) {
+            return Promise.reject(error);
+        }
+
         const errorCode = (error.response?.data as ProblemDetail | undefined)?.errorCode;
 
         // If TOKEN_INVALID or NO_TOKEN, don't try to refresh
         if (errorCode === 'TOKEN_INVALID' || errorCode === 'NO_TOKEN') {
             localStorage.removeItem(AUTH_STORAGE_KEY);
             localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
-            if (!window.location.pathname.startsWith('/admin/login')) {
-                window.location.href = '/admin/login';
+            if (!window.location.pathname.startsWith('/login')) {
+                window.location.href = '/login';
             }
             return Promise.reject(error);
         }
@@ -184,8 +188,8 @@ apiClient.interceptors.response.use(
                 localStorage.removeItem(AUTH_STORAGE_KEY);
                 localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
                 isRefreshing = false;
-                if (!window.location.pathname.startsWith('/admin/login')) {
-                    window.location.href = '/admin/login';
+                if (!window.location.pathname.startsWith('/login')) {
+                    window.location.href = '/login';
                 }
                 return Promise.reject(refreshError);
             }
@@ -194,8 +198,8 @@ apiClient.interceptors.response.use(
         // For other 401 errors, clear tokens and redirect to login
         localStorage.removeItem(AUTH_STORAGE_KEY);
         localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
-        if (!window.location.pathname.startsWith('/admin/login')) {
-            window.location.href = '/admin/login';
+        if (!window.location.pathname.startsWith('/login')) {
+            window.location.href = '/login';
         }
 
         return Promise.reject(error);

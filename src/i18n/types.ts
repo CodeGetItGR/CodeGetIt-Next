@@ -396,6 +396,9 @@ export interface Translations {
                     staticStartingPrice: string;
                     webStartingPrice: string;
                     fullStartingPrice: string;
+                    staticDiscount: string;
+                    webDiscount: string;
+                    fullDiscount: string;
                 };
             };
         };
