@@ -12,4 +12,3 @@ export * from './ProjectsSection';
 export * from './service-contact-presets'
 export * from './SectionHeading';
 export * from './ServicesSection';
-export * from './StatsBar';

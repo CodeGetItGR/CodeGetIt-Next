@@ -60,19 +60,19 @@ const serviceDiscountKeys = ['marketing.staticDiscount', 'marketing.webDiscount'
 
 const FACTOR_ICONS = [
     // Scope & features
-    <svg key="scope" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
+    <svg key="scope" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
     // Design complexity
-    <svg key="design" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
+    <svg key="design" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
     // Integrations
-    <svg key="integrations" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
+    <svg key="integrations" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
     // Timeline
-    <svg key="timeline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    <svg key="timeline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
     // Content volume
-    <svg key="content" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    <svg key="content" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
     // Tech stack
-    <svg key="tech" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+    <svg key="tech" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
     // Post-launch support
-    <svg key="support" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    <svg key="support" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
 ];
 
 // Middle card (index 1) is the recommended / highlighted tier
@@ -156,10 +156,10 @@ export function ServicesSection() {
                                 transition={{ duration: 0.55, delay: index * 0.1, ease: [0.32, 0.72, 0, 1] }}
                                 whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
                                 className={cn(
-                                    'relative flex flex-col rounded-[1.5rem] p-[6px] scroll-mt-28 transition-all duration-500',
+                                    'relative flex flex-col rounded-[1.5rem] p-1.5 scroll-mt-28 transition-all duration-500',
                                     isRecommended
                                         ? 'ring-2 ring-slate-900/80 soft-shadow-lg'
-                                        : 'ring-1 ring-slate-900/[0.06] soft-shadow',
+                                        : 'ring-1 ring-slate-900/6 soft-shadow',
                                     isSpotlight && 'ring-2 ring-slate-900 ring-offset-2 ring-offset-[#fafafa] drop-shadow-[0_0_24px_rgba(15,23,42,0.18)]',
                                 )}
                             >
@@ -173,13 +173,13 @@ export function ServicesSection() {
                                 {/* Inner core */}
                                 <div className={cn(
                                     'flex flex-1 flex-col rounded-[calc(1.5rem-6px)] p-7',
-                                    isRecommended ? 'bg-brand-600/[0.04]' : 'bg-white',
+                                    isRecommended ? 'bg-brand-600/4' : 'bg-white',
                                     'shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
                                 )}>
                                     {/* Icon */}
                                     <div className={cn(
                                         'mb-5 inline-flex w-fit rounded-xl p-2.5',
-                                        isRecommended ? 'bg-slate-900/[0.05] text-slate-700' : 'bg-slate-100 text-slate-600'
+                                        isRecommended ? 'bg-slate-900/5 text-slate-700' : 'bg-slate-100 text-slate-600'
                                     )}>
                                         <Icon />
                                     </div>
@@ -205,8 +205,8 @@ export function ServicesSection() {
                                                 >
                                                     <div className={cn(
                                                         // square ink tick — a filled circle would counterfeit It
-                                                        'mt-1.5 h-[5px] w-[5px] shrink-0 transition-all duration-300',
-                                                        isActive ? 'scale-125 bg-brand-600' : 'bg-slate-300'
+                                                        'mt-1.5 h-1.25 w-1.25 shrink-0 transition-all duration-300',
+                                                        isActive ? 'scale-125 bg-slate-900' : 'bg-slate-300'
                                                     )} />
                                                     <span>{feature}</span>
                                                     {lockedFeature === feature && (
@@ -249,7 +249,7 @@ export function ServicesSection() {
                                             onClick={() => handleGetStarted(index)}
                                             className={cn(
                                                 'group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold',
-                                                'transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]',
+                                                'transition-all duration-300 ease-premium active:scale-[0.98]',
                                                 isRecommended
                                                     ? 'bg-brand-600 text-white hover:bg-brand-700'
                                                     : 'bg-slate-100 text-slate-800 hover:bg-slate-200',
@@ -274,7 +274,7 @@ export function ServicesSection() {
                 </div>
 
                 {/* Pricing context — factors + reassurance */}
-                <div className="mt-10 rounded-2xl bg-white px-8 py-8 shadow-[0_4px_24px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/[0.08]">
+                <div className="mt-10 rounded-2xl bg-white px-8 py-8 shadow-[0_4px_24px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/8">
                     <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
                         {services.pricingFactorsLabel}
                     </p>

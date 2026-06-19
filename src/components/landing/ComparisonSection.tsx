@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
@@ -26,6 +26,7 @@ export function ComparisonSection() {
     const isInView = useInView(ref, { once: true, margin: '-100px' });
     const { t }    = useLocale();
     const comparison = t.landing.comparison;
+    const reduced  = useReducedMotion();
 
     const comparisonMatrix = [
         { static: true,  webApp: true,                 fullStack: true  },
@@ -47,12 +48,7 @@ export function ComparisonSection() {
             <div className="mx-auto max-w-5xl">
                 <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} />
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.1, ease: [0.32, 0.72, 0, 1] }}
-                    className="mt-14"
-                >
+                <div className="mt-14">
                     {/* ── Desktop table ── */}
                     <div className="hidden rounded-[1.5rem] p-[6px] ring-1 ring-slate-900/[0.06] soft-shadow md:block">
                         <div className="overflow-hidden rounded-[calc(1.5rem-6px)] bg-white">
@@ -77,7 +73,13 @@ export function ComparisonSection() {
                                     {comparison.rows.map((rowLabel, index) => {
                                         const row = rows[index];
                                         return (
-                                            <tr key={rowLabel} className="border-b border-slate-50 last:border-none odd:bg-slate-50/40">
+                                            <motion.tr
+                                                key={rowLabel}
+                                                className="border-b border-slate-50 last:border-none odd:bg-slate-50/40"
+                                                initial={reduced ? false : { opacity: 0, x: -8 }}
+                                                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                                                transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1], delay: 0.2 + index * 0.045 }}
+                                            >
                                                 <td className="px-7 py-4 text-sm font-medium text-slate-800">{rowLabel}</td>
                                                 <td className="px-7 py-4 text-center">
                                                     {typeof row.static === 'boolean'
@@ -94,7 +96,7 @@ export function ComparisonSection() {
                                                         ? (row.fullStack ? <CheckIcon /> : <XIcon />)
                                                         : <span className="text-sm font-semibold text-slate-900">{row.fullStack}</span>}
                                                 </td>
-                                            </tr>
+                                            </motion.tr>
                                         );
                                     })}
                                 </tbody>
@@ -138,7 +140,7 @@ export function ComparisonSection() {
                     <p className="mt-8 text-center text-xs leading-relaxed text-slate-400">
                         {t.landing.comparison.disclaimer}
                     </p>
-                </motion.div>
+                </div>
             </div>
         </section>
     );

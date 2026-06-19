@@ -1,8 +1,57 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useLocale } from '@/i18n/UseLocale';
 import { useScrollHighlight } from '@/providers';
-import { DotlessWordmark } from './it';
+import { DotlessWordmark, EASE } from './it';
 import { Logo } from './Logo';
+
+/**
+ * The epilogue's wordmark keeps its dotless-ı + ItRest-origin logic from
+ * DotlessWordmark itself — it can't be split into words and re-masked by
+ * ActLine, so the slow final rise is a single hand-rolled clip + motion
+ * wrapper around the whole mark instead.
+ */
+function FooterEpilogue({ caption }: { caption: string }) {
+    const ref     = useRef(null);
+    const inView  = useInView(ref, { once: true, amount: 0.5 });
+    const reduced = useReducedMotion();
+
+    return (
+        <div ref={ref} className="relative mb-14 pb-12">
+            {/* Drawing hairline */}
+            <motion.span
+                aria-hidden
+                className="absolute bottom-0 left-0 block h-px w-full bg-slate-900/6"
+                style={{ transformOrigin: 'left' }}
+                initial={reduced ? false : { scaleX: 0 }}
+                animate={inView ? { scaleX: 1 } : {}}
+                transition={{ duration: 1.1, ease: EASE }}
+            />
+
+            {/* Wordmark — slow final rise */}
+            <p className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
+                <motion.span
+                    className="inline-block align-bottom font-display text-[clamp(2.6rem,8vw,6rem)] font-extrabold leading-none tracking-[-0.03em] text-slate-900 will-change-transform"
+                    initial={reduced ? false : { y: '112%' }}
+                    animate={inView ? { y: '0%' } : {}}
+                    transition={{ duration: 1.1, ease: EASE }}
+                >
+                    <DotlessWordmark before="codeget" />
+                </motion.span>
+            </p>
+
+            {/* Caption — fades in after the wordmark settles */}
+            <motion.p
+                className="mt-4 text-sm italic text-slate-400"
+                initial={reduced ? false : { opacity: 0 }}
+                animate={inView ? { opacity: 1 } : {}}
+                transition={{ duration: 0.9, ease: EASE, delay: 1.0 }}
+            >
+                {caption}
+            </motion.p>
+        </div>
+    );
+}
 
 function LinkedInIcon() {
   return (
@@ -49,12 +98,7 @@ export function FooterSection() {
         <footer className="border-t border-slate-900/6 bg-white px-6 py-16">
             <div className="mx-auto max-w-6xl">
                 {/* Epilogue — the wordmark gave the page its dot and never takes it back */}
-                <div className="mb-14 border-b border-slate-900/6 pb-12">
-                    <p className="font-display text-[clamp(2.6rem,8vw,6rem)] font-extrabold leading-none tracking-[-0.03em] text-slate-900">
-                        <DotlessWordmark before="codeget" />
-                    </p>
-                    <p className="mt-4 text-sm italic text-slate-400">{footer.lentDot}</p>
-                </div>
+                <FooterEpilogue caption={footer.lentDot} />
 
                 <div className="grid gap-10 md:grid-cols-4">
                     {/* Brand col */}
@@ -70,7 +114,7 @@ export function FooterSection() {
                                     key={label}
                                     href={href}
                                     aria-label={label}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/8 text-slate-500 transition-all duration-200 hover:bg-brand-600 hover:text-white hover:ring-brand-600"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-slate-900/8 text-slate-500 transition-all duration-200 hover:bg-slate-900 hover:text-white hover:ring-slate-900"
                                 >
                                     <Icon />
                                 </a>

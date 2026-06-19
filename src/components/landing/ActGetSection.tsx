@@ -18,7 +18,7 @@ export function ActGetSection() {
   const { pulse } = useIt();
 
   return (
-    <section className="relative py-28 lg:py-40 ambient-gold">
+    <section className="relative py-28 lg:py-40">
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center px-6 text-center lg:px-10">
         <motion.p
           {...fadeRiseInView(0, reduced)}

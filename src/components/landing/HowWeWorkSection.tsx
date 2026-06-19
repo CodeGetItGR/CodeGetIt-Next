@@ -51,7 +51,10 @@ export function HowWeWorkSection() {
     }, []);
 
     const handleStepClick = (index: number) => {
-        contentRefs.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const el = contentRefs.current[index];
+        if (!el) return;
+        const top = el.getBoundingClientRect().top + window.scrollY - 112;
+        window.scrollTo({ top, behavior: 'smooth' });
     };
 
     return (
@@ -122,7 +125,7 @@ export function HowWeWorkSection() {
                                     className={cn(
                                         'flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold transition-colors duration-200',
                                         i === activeIndex
-                                            ? 'bg-brand-500 text-white'
+                                            ? 'bg-white text-slate-900'
                                             : 'text-slate-500 hover:text-slate-300',
                                     )}
                                 >
