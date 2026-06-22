@@ -65,6 +65,7 @@ export function normalizeApiError(error: unknown): ApiError {
             title: payload?.title ?? 'Request failed',
             detail: payload?.detail ?? error.message,
             fieldErrors: payload?.errors ?? parseFieldErrors(payload?.detail),
+            errorCode: payload?.errorCode,
         };
     }
 

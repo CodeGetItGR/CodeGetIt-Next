@@ -46,6 +46,7 @@ export interface SettingsOptionsCatalog {
 interface RawSettingsOptionItem {
     value: string;
     label?: string;
+    labelEl?: string;
     labels?: Record<string, string>;
     labelKey?: string;
     enabled?: boolean;
@@ -54,6 +55,7 @@ interface RawSettingsOptionItem {
 interface RawSettingsOptionGroup {
     key: string;
     label?: string;
+    labelEl?: string;
     labels?: Record<string, string>;
     labelKey?: string;
     configurable?: boolean;
@@ -64,8 +66,13 @@ interface RawSettingsOptionsCatalog {
     groups?: RawSettingsOptionGroup[];
 }
 
-function pickLocalizedLabel(localized?: Record<string, string>, fallback?: string, secondaryFallback?: string): string {
+/** Backend sends either a flat `label`/`labelEl` pair or a nested `labels` map — support both. */
+function pickLocalizedLabel(labelEl?: string, localized?: Record<string, string>, fallback?: string, secondaryFallback?: string): string {
     const locale = getCurrentLocale();
+    if (locale === 'el' && labelEl) {
+        return labelEl;
+    }
+
     if (!localized) {
         return fallback ?? secondaryFallback ?? '';
     }
@@ -76,7 +83,7 @@ function pickLocalizedLabel(localized?: Record<string, string>, fallback?: strin
 function normalizeOptionItem(item: RawSettingsOptionItem): SettingsOptionItem {
     return {
         value: item.value,
-        label: pickLocalizedLabel(item.labels, item.label, item.labelKey ?? item.value),
+        label: pickLocalizedLabel(item.labelEl, item.labels, item.label, item.labelKey ?? item.value),
         enabled: item.enabled ?? true,
     };
 }
@@ -85,7 +92,7 @@ function normalizeOptionsCatalog(payload: RawSettingsOptionsCatalog): SettingsOp
     return {
         groups: (payload.groups ?? []).map((group) => ({
             key: group.key,
-            label: pickLocalizedLabel(group.labels, group.label, group.labelKey ?? group.key),
+            label: pickLocalizedLabel(group.labelEl, group.labels, group.label, group.labelKey ?? group.key),
             configurable: group.configurable ?? false,
             items: (group.items ?? []).map(normalizeOptionItem),
         })),
@@ -123,7 +130,7 @@ export const settingsApi = {
     },
 
     batchUpdate: async (payload: AppConfigBatchPayload) => {
-        const { data } = await apiClient.put<AppConfigResponse[]>('/settings/batch', payload);
+        const { data } = await apiClient.patch<AppConfigResponse[]>('/settings/batch', payload);
         return data;
     },
 
@@ -131,7 +138,7 @@ export const settingsApi = {
         const { data } = await apiClient.put<RawSettingsOptionGroup>(`/settings/options/${encodeURIComponent(groupKey)}/disabled`, payload);
         return {
             key: data.key,
-            label: pickLocalizedLabel(data.labels, data.label, data.labelKey ?? data.key),
+            label: pickLocalizedLabel(data.labelEl, data.labels, data.label, data.labelKey ?? data.key),
             configurable: data.configurable ?? false,
             items: (data.items ?? []).map(normalizeOptionItem),
         };

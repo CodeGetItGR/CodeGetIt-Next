@@ -22,7 +22,7 @@ export function ActGetSection() {
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center px-6 text-center lg:px-10">
         <motion.p
           {...fadeRiseInView(0, reduced)}
-          className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400"
+          className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500"
         >
           {copy.actLabel}
         </motion.p>

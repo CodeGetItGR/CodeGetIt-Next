@@ -123,7 +123,7 @@ const cardVariants = {
 /** The persistent counter — the active digit rolls in the scroll direction. */
 function RollingIndex({ index, dir, total }: { index: number; dir: number; total: number }) {
   return (
-    <span className="inline-flex items-baseline text-[11px] font-medium tracking-[0.18em] text-slate-400 tabular-nums">
+    <span className="inline-flex items-baseline text-[11px] font-medium tracking-[0.18em] text-slate-500 tabular-nums">
       <span className="inline-flex h-[1.2em] overflow-hidden">
         <AnimatePresence mode="popLayout" initial={false} custom={dir}>
           <motion.span
@@ -190,7 +190,7 @@ function ClosingNote({ text }: { text: string }) {
         transition: { duration: 0.45, ease: EASE, delay: ACT2.cardEnterDelay },
       }}
       exit={{ opacity: 0, transition: { duration: 0.18, ease: EASE } }}
-      className="text-sm italic text-slate-400"
+      className="text-sm italic text-slate-500"
     >
       {text}
     </motion.p>
@@ -205,7 +205,7 @@ function ScrollCue({ label }: { label: string }) {
       animate={{ opacity: 1, transition: { duration: 0.5, ease: EASE, delay: 0.3 } }}
       exit={{ opacity: 0, x: -24, transition: { duration: 0.22, ease: EASE } }}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">{label}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">{label}</p>
       <motion.span
         aria-hidden
         className="mt-4 block h-12 w-px origin-top bg-slate-900/25"
@@ -453,7 +453,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
         <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-8 pt-20 lg:px-10">
           <motion.p
             {...fadeRiseInView(0, false)}
-            className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400"
+            className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500"
           >
             {copy.actLabel}
           </motion.p>
@@ -537,7 +537,7 @@ function StaticActCode({ copy }: { copy: CodeCopy }) {
   return (
     <section id="build" className="relative py-28 lg:py-36">
       <div className="mx-auto w-full max-w-6xl px-6 lg:px-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">{copy.actLabel}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">{copy.actLabel}</p>
         <ActLine text={copy.line} restId="act-code" className="mt-5 text-[clamp(2.5rem,7vw,5rem)] leading-[1.02]" />
         <p className="mt-6 max-w-[52ch] text-[1.02rem] leading-[1.75] text-slate-500 text-pretty">{copy.sub}</p>
 

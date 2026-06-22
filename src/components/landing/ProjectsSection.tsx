@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useInView } from 'framer-motion';
+import Image from 'next/image';
 import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
@@ -47,11 +48,11 @@ export function ProjectsSection() {
 
                         <div className="space-y-5">
                             <div>
-                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{challengeLabel}</p>
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{challengeLabel}</p>
                                 <p className="text-base leading-7 text-slate-600">{project.challenge}</p>
                             </div>
                             <div>
-                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{solutionLabel}</p>
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{solutionLabel}</p>
                                 <p className="text-base leading-7 text-slate-600">{project.solution}</p>
                             </div>
                         </div>
@@ -78,7 +79,13 @@ export function ProjectsSection() {
                         whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
                         className="group relative mx-auto block aspect-[4/3] w-full max-h-[280px] max-w-[440px] overflow-hidden rounded-2xl bg-white ring-1 ring-slate-900/[0.08] soft-shadow lg:mx-0 lg:max-h-none"
                     >
-                        <img src={project.image} alt={project.title} className="h-full w-full object-contain p-10" />
+                        <Image
+                            src={project.image}
+                            alt={project.title}
+                            fill
+                            sizes="(min-width: 1024px) 440px, 100vw"
+                            className="object-contain p-10"
+                        />
 
                         {/* Squared "Live" marker — reachable, not pulsing (only circle on the page is It) */}
                         <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1.5 backdrop-blur-sm">

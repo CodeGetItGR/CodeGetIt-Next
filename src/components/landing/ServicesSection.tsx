@@ -223,7 +223,7 @@ export function ServicesSection() {
                                     <div className="mt-auto pt-6">
                                         {discountedPrice !== null ? (
                                             <div>
-                                                <p className="font-display text-sm text-slate-400 line-through">
+                                                <p className="font-display text-sm text-slate-500 line-through">
                                                     {formatPrice(price)}
                                                 </p>
                                                 <div className="flex items-center gap-2">
@@ -240,7 +240,7 @@ export function ServicesSection() {
                                                 {formatPrice(price)}
                                             </p>
                                         )}
-                                        <p className="mt-1 text-xs text-slate-400">
+                                        <p className="mt-1 text-xs text-slate-500">
                                             Estimated timeline: {serviceTimelines[index]}
                                         </p>
 
@@ -275,7 +275,7 @@ export function ServicesSection() {
 
                 {/* Pricing context — factors + reassurance */}
                 <div className="mt-10 rounded-2xl bg-white px-8 py-8 shadow-[0_4px_24px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/8">
-                    <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
                         {services.pricingFactorsLabel}
                     </p>
                     <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
@@ -296,7 +296,7 @@ export function ServicesSection() {
                         ))}
                     </div>
 
-                    <p className="mt-7 border-t border-slate-100 pt-5 text-xs leading-5 text-slate-400">
+                    <p className="mt-7 border-t border-slate-100 pt-5 text-xs leading-5 text-slate-500">
                         {services.timeEstimateDisclaimer}
                     </p>
                 </div>

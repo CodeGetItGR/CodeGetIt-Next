@@ -125,7 +125,6 @@ export default function SettingsPage(){
                     type: definition.type,
                     value: `${draftValues[definition.key]}`,
                 }));
-            console.log(items)
             await settingsApi.batchUpdate({ items });
             return items.map((item) => item.key);
         },

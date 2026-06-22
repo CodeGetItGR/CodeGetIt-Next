@@ -4,6 +4,8 @@ export type Role = 'ROLE_USER' | 'ROLE_ADMIN';
 
 export type RequestStatus = 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'COMPLETED';
 export type OfferStatus = 'DRAFT' | 'SENT' | 'ACCEPTED_BY_CLIENT' | 'REJECTED_BY_CLIENT' | 'CANCELLED' | 'REJECTED';
+export type OfferLanguage = 'EN' | 'EL';
+export type OfferCurrency = 'EUR';
 export type OfferSubmissionAction = 'SENT' | 'ACCEPTED_BY_CLIENT' | 'REJECTED_BY_CLIENT' | 'REVISED_TO_DRAFT' | 'CANCELLED';
 export type ProjectStatus = 'PLANNING' | 'IN_PROGRESS' | 'ON_HOLD' | 'COMPLETED' | 'CANCELLED';
 export type GithubRepoStatus = 'NOT_CREATED' | 'CREATED' | 'FAILED';
@@ -67,6 +69,7 @@ export interface RequestResponse {
     communicationPreference?: CommunicationPreference;
     legalOrBrandConstraints?: string;
     dataSensitivity?: DataSensitivity;
+    language: OfferLanguage;
     status: RequestStatus;
     priority: Priority;
     submittedByUserId: UUID | null;
@@ -95,7 +98,8 @@ export interface OfferResponse {
     description: string | null;
     priceAmount: number | null;
     taxRate: number | null;
-    currency: string | null;
+    currency: OfferCurrency | null;
+    language: OfferLanguage;
     subtotalAmount: number | null;
     taxAmount: number | null;
     totalAmount: number | null;
@@ -138,7 +142,8 @@ export interface PublicOfferResponse {
         title: string;
         description: string | null;
         priceAmount: number | null;
-        currency: string | null;
+        currency: OfferCurrency | null;
+        language: OfferLanguage;
         subtotalAmount: number | null;
         taxRate: number | null;
         taxAmount: number | null;
@@ -196,6 +201,7 @@ export interface ApiError {
     title: string;
     detail: string;
     fieldErrors?: Record<string, string>;
+    errorCode?: string;
 }
 
 export interface ContactMessageResponse {
@@ -203,6 +209,7 @@ export interface ContactMessageResponse {
     name: string;
     email: string;
     message: string;
+    language: OfferLanguage;
     createdAt: string;
 }
 

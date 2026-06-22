@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client';
-import type { OfferResponse, OfferStatus, OfferLineItemResponse, OfferSubmissionResponse, PagedResponse, UUID } from './types';
+import type { OfferResponse, OfferStatus, OfferLineItemResponse, OfferSubmissionResponse, PagedResponse, UUID, OfferLanguage, OfferCurrency } from './types';
 
 export interface OfferListQuery {
     page?: number;
@@ -15,7 +15,8 @@ export interface CreateOfferPayload {
     description?: string;
     priceAmount?: number;
     taxRate?: number;
-    currency?: string;
+    currency?: OfferCurrency;
+    language: OfferLanguage;
     recipientEmail: string;
     recipientName?: string;
     validUntil?: string;
@@ -26,7 +27,8 @@ export interface UpdateOfferPayload {
     description?: string;
     priceAmount?: number;
     taxRate?: number;
-    currency?: string;
+    currency?: OfferCurrency;
+    language?: OfferLanguage;
     recipientEmail: string;
     recipientName?: string;
     validUntil?: string;

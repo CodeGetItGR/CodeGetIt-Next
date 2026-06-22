@@ -22,7 +22,7 @@ export function HeroSection() {
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-6 pb-20 pt-28 lg:px-10">
         <motion.p
           {...fadeRise(0.05, reduced)}
-          className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400"
+          className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500"
         >
           {copy.actLabel}
         </motion.p>

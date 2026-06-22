@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {BudgetFlexibility, BudgetRange, CreateOfferPayload, offerApi, UUID} from "@/api";
-import {useApiErrorState} from "@/hooks";
+import {BudgetFlexibility, BudgetRange, CreateOfferPayload, OfferLanguage, offerApi, UUID} from "@/api";
+import {useApiErrorState, useSettingsOptions} from "@/hooks";
 import {Input, SlideSheet, Textarea} from "@/components";
 
 
@@ -15,6 +15,8 @@ interface CreateOfferSheetProps {
     onClose: () => void;
     /** Pre-fill if opened from a request detail page */
     defaultRequestId?: UUID;
+    /** Pre-fill from the request's captured language preference — the admin can still override it. */
+    defaultLanguage?: OfferLanguage;
     pricingContext?: OfferPricingContext;
     onCreated?: () => void;
 }
@@ -63,18 +65,22 @@ const blankForm = (): CreateOfferPayload => ({
     priceAmount: undefined,
     taxRate: undefined,
     currency: 'EUR',
+    language: 'EN',
     validUntil: undefined,
 });
 
-export const CreateOfferSheet = ({ isOpen, onClose, defaultRequestId, pricingContext, onCreated }: CreateOfferSheetProps) => {
+export const CreateOfferSheet = ({ isOpen, onClose, defaultRequestId, defaultLanguage, pricingContext, onCreated }: CreateOfferSheetProps) => {
     const [form, setForm] = useState<CreateOfferPayload>(() => ({
         ...blankForm(),
         requestId: defaultRequestId ?? '',
+        language: defaultLanguage ?? 'EN',
     }));
     const [validUntilInput, setValidUntilInput] = useState('');
     const [priceInput, setPriceInput] = useState('');
     const { errorMessage, setApiError, clearError } = useApiErrorState();
     const queryClient = useQueryClient();
+    const { options: languageOptions } = useSettingsOptions({ groupKey: 'offer.language', scope: 'public', onlyEnabled: true });
+    const { options: currencyOptions } = useSettingsOptions({ groupKey: 'offer.currency', scope: 'public', onlyEnabled: true });
 
     const createMutation = useMutation({
         mutationFn: () =>
@@ -85,7 +91,7 @@ export const CreateOfferSheet = ({ isOpen, onClose, defaultRequestId, pricingCon
             }),
         onSuccess: async () => {
             clearError();
-            const reset = { ...blankForm(), requestId: defaultRequestId ?? '' };
+            const reset = { ...blankForm(), requestId: defaultRequestId ?? '', language: defaultLanguage ?? 'EN' };
             setForm(reset);
             setValidUntilInput('');
             setPriceInput('');
@@ -109,13 +115,13 @@ export const CreateOfferSheet = ({ isOpen, onClose, defaultRequestId, pricingCon
     );
 
     const handleClose = useCallback(() => {
-        const reset = { ...blankForm(), requestId: defaultRequestId ?? '' };
+        const reset = { ...blankForm(), requestId: defaultRequestId ?? '', language: defaultLanguage ?? 'EN' };
         setForm(reset);
         setValidUntilInput('');
         setPriceInput('');
         clearError();
         onClose();
-    }, [clearError, defaultRequestId, onClose]);
+    }, [clearError, defaultRequestId, defaultLanguage, onClose]);
 
     const handleRequestIdChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -136,8 +142,15 @@ export const CreateOfferSheet = ({ isOpen, onClose, defaultRequestId, pricingCon
     }, []);
 
     const handleCurrencyChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
-            setField('currency', event.target.value.toUpperCase());
+        (event: ChangeEvent<HTMLSelectElement>) => {
+            setField('currency', event.target.value as CreateOfferPayload['currency']);
+        },
+        [setField]
+    );
+
+    const handleLanguageChange = useCallback(
+        (event: ChangeEvent<HTMLSelectElement>) => {
+            setField('language', event.target.value as CreateOfferPayload['language']);
         },
         [setField]
     );
@@ -219,7 +232,20 @@ export const CreateOfferSheet = ({ isOpen, onClose, defaultRequestId, pricingCon
                             onChange={handlePriceInputChange}
                             placeholder="1200.00"
                         />
-                        <Input label="Currency" value={form.currency ?? ''} onChange={handleCurrencyChange} maxLength={5} />
+                        <div>
+                            <label className="mb-1 block text-sm text-gray-600">Currency</label>
+                            <select
+                                value={form.currency ?? ''}
+                                onChange={handleCurrencyChange}
+                                className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
+                            >
+                                {currencyOptions.map((item) => (
+                                    <option key={item.value} value={item.value}>
+                                        {item.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <Input
@@ -230,6 +256,22 @@ export const CreateOfferSheet = ({ isOpen, onClose, defaultRequestId, pricingCon
                         onChange={(e) => setField('taxRate', e.target.value ? Number(e.target.value) : undefined)}
                         placeholder="20"
                     />
+
+                    <div>
+                        <label className="mb-1 block text-sm text-gray-600">Language *</label>
+                        <select
+                            value={form.language}
+                            onChange={handleLanguageChange}
+                            className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
+                            required
+                        >
+                            {languageOptions.map((item) => (
+                                <option key={item.value} value={item.value}>
+                                    {item.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
                     {pricingTips && (
                         <div className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-800 md:col-span-2">

@@ -16,6 +16,7 @@ interface ContactFormLabels {
     emailPlaceholder: string;
     messageLabel: string;
     messagePlaceholder: string;
+    languageLabel: string;
     sendButtonLabel: string;
     sendingLabel: string;
     successText: string;
@@ -38,7 +39,7 @@ interface ContactFormProps extends ContactOptions {
     optionNotice: string;
     hasDetailedRequiredOptions: boolean;
     stepTitles: string[];
-    onChange: (field: keyof ContactFormData) => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onChange: (field: keyof ContactFormData) => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     onDetailedRequestToggle: (event: ChangeEvent<HTMLInputElement>) => void;
     onDetailedFieldChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     // onEnterpriseInquiryToggle: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -153,6 +154,7 @@ export const ContactForm = ({
     communicationPreferenceOptions,
     dataSensitivityOptions,
     priorityOptions,
+    languageOptions,
     onChange,
     onDetailedRequestToggle,
     onDetailedFieldChange,
@@ -196,7 +198,7 @@ export const ContactForm = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: premiumMotion.normal, ease: premiumEase }}
-        className="relative rounded-3xl border border-slate-900/[0.06] bg-white p-7 soft-shadow md:p-9 lg:col-span-7"
+        className="relative rounded-3xl border border-slate-900/6 bg-white p-7 soft-shadow md:p-9 lg:col-span-7"
     >
         <form ref={formRef} onSubmit={onSubmit} className="space-y-8">
             <ToggleCard
@@ -226,6 +228,17 @@ export const ContactForm = ({
                         type="email"
                         required
                     />
+
+                    <div>
+                        <label className="mb-3 block text-sm font-medium tracking-wider text-slate-500 uppercase">{labels.languageLabel}</label>
+                        <select value={formData.language} onChange={onChange('language')} className={fieldShellClass}>
+                            {(languageOptions ?? []).map((item) => (
+                                <option key={item.value} value={item.value}>
+                                    {item.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
             )}
 

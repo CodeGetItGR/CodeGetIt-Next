@@ -4,6 +4,7 @@ export interface ContactFormData {
     name: string;
     email: string;
     message: string;
+    language: string;
 }
 
 export interface ContactOption {
@@ -19,6 +20,7 @@ export interface ContactOptions {
     communicationPreferenceOptions: ContactOption[];
     dataSensitivityOptions: ContactOption[];
     priorityOptions: ContactOption[];
+    languageOptions?: ContactOption[];
 }
 
 export interface ContactFormState {

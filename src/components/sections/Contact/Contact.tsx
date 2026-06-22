@@ -12,7 +12,7 @@ import {
     BudgetFlexibility,
     BudgetRange,
     CommunicationPreference, DataSensitivity,
-    DesiredStartWindow, normalizeApiError, Priority,
+    DesiredStartWindow, normalizeApiError, OfferLanguage, Priority,
     ProjectType,
     requestApi
 } from "@/api";
@@ -23,7 +23,7 @@ export const Contact = () => {
     const { t } = useLocale();
     const { getBool, getString } = usePublicSettings();
     const { clearContactRequest, currentRequest } = useContactRequest();
-    const [formData, setFormData] = useState<ContactFormData>({ name: '', email: '', message: '' });
+    const [formData, setFormData] = useState<ContactFormData>({ name: '', email: '', message: '', language: 'EN' });
     const [detailedRequest, setDetailedRequest] = useState<DetailedRequestFormState>(blankDetailedRequest);
     const [useDetailedRequest, setUseDetailedRequest] = useState(false);
     const [uiState, dispatch] = useReducer(uiReducer, initialUIState);
@@ -63,6 +63,11 @@ export const Contact = () => {
     });
     const { options: priorityOptions } = useSettingsOptions({
         groupKey: 'request.priority',
+        scope: 'public',
+        onlyEnabled: true,
+    });
+    const { options: languageOptions } = useSettingsOptions({
+        groupKey: 'contact.language',
         scope: 'public',
         onlyEnabled: true,
     });
@@ -167,6 +172,7 @@ export const Contact = () => {
                 name: currentRequest.formData?.name ?? '',
                 email: currentRequest.formData?.email ?? '',
                 message: currentRequest.formData?.message ?? '',
+                language: currentRequest.formData?.language ?? 'EN',
             });
             setDetailedRequest({
                 ...blankDetailedRequest,
@@ -291,6 +297,7 @@ export const Contact = () => {
                         name: formData.name.trim(),
                         email: formData.email.trim(),
                         message: formData.message.trim(),
+                        language: (formData.language || undefined) as OfferLanguage | undefined,
                     });
                 } else {
                     if (!hasDetailedRequiredOptions) {
@@ -328,12 +335,13 @@ export const Contact = () => {
                         legalOrBrandConstraints: detailedRequest.legalOrBrandConstraints.trim() || undefined,
                         dataSensitivity: (detailedRequest.dataSensitivity || undefined) as DataSensitivity | undefined,
                         priority: (detailedRequest.priority || undefined) as Priority | undefined,
+                        language: (formData.language || undefined) as OfferLanguage | undefined,
                     });
 
                     dispatch({ type: 'SUBMIT_SUCCESS', requestId: response.id });
                 }
 
-                setFormData({ name: '', email: '', message: '' });
+                setFormData({ name: '', email: '', message: '', language: 'EN' });
                 setDetailedRequest(blankDetailedRequest);
                 dispatch({ type: 'SET_STEP', step: 0 });
                 setOptionNotice('');
@@ -363,7 +371,7 @@ export const Contact = () => {
     );
 
     const handleChange = useCallback(
-        (field: keyof ContactFormData) => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        (field: keyof ContactFormData) => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
             setFormData((prev) => ({ ...prev, [field]: event.target.value }));
         },
         []
@@ -406,7 +414,7 @@ export const Contact = () => {
     // );
 
     const contactFormEnabled = getBool('availability.contactFormEnabled', true);
-    const publicContactEmail = getString('marketing.contactEmail', 'hello@codegetit.com');
+    const publicContactEmail = getString('marketing.contactEmail', 'info@codegetit.com');
 
     const formLabels = useMemo(
         () => ({
@@ -416,6 +424,7 @@ export const Contact = () => {
             emailPlaceholder: t.contact.emailPlaceholder,
             messageLabel: t.contact.messageLabel,
             messagePlaceholder: t.contact.messagePlaceholder,
+            languageLabel: t.contact.languageLabel,
             sendButtonLabel: t.contact.sendButton,
             sendingLabel: t.contact.sending,
             successText: t.contact.success,
@@ -423,6 +432,7 @@ export const Contact = () => {
         [
             t.contact.emailLabel,
             t.contact.emailPlaceholder,
+            t.contact.languageLabel,
             t.contact.messageLabel,
             t.contact.messagePlaceholder,
             t.contact.nameLabel,
@@ -474,6 +484,7 @@ export const Contact = () => {
                             communicationPreferenceOptions={communicationPreferenceOptions}
                             dataSensitivityOptions={dataSensitivityOptions}
                             priorityOptions={priorityOptions}
+                            languageOptions={languageOptions}
                             onChange={handleChange}
                             onDetailedRequestToggle={handleDetailedRequestToggle}
                             onDetailedFieldChange={handleDetailedFieldChange}

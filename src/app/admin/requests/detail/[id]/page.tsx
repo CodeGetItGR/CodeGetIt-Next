@@ -627,6 +627,7 @@ export default function RequestDetailPage({params} : Props){
                 isOpen={showCreateOffer}
                 onClose={handleCloseCreateOffer}
                 defaultRequestId={request.id}
+                defaultLanguage={request.language}
                 pricingContext={{
                     budgetRange: request.budgetRange,
                     budgetFlexibility: request.budgetFlexibility,

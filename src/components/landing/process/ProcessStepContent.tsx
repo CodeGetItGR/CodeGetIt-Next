@@ -35,7 +35,7 @@ export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badg
                 {step.description}
             </motion.p>
 
-            <motion.h4 {...fadeUp(0.14)} className="mt-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+            <motion.h4 {...fadeUp(0.14)} className="mt-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                 {deliverablesLabel}
             </motion.h4>
             <ul className="mt-3.5 space-y-2.5">
@@ -87,7 +87,7 @@ export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badg
                 }}
                 className="text-sm leading-7"
             >
-                <span className="font-semibold text-slate-400">{outcomeLabel}: </span>
+                <span className="font-semibold text-slate-500">{outcomeLabel}: </span>
                 {step.outcome}
             </motion.p>
         </div>

@@ -1,0 +1,17 @@
+{
+  "name": "CodeGetIt",
+  "short_name": "CodeGetIt",
+  "description": "Custom websites, web applications, and full-stack products.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#0d9488",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

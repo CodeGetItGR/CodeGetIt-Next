@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useLocale } from '@/i18n/UseLocale';
 import { useScrollHighlight } from '@/providers';
+import { usePublicSettings } from '@/settings/usePublicSettings';
 import { DotlessWordmark, EASE } from './it';
 import { Logo } from './Logo';
 
@@ -42,7 +43,7 @@ function FooterEpilogue({ caption }: { caption: string }) {
 
             {/* Caption — fades in after the wordmark settles */}
             <motion.p
-                className="mt-4 text-sm italic text-slate-400"
+                className="mt-4 text-sm italic text-slate-500"
                 initial={reduced ? false : { opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.9, ease: EASE, delay: 1.0 }}
@@ -53,15 +54,6 @@ function FooterEpilogue({ caption }: { caption: string }) {
     );
 }
 
-function LinkedInIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect width="4" height="12" x="2" y="9" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
 function MailIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -76,6 +68,8 @@ export function FooterSection() {
     const { t }       = useLocale();
     const footer      = t.landing.footer;
     const { scrollToSection } = useScrollHighlight();
+    const { getString } = usePublicSettings();
+    const contactEmail = getString('marketing.contactEmail', 'info@codegetit.com');
 
     const links = [
         { id: 'services' as const,  category: footer.categories.services,   items: footer.links.services   },
@@ -88,14 +82,21 @@ export function FooterSection() {
         [scrollToSection]
     );
 
+    // LinkedIn (and other socials) come back once the company profiles exist.
     const socialLinks = [
-        // { Icon: GithubIcon,   href: '#', label: footer.social.github   },
-        { Icon: LinkedInIcon, href: '#', label: footer.social.linkedin },
-        { Icon: MailIcon,     href: '#', label: footer.social.email    },
+        { Icon: MailIcon, href: `mailto:${contactEmail}`, label: footer.social.email },
     ];
 
     return (
-        <footer className="border-t border-slate-900/6 bg-white px-6 py-16">
+        <footer className="relative overflow-hidden border-t border-slate-900/6 bg-white px-6 py-16">
+            {/* Ghosted brand mark — structural watermark, exactly one place on the page */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-12 -right-16 -z-10 w-[480px] opacity-[0.04]"
+            >
+                <Logo variant="mark" className="h-auto w-full" />
+            </div>
+
             <div className="mx-auto max-w-6xl">
                 {/* Epilogue — the wordmark gave the page its dot and never takes it back */}
                 <FooterEpilogue caption={footer.lentDot} />
@@ -124,7 +125,7 @@ export function FooterSection() {
 
                     {/* Page navigation col */}
                     <div>
-                        <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Navigate</h4>
+                        <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Navigate</h4>
                         <ul className="mt-4 space-y-2.5">
                             {[
                                 {label:'Build', href: '#build'},
@@ -147,7 +148,7 @@ export function FooterSection() {
                     {/* Link cols */}
                     {links.map((group) => (
                         <div key={group.category}>
-                            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">{group.category}</h4>
+                            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{group.category}</h4>
                             <ul className="mt-4 space-y-2.5">
                                 {group.items.map((item, i) => (
                                     <li key={item}>
@@ -171,12 +172,12 @@ export function FooterSection() {
                     ))}
                 </div>
 
-                <div className="mt-12 flex flex-col gap-3 border-t border-slate-900/6 pt-8 text-xs text-slate-400 md:flex-row md:items-center md:justify-between">
+                <div className="mt-12 flex flex-col gap-3 border-t border-slate-900/6 pt-8 text-xs text-slate-500 md:flex-row md:items-center md:justify-between">
                     <p>© {currentYear} {footer.brandName}. {footer.rights}</p>
-                    {/*<div className="flex gap-5">*/}
-                    {/*    <a href="#" className="transition-colors hover:text-slate-900">{footer.privacy}</a>*/}
-                    {/*    <a href="#" className="transition-colors hover:text-slate-900">{footer.terms}</a>*/}
-                    {/*</div>*/}
+                    <div className="flex gap-5">
+                        <a href="/privacy" className="transition-colors hover:text-slate-900">{footer.privacy}</a>
+                        <a href="/terms" className="transition-colors hover:text-slate-900">{footer.terms}</a>
+                    </div>
                 </div>
             </div>
         </footer>

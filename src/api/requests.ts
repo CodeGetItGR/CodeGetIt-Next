@@ -5,6 +5,7 @@ import type {
     CommunicationPreference,
     DataSensitivity,
     DesiredStartWindow,
+    OfferLanguage,
     PagedResponse,
     Priority,
     ProjectType,
@@ -41,6 +42,7 @@ export interface UpdateRequestPayload {
     communicationPreference?: CommunicationPreference;
     legalOrBrandConstraints?: string;
     dataSensitivity?: DataSensitivity;
+    language?: OfferLanguage;
 }
 
 export interface ChangeStatusPayload<TStatus extends string> {
@@ -68,6 +70,7 @@ export interface SubmitRequestPayload {
     legalOrBrandConstraints?: string;
     dataSensitivity?: DataSensitivity;
     priority?: Priority;
+    language?: OfferLanguage;
 }
 
 export const requestApi = {

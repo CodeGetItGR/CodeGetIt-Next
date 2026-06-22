@@ -1,10 +1,11 @@
 import { apiClient } from '@/api/client';
-import {ContactMessageResponse, PagedResponse} from "@/api/types";
+import {ContactMessageResponse, OfferLanguage, PagedResponse} from "@/api/types";
 
 export interface SubmitContactMessagePayload {
     name: string;
     email: string;
     message: string;
+    language?: OfferLanguage;
 }
 
 export interface ContactMessageListQuery {

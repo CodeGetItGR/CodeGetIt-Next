@@ -15,6 +15,7 @@ export interface Translations {
         nameLabel: string;
         emailLabel: string;
         messageLabel: string;
+        languageLabel: string;
         email: string;
         phone: string;
         location: string;
@@ -631,12 +632,107 @@ export interface Translations {
                 CRITICAL: string;
             };
         };
+        offers: {
+            detail: {
+                loading: string;
+                notFound: string;
+                eyebrow: string;
+                previewPublicView: string;
+                backToOffers: string;
+                revisionLabel: string;
+                clientFeedbackLabel: string;
+                nav: {
+                    actions: string;
+                    details: string;
+                    lineItems: string;
+                    history: string;
+                    notesAndAudit: string;
+                };
+                actions: {
+                    title: string;
+                    statusLabel: string;
+                    sendToClient: string;
+                    sending: string;
+                    cancelOffer: string;
+                    discardDraft: string;
+                    reviseToDraft: string;
+                    cancelReasonLabel: string;
+                    confirmCancel: string;
+                    back: string;
+                    reviseReasonLabel: string;
+                    reviseReasonPlaceholder: string;
+                    confirmRevise: string;
+                    discardDraftConfirm: string;
+                    deleteLineItemConfirm: string;
+                    discardedBeforeSendingReason: string;
+                };
+                details: {
+                    title: string;
+                    editableHint: string;
+                    readOnlyHint: string;
+                    titleLabel: string;
+                    recipientNameLabel: string;
+                    recipientEmailLabel: string;
+                    currencyLabel: string;
+                    languageLabel: string;
+                    priceAmountLabel: string;
+                    taxRateLabel: string;
+                    validUntilLabel: string;
+                    descriptionLabel: string;
+                    saveChanges: string;
+                    saving: string;
+                };
+                lineItems: {
+                    title: string;
+                    editableHint: string;
+                    readOnlyHint: string;
+                    addItem: string;
+                    editItem: string;
+                    newItem: string;
+                    descriptionLabel: string;
+                    quantityLabel: string;
+                    unitPriceLabel: string;
+                    taxRateLabel: string;
+                    sortOrderLabel: string;
+                    save: string;
+                    saving: string;
+                    cancel: string;
+                    empty: string;
+                    tableDescription: string;
+                    tableQty: string;
+                    tableUnitPrice: string;
+                    tableTotal: string;
+                    tableAction: string;
+                    edit: string;
+                    delete: string;
+                    subtotal: string;
+                    tax: string;
+                    total: string;
+                };
+                history: {
+                    title: string;
+                    at: string;
+                };
+            };
+        };
     };
 
     publicOffer: {
         loadingOffer: string;
         offerNotFoundTitle: string;
         offerNotFoundBody: string;
+        proposal: string;
+        project: string;
+        offerLabel: string;
+        readyToMoveForward: string;
+        readyToMoveForwardBody: string;
+        acceptThisOffer: string;
+        rejectThisOffer: string;
+        eachUnit: string;
+        unit: string;
+        units: string;
+        notAvailable: string;
+        confidentialFooter: string;
         forLabel: string;
         valuedClient: string;
         expiredBanner: string;
@@ -653,6 +749,7 @@ export interface Translations {
         notSpecified: string;
         sentOn: string;
         revision: string;
+        language: string;
         deliverables: string;
         description: string;
         quantity: string;
