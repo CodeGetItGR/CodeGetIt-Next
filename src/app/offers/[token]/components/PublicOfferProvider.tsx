@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { publicOfferApi, type PublicOfferResponse, type RejectOfferPayload } from '@/api';
-import { useSettingsOptions } from '@/hooks';
 import type { Translations } from '@/i18n/types';
 import { PublicOfferContext, type PublicOfferActionState } from './public-offer-context';
 
@@ -20,8 +19,6 @@ export const PublicOfferProvider = ({ token, offer, text, localeTag, onRefetch, 
     const [rejectionNote, setRejectionNote] = useState('');
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [actionState, setActionState] = useState<PublicOfferActionState>('none');
-
-    const { options: languageOptions } = useSettingsOptions({ groupKey: 'offer.language', scope: 'public', onlyEnabled: true });
 
     useEffect(() => {
         document.title = `${offer.offer.title} — ${text.offerLabel}`;
@@ -73,10 +70,9 @@ export const PublicOfferProvider = ({ token, offer, text, localeTag, onRefetch, 
     const showRejected = isRejected || actionState === 'rejected';
     const showActions = isActionable && actionState === 'none';
 
-    const offerLanguageLabel = useMemo(
-        () => languageOptions.find((item) => item.value === offer.offer.language)?.label ?? offer.offer.language,
-        [languageOptions, offer.offer.language]
-    );
+    // Always read from the selected text bundle (which already matches the offer's own
+    // language), not the options catalog — that's keyed off the site locale toggle instead.
+    const offerLanguageLabel = text.languageNames[offer.offer.language] ?? offer.offer.language;
 
     const fmt = useCallback(
         (amount: number) =>

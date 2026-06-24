@@ -1,5 +1,6 @@
 export * from './auth'
 export * from './client'
+export * from './dataRights'
 export * from './offers'
 export * from './ai'
 export * from './chatWebSocket'

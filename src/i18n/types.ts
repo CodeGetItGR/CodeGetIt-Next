@@ -239,6 +239,7 @@ export interface Translations {
             rights: string;
             privacy: string;
             terms: string;
+            yourData: string;
             social: {
                 github: string;
                 linkedin: string;
@@ -750,6 +751,10 @@ export interface Translations {
         sentOn: string;
         revision: string;
         language: string;
+        languageNames: {
+            EN: string;
+            EL: string;
+        };
         deliverables: string;
         description: string;
         quantity: string;

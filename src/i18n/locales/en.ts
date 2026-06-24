@@ -833,6 +833,7 @@ export const en: Translations = {
             rights: 'All rights reserved.',
             privacy: 'Privacy Policy',
             terms: 'Terms of Service',
+            yourData: 'Manage Your Data',
             social: {
                 github: 'GitHub',
                 linkedin: 'LinkedIn',
@@ -878,6 +879,10 @@ export const en: Translations = {
         sentOn: 'Sent on',
         revision: 'Revision',
         language: 'Language',
+        languageNames: {
+            EN: 'English',
+            EL: 'Greek',
+        },
         deliverables: 'Deliverables',
         description: 'Description',
         quantity: 'Qty',

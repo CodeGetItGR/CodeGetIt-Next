@@ -177,6 +177,7 @@ export function FooterSection() {
                     <div className="flex gap-5">
                         <a href="/privacy" className="transition-colors hover:text-slate-900">{footer.privacy}</a>
                         <a href="/terms" className="transition-colors hover:text-slate-900">{footer.terms}</a>
+                        <a href="/privacy/your-data" className="transition-colors hover:text-slate-900">{footer.yourData}</a>
                     </div>
                 </div>
             </div>

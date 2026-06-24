@@ -15,7 +15,7 @@ export function ActGetSection() {
   const { t } = useLocale();
   const copy = t.landing.story.get;
   const reduced = useReducedMotion();
-  const { pulse } = useIt();
+  const { pulse, remeasure } = useIt();
 
   return (
     <section className="relative py-28 lg:py-40">
@@ -40,7 +40,7 @@ export function ActGetSection() {
           {copy.sub}
         </motion.p>
 
-        <motion.div {...fadeRiseInView(0.3, reduced)} className="mt-12">
+        <motion.div {...fadeRiseInView(0.3, reduced)} onAnimationComplete={remeasure} className="mt-12">
           <a
             href="#contact"
             onMouseEnter={() => pulse('act-get-cta')}

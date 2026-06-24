@@ -14,6 +14,8 @@ const PUBLIC_ENDPOINTS: { path: string; method?: string }[] = [
     { path: '/auth/refresh' },
     { path: '/requests/submit', method: 'POST' },
     { path: '/contact-messages', method: 'POST' },
+    { path: '/data-rights/export', method: 'POST' },
+    { path: '/data-rights/erase', method: 'POST' },
     { path: '/settings/public', method: 'GET' },
     { path: '/settings/options/public', method: 'GET' },
     { path: '/public/offers' },

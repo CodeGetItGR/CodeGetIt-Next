@@ -299,6 +299,8 @@ export const Contact = () => {
                         message: formData.message.trim(),
                         language: (formData.language || undefined) as OfferLanguage | undefined,
                     });
+
+                    dispatch({ type: 'SUBMIT_SUCCESS' });
                 } else {
                     if (!hasDetailedRequiredOptions) {
                         throw new Error('Request options are still loading. Please wait a moment and try again.');

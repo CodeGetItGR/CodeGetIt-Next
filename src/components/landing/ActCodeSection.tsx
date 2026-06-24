@@ -450,7 +450,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
       style={{ height: `calc(100vh + ${trackVh}vh)` }}
     >
       <div ref={stageRef} className="sticky top-0 h-screen overflow-hidden supports-[height:100svh]:h-svh">
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-8 pt-20 lg:px-10">
+        <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-8 pt-28 md:pt-20 lg:px-10">
           <motion.p
             {...fadeRiseInView(0, false)}
             className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500"

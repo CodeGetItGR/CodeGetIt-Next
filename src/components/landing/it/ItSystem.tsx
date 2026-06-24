@@ -39,6 +39,13 @@ interface ItContextValue {
   unregister: (id: string) => void;
   /** Squash-acknowledge a rest (e.g. CTA hover) — only fires if the dot is there. */
   pulse: (id: string) => void;
+  /**
+   * Re-measure every registered rest. Transforms (e.g. a rest's own entrance
+   * animation sliding it into place) don't trigger the body ResizeObserver,
+   * so a rest that moves after it registers needs to ask for this explicitly
+   * once it settles — otherwise the dot docks wherever it was measured first.
+   */
+  remeasure: () => void;
   /** The rest the dot currently occupies — sections use this to ink their lines. */
   activeId: string | null;
   /** True when rests render their own static teal periods (reduced motion). */
@@ -155,8 +162,8 @@ export function ItProvider({ children }: { children: ReactNode }) {
   }, [measure, updateActive]);
 
   const value = useMemo<ItContextValue>(
-    () => ({ register, unregister, pulse, activeId, staticDots: reduced }),
-    [register, unregister, pulse, activeId, reduced],
+    () => ({ register, unregister, pulse, remeasure: measure, activeId, staticDots: reduced }),
+    [register, unregister, pulse, measure, activeId, reduced],
   );
 
   return (
@@ -289,7 +296,7 @@ function TheItDot({ activeId, ready, version, pulseTick, pointsRef, originRef }:
 
   return (
     <motion.div
-      className="absolute left-0 top-0 h-4 w-4 rounded-full bg-brand-600 will-change-transform"
+      className="absolute left-0 top-0 h-4 w-4 rounded-full bg-brand-600 shadow-[0_0_0_2px_rgba(255,255,255,0.9)] will-change-transform"
       style={{ x: sx, y: sy, scale: ss }}
     />
   );
