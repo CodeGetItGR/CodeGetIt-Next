@@ -6,6 +6,7 @@ import {
     ActCodeSection,
     ActGetSection,
     ComparisonSection,
+    CookieNotice,
     FAQSection,
     FooterSection,
     HeroSection,
@@ -40,6 +41,7 @@ export default function LandingPage() {
                             <Contact />
                             <FooterSection />
                         </ItProvider>
+                        <CookieNotice />
                     </div>
                 </ScrollHighlightProvider>
             </ContactRequestProvider>

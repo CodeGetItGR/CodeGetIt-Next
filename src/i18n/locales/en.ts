@@ -845,6 +845,11 @@ export const en: Translations = {
                 resources: ['Contact'],
             },
         },
+        cookieNotice: {
+            text: "We don't use tracking cookies or analytics on this site.",
+            linkLabel: 'Learn more',
+            dismiss: 'Got it',
+        },
     },
     publicOffer: {
         loadingOffer: 'Loading offer...',

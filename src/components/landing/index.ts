@@ -1,6 +1,7 @@
 export * from './ActCodeSection';
 export * from './ActGetSection';
 export * from './ComparisonSection';
+export * from './CookieNotice';
 export * from './FAQSection';
 export * from './FooterSection';
 export * from './HeroSection';

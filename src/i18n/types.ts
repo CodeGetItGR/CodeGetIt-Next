@@ -251,6 +251,11 @@ export interface Translations {
                 resources: string[];
             };
         };
+        cookieNotice: {
+            text: string;
+            linkLabel: string;
+            dismiss: string;
+        };
     };
 
     // Testimonials Section
