@@ -77,20 +77,32 @@ export function ProjectsSection() {
                         animate={isInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.6, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
                         whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
-                        className="group relative mx-auto block aspect-[4/3] w-full max-h-[280px] max-w-[440px] overflow-hidden rounded-2xl bg-white ring-1 ring-slate-900/[0.08] soft-shadow lg:mx-0 lg:max-h-none"
+                        className="group relative mx-auto block w-full max-w-[440px] overflow-hidden rounded-2xl bg-white ring-1 ring-brand-600/[0.12] soft-shadow lg:mx-0"
                     >
-                        <Image
-                            src={project.image}
-                            alt={project.title}
-                            fill
-                            sizes="(min-width: 1024px) 440px, 100vw"
-                            className="object-contain p-10"
-                        />
+                        {/* Browser-chrome header — reads "a live product," not a clipped image */}
+                        <div className="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50 px-4 py-2.5">
+                            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" aria-hidden />
+                            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" aria-hidden />
+                            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" aria-hidden />
+                            <span aria-hidden className="ml-2 flex-1 truncate rounded-full bg-white px-3 py-1 text-[10px] text-slate-400 ring-1 ring-slate-200">
+                                {project.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                            </span>
+                        </div>
 
-                        {/* Squared "Live" marker — reachable, not pulsing (only circle on the page is It) */}
-                        <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1.5 backdrop-blur-sm">
-                            <span className="inline-block h-1.5 w-1.5 rounded-[2px] bg-emerald-500" />
-                            <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">{live}</span>
+                        <div className="relative aspect-[4/3] max-h-[240px] w-full lg:max-h-none">
+                            <Image
+                                src={project.image}
+                                alt={project.title}
+                                fill
+                                sizes="(min-width: 1024px) 440px, 100vw"
+                                className="object-contain p-8"
+                            />
+
+                            {/* Squared "Live" marker — reachable, not pulsing (only circle on the page is It) */}
+                            <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1.5 backdrop-blur-sm">
+                                <span className="inline-block h-1.5 w-1.5 rounded-[2px] bg-emerald-500" />
+                                <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">{live}</span>
+                            </div>
                         </div>
                     </motion.a>
                 </div>
