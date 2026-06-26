@@ -49,13 +49,6 @@ function ArrowLeftIcon({ className }: { className?: string }) {
 
 const serviceIcons = [GlobeIcon, LayersIcon, DatabaseIcon];
 
-const featureMatrix = [
-    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Basic Integrations'],
-    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Interactive UI & Dashboards', 'Managed Authentication', 'Third-Party Integrations'],
-    ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Interactive UI & Dashboards', 'Custom Backend & APIs', 'Database Design', 'Admin Dashboard', 'Custom Authentication'],
-];
-
-const serviceTimelines    = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
 const serviceDiscountKeys = ['marketing.staticDiscount', 'marketing.webDiscount', 'marketing.fullDiscount'];
 
 const FACTOR_ICONS = [
@@ -135,7 +128,7 @@ export function ServicesSection() {
                 <div ref={containerRef} className="mt-16 grid gap-5 md:grid-cols-3">
                     {services.items.map((service, index) => {
                         const Icon        = serviceIcons[index] ?? serviceIcons[0];
-                        const features    = featureMatrix[index] ?? [];
+                        const features    = service.features ?? [];
                         const price         = settingsQuery.data?.[service.priceKey] ?? service.defaultPrice;
                         const discountPct   = Number.parseInt(settingsQuery.data?.[serviceDiscountKeys[index] ?? ''] ?? '0') || 0;
                         const discountedPrice = discountPct > 0
@@ -241,7 +234,7 @@ export function ServicesSection() {
                                             </p>
                                         )}
                                         <p className="mt-1 text-xs text-slate-500">
-                                            Estimated timeline: {serviceTimelines[index]}
+                                            {services.estimatedTimelineLabel}: {services.timelineEstimates[index]}
                                         </p>
 
                                         <button

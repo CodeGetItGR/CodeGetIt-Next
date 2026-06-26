@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DotlessWordmark, Socket } from './it';
 import { Logo } from './Logo';
+import { LanguageSwitch } from './LanguageSwitch';
 
 const links = [
     { label: 'Build',    href: '#build',    id: 'build'    },
@@ -105,6 +106,9 @@ export function Navbar() {
                     })}
                 </nav>
 
+                {/* Language switch — desktop only, sits between nav and CTA */}
+                <LanguageSwitch className="hidden md:inline-flex" />
+
                 {/* Desktop CTA — button-in-button pill */}
                 <a
                     href="#contact"
@@ -152,6 +156,9 @@ export function Navbar() {
                                 <path d="M18 6 6 18M6 6l12 12" />
                             </svg>
                         </button>
+
+                        {/* Language switch — mirrors the close button, top-left */}
+                        <LanguageSwitch className="absolute left-5 top-5 bg-slate-100" />
 
                         <motion.nav
                             initial="hidden"

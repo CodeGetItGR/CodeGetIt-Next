@@ -631,6 +631,8 @@ export const en: Translations = {
                 'From streamlined marketing sites to full-scale web applications, we design and build solutions tailored to what actually moves your business forward.  Each tier builds on the previous one, unlocking more capability and business impact.',
             featured: 'Most requested',
             getStarted: 'Get Started',
+            estimatedTimelineLabel: 'Estimated timeline',
+            timelineEstimates: ['2–4 weeks', '4–8 weeks', '8–16+ weeks'],
             priceDisclaimer: 'These are honest starting points — not fixed quotes. Every project is scoped in a brief discovery call, so the number you pay reflects what you actually need.',
             timeEstimateDisclaimer: 'Timelines are refined after discovery, scope clarification, and an assessment of technical complexity and current availability.',
             pricingFactorsLabel: 'What shapes the final number',

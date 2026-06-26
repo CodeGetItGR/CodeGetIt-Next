@@ -143,6 +143,8 @@ export interface Translations {
             description: string;
             featured: string;
             getStarted: string;
+            estimatedTimelineLabel: string;
+            timelineEstimates: [string, string, string];
             priceDisclaimer: string;
             timeEstimateDisclaimer: string;
             pricingFactorsLabel: string;

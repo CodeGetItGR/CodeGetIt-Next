@@ -7,6 +7,7 @@ export * from './FooterSection';
 export * from './HeroSection';
 export * from './HowWeWorkSection';
 export * from './hero';
+export * from './LanguageSwitch';
 export * from './it';
 export * from './Navbar';
 export * from './ProjectsSection';
