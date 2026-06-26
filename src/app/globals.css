@@ -267,29 +267,6 @@
         pointer-events: none;
     }
 
-    /* ── Act II item titles: drafted → inked → done ─────────────────────────
-       Unread items are drafted outlines; the one the dot serves is inked;
-       items already read recede. "We code it", performed by the type. */
-    .act-title {
-        -webkit-text-stroke: 0.016em transparent;
-        transition:
-            color 0.45s var(--ease-premium),
-            -webkit-text-stroke-color 0.45s var(--ease-premium);
-    }
-    .act-title--draft {
-        color: transparent;
-        -webkit-text-stroke-color: rgba(15, 23, 42, 0.3);
-    }
-    .act-title--active {
-        color: #0f172a;
-        /* inks only after the dot lands — mirrors ACT2.inkDelay in it/beat.ts */
-        transition-delay: 0.28s;
-    }
-    .act-title--done   { color: rgba(13, 148, 136, 0.38); transition-delay: 0s; }
-    @supports not (-webkit-text-stroke: 1px #000) {
-        .act-title--draft { color: rgba(148, 163, 184, 0.65); }
-    }
-
     /* ── Delivered periods: the single hover pulse, re-armed per hover ──────
        The pop-in is Framer-driven; the pulse is pure CSS so it can't loop. */
     .group:hover .delivered-period {

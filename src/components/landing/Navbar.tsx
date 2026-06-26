@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/i18n/UseLocale';
-import { DotlessWordmark, Socket } from './it';
+import { DotlessWordmark } from './it';
 import { Logo } from './Logo';
 import { LanguageSwitch } from './LanguageSwitch';
 
@@ -115,22 +115,8 @@ export function Navbar() {
                     })}
                 </nav>
 
-                {/* Language switch — desktop only, sits between nav and CTA */}
+                {/* Language switch — desktop only */}
                 <LanguageSwitch className="hidden md:inline-flex" />
-
-                {/* Desktop CTA — button-in-button pill */}
-                <a
-                    href="#contact"
-                    className="group hidden items-center gap-2 rounded-full bg-brand-600 py-2 pr-2 pl-4 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-brand-700 active:scale-[0.98] md:inline-flex"
-                >
-                    <Socket />
-                    {navCopy.contactButton}
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M7 17 17 7M9 7h8v8" />
-                        </svg>
-                    </span>
-                </a>
 
                 {/* Mobile hamburger — morphs to X */}
                 <button

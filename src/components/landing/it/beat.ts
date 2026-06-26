@@ -37,11 +37,6 @@ export const ACT2 = {
   /** Shorter pin under lg — gesture scrolling makes every pinned vh dearer. */
   compact: { introVh: 36, perItemVh: 48, closingVh: 28 },
   /**
-   * Title inks as the dot lands (s). Applied on activation only, so reverse
-   * scrubbing never feels laggy. Mirrored in globals.css `.act-title--active`.
-   */
-  inkDelay: 0.28,
-  /**
    * Card enter starts this long after the old card finishes exiting (s) —
    * with the exit, the card lands ≈0.44s after the hop starts, once the ink
    * has visibly taken. The empty beat is what makes the card feel caused.

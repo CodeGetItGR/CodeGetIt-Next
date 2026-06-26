@@ -1,23 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  AnimatePresence,
-  motion,
-  useInView,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 
 import { useLocale } from '@/i18n/UseLocale';
 import type { Translations } from '@/i18n/types';
-import { cn } from '@/lib/utils';
 
-import { ACT2, ActLine, EASE, TRAVEL, fadeRiseInView } from './it';
+import { ACT2, ActLine, EASE, fadeRiseInView } from './it';
 
 type CodeCopy = Translations['landing']['story']['code'];
 type CodeItem = CodeCopy['items'][number];
@@ -216,90 +205,100 @@ function ScrollCue({ label }: { label: string }) {
   );
 }
 
-interface ItemRowProps {
-  entry: CodeItem;
-  state: 'draft' | 'active' | 'done';
-  /** Pin progress + this item's segment — drives the under-rule fill. */
-  progress: MotionValue<number>;
-  segment: [number, number];
-  periodRef: (el: HTMLSpanElement | null) => void;
-  enterDelay: number;
-}
-
-/**
- * One build line: drafted outline → inked while the dot serves it → receded.
- * The period span must never sit under a transform (the dot is aimed at its
- * measured spot), so the entrance slides the title text inside a mask while
- * the row itself only fades.
- */
-function ItemRow({ entry, state, progress, segment, periodRef, enterDelay }: ItemRowProps) {
-  const fill = useTransform(progress, segment, [0, 1]);
-  // The masked title is fully clipped at x:108%, so it can never trigger its
-  // own whileInView — the unclipped row triggers and the variants propagate.
-  const rowVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5, ease: EASE, delay: enterDelay } },
-  };
-  const slideVariants = {
-    hidden: { x: '108%' },
-    visible: { x: '0%', transition: { duration: 0.8, ease: EASE, delay: enterDelay } },
-  };
+/** The traveling It's period — wherever the active declaration is, this is it. */
+function ActDot() {
   return (
-    <li>
-      <motion.div
-        variants={rowVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="w-fit"
-      >
-        <span
-          className={cn(
-            'act-title font-display text-[clamp(1.3rem,3.4vw,2.9rem)] font-bold leading-[1.15] tracking-[-0.02em]',
-            state === 'draft' && 'act-title--draft',
-            state === 'active' && 'act-title--active',
-            state === 'done' && 'act-title--done',
-          )}
-        >
-          <span className="inline-block overflow-hidden pb-[0.12em] mb-[-0.12em] align-bottom">
-            <motion.span className="inline-block will-change-transform" variants={slideVariants}>
-              {entry.title}
-            </motion.span>
-          </span>
-          <span ref={periodRef} aria-hidden className="ml-[0.14em] inline-block h-[0.12em] w-[0.12em] align-baseline" />
-        </span>
-        {/* Segment progress — fills while this line is being read */}
-        <motion.span
-          aria-hidden
-          style={{ scaleX: fill }}
-          className={cn(
-            'mt-1 block h-px origin-left bg-slate-900/30 transition-opacity duration-300',
-            // appears with the ink, not before it — same beat as the title
-            state === 'active' ? 'opacity-100 delay-280' : 'opacity-0',
-          )}
-        />
-      </motion.div>
-      {/* The spec card is visual theater; readers get the spec inline. */}
-      <span className="sr-only">
-        {entry.description} {entry.deliverables.join(', ')}.
-      </span>
-    </li>
+    <span
+      aria-hidden
+      className="ml-[0.12em] inline-block h-[0.13em] w-[0.13em] rounded-full bg-brand-600 align-baseline"
+    />
   );
 }
 
-interface SpotPoint {
-  x: number;
-  y: number;
-  size: number;
+/**
+ * A compact list title — plain, instant, no per-item animation. Once read, an
+ * item simply stops rendering here (it doesn't recede into a "done" row), so
+ * the list only ever shows what's still ahead.
+ */
+function TitleNode({ text }: { text: string }) {
+  return (
+    <span className="font-display block text-[clamp(0.95rem,1.6vw,1.3rem)] font-bold leading-[1.25] tracking-[-0.02em] text-slate-900/30">
+      {text}
+    </span>
+  );
+}
+
+/**
+ * The Echo Dot — a small companion to the stage dot, riding a fixed track at
+ * the screen edge so progress reads continuously no matter where the eye is
+ * on the card or list. Same teal as the stage dot (it's the same character,
+ * doing extra work), with a tick per item so the stops are countable too.
+ */
+function ProgressTrack({
+  progress,
+  total,
+  introFrac,
+  perFrac,
+}: {
+  progress: MotionValue<number>;
+  total: number;
+  introFrac: number;
+  perFrac: number;
+}) {
+  const top = useTransform(progress, [0, 1], ['0%', '100%']);
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute right-4 top-1/2 hidden h-[34vh] -translate-y-1/2 sm:block lg:right-10 lg:h-[40vh]"
+    >
+      <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-900/10" />
+      {Array.from({ length: total }, (_, i) => introFrac + (i + 0.5) * perFrac).map((t, i) => (
+        <span
+          key={i}
+          style={{ top: `${t * 100}%` }}
+          className="absolute left-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-900/25"
+        />
+      ))}
+      <motion.span
+        style={{ top }}
+        className="absolute left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600 shadow-[0_0_0_4px_rgba(13,148,136,0.14)]"
+      />
+    </div>
+  );
+}
+
+/** The idle-scroll nudge — fires only once scrolling has actually stalled. */
+function IdleNudge({ label, show }: { label: string; show: boolean }) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } }}
+          exit={{ opacity: 0, y: 8, transition: { duration: 0.2, ease: EASE } }}
+          className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center lg:bottom-12"
+        >
+          <motion.span
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+            className="rounded-full bg-slate-900 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-slate-900/15"
+          >
+            {label} ↓
+          </motion.span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
 
 /**
  * The pinned scene. The track reserves the scroll budget; the stage sticks for
  * its duration while progress drives the sequence — nobody leaves until all
- * four builds have been met. A local stage dot plays It in here (stage
- * coordinates are pin-invariant); the global dot is parked off-screen at the
- * hero until Act III, so only one It is ever visible. The scene resolves with
- * the dot returning to finish the line — "We code it." — before the pin lets go.
+ * four builds have been met. The dot is played by a single shared-layout
+ * element (see ActDot) that relocates between the act line and the active
+ * item's title, so its motion is handled entirely by Framer's own layout
+ * projection — no separate measurement system to fall out of sync.
  */
 function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: string }) {
   const total = copy.items.length;
@@ -322,79 +321,14 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
 
   const trackRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const lineDotRef = useRef<HTMLSpanElement>(null);
-  const itemDotRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const spotsRef = useRef<SpotPoint[]>([]);
   const indexRef = useRef(-1);
-  const poppedRef = useRef(false);
 
   const [index, setIndex] = useState(-1);
   const [dir, setDir] = useState(1);
+  const [idle, setIdle] = useState(false);
 
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
   const engaged = useInView(stageRef, { once: true, amount: 0.75 });
-
-  // ── The stage dot ──
-  const dx = useMotionValue(-100);
-  const dy = useMotionValue(-100);
-  const dsize = useMotionValue(0);
-  const squash = useMotionValue(1);
-  const sx = useSpring(dx, TRAVEL);
-  const sy = useSpring(dy, TRAVEL);
-  const sw = useSpring(dsize, { stiffness: 420, damping: 26 });
-  const sq = useSpring(squash, { stiffness: 520, damping: 18 });
-
-  /**
-   * Spot for a sequence position: items map to their periods; the intro (-1)
-   * and the closing return (total) both rest on the act line's period.
-   */
-  const spotFor = useCallback((i: number) => spotsRef.current[i < 0 || i >= total ? 0 : i + 1], [total]);
-
-  // Stage coordinates don't move while pinned, so a measure on mount/resize
-  // and font-load keeps the spots honest without per-frame reads.
-  const measure = useCallback(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    const sRect = stage.getBoundingClientRect();
-    const toSpot = (el: HTMLSpanElement | null): SpotPoint | null => {
-      if (!el) return null;
-      const r = el.getBoundingClientRect();
-      if (r.width === 0) return null;
-      return {
-        x: r.left - sRect.left + r.width / 2,
-        y: r.top - sRect.top + r.height / 2,
-        size: Math.max(r.width, 5),
-      };
-    };
-    const spots: (SpotPoint | null)[] = [toSpot(lineDotRef.current)];
-    for (let i = 0; i < total; i++) spots.push(toSpot(itemDotRefs.current[i]));
-    if (spots.some((s) => s === null)) return;
-    spotsRef.current = spots as SpotPoint[];
-    // Re-seat the dot silently after layout shifts (resize, font swap).
-    if (poppedRef.current) {
-      const spot = spotFor(indexRef.current);
-      dx.set(spot.x - spot.size / 2);
-      dy.set(spot.y - spot.size / 2);
-      dsize.set(spot.size);
-    }
-  }, [total, spotFor, dx, dy, dsize]);
-
-  useEffect(() => {
-    measure();
-    const observer = new ResizeObserver(measure);
-    if (stageRef.current) observer.observe(stageRef.current);
-    // The stage content is justify-centered, so a card slot that outgrows its
-    // min-h shifts the whole list without resizing the stage — watching the
-    // grid catches that and re-seats the dot silently.
-    if (gridRef.current) observer.observe(gridRef.current);
-    window.addEventListener('resize', measure);
-    document.fonts?.ready.then(measure).catch(() => {});
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', measure);
-    };
-  }, [measure]);
 
   // Scroll progress → sequence index (and travel direction for the swaps).
   // -1 = intro cue · 0..total-1 = items · total = the closing return.
@@ -415,32 +349,26 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
     return scrollYProgress.on('change', compute);
   }, [scrollYProgress, introFrac, perFrac, closingFrac, total]);
 
-  // First sight of the stage: the dot pops in on the line's period.
+  // Idle-scroll nudge: if the user pauses mid-sequence (not the intro, which
+  // already has its own cue), say so — but only once scrolling has actually
+  // stalled, so it never nags someone who's scrolling fine.
   useEffect(() => {
-    if (!engaged || poppedRef.current) return;
-    measure();
-    const spot = spotFor(indexRef.current);
-    if (!spot) return;
-    dx.jump(spot.x - spot.size / 2);
-    dy.jump(spot.y - spot.size / 2);
-    dsize.jump(0);
-    poppedRef.current = true;
-    const pop = setTimeout(() => dsize.set(spot.size), 140);
-    return () => clearTimeout(pop);
-  }, [engaged, measure, dx, dy, dsize, spotFor]);
-
-  // Each hop: spring to the new period with the landing squash.
-  useEffect(() => {
-    if (!poppedRef.current) return;
-    const spot = spotFor(index);
-    if (!spot) return;
-    dx.set(spot.x - spot.size / 2);
-    dy.set(spot.y - spot.size / 2);
-    dsize.set(spot.size);
-    squash.set(1.28);
-    const settle = setTimeout(() => squash.set(1), 150);
-    return () => clearTimeout(settle);
-  }, [index, dx, dy, dsize, squash, spotFor]);
+    if (!engaged) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const arm = () => {
+      setIdle(false);
+      clearTimeout(timer);
+      if (indexRef.current >= 0 && indexRef.current < total) {
+        timer = setTimeout(() => setIdle(true), 1200);
+      }
+    };
+    arm();
+    const unsub = scrollYProgress.on('change', arm);
+    return () => {
+      unsub();
+      clearTimeout(timer);
+    };
+  }, [engaged, scrollYProgress, total]);
 
   return (
     <section
@@ -458,11 +386,35 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
             {copy.actLabel}
           </motion.p>
 
-          <ActLine
-            text={copy.line}
-            periodRef={lineDotRef}
-            className="mt-4 text-[clamp(2.2rem,6vw,4.2rem)] leading-[1.02]"
-          />
+          <div className="relative mt-4">
+            {/* Same fade-and-rise entrance every other section's heading uses —
+               no shared-layout move, just a clean swap each hop. */}
+            <AnimatePresence mode="wait" initial={false}>
+              {index < 0 || index >= total ? (
+                <motion.h2
+                  key="line"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } }}
+                  exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: EASE } }}
+                  className="font-display text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900"
+                >
+                  {copy.line}
+                  <ActDot />
+                </motion.h2>
+              ) : (
+                <motion.h2
+                  key={`item-${index}`}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } }}
+                  exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: EASE } }}
+                  className="font-display text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900"
+                >
+                  {copy.items[index].title}
+                  <ActDot />
+                </motion.h2>
+              )}
+            </AnimatePresence>
+          </div>
 
           <motion.p
             {...fadeRiseInView(0.15, false)}
@@ -471,21 +423,18 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
             {copy.sub}
           </motion.p>
 
-          <div ref={gridRef} className="mt-6 grid items-center gap-6 lg:mt-14 lg:grid-cols-12 lg:gap-8">
-            {/* The build list — every line gets its own scroll segment */}
-            <ul className="order-1 space-y-3 lg:order-2 lg:col-span-7 lg:space-y-6">
+          <div className="mt-6 grid items-center gap-6 lg:mt-14 lg:grid-cols-12 lg:gap-8">
+            {/* The build list — only what's still ahead; read items leave for
+               good, reappearing only if you scroll back up past them. */}
+            <ul className="order-1 space-y-2 lg:order-2 lg:col-span-7 lg:space-y-4">
               {copy.items.map((entry, i) => (
-                <ItemRow
-                  key={entry.title}
-                  entry={entry}
-                  state={i === index ? 'active' : i < index ? 'done' : 'draft'}
-                  progress={scrollYProgress}
-                  segment={[introFrac + i * perFrac, introFrac + (i + 1) * perFrac]}
-                  periodRef={(el) => {
-                    itemDotRefs.current[i] = el;
-                  }}
-                  enterDelay={0.1 + i * 0.08}
-                />
+                <motion.li key={entry.title} layout transition={{ duration: 0.5, ease: EASE }}>
+                  {i > index && <TitleNode text={entry.title} />}
+                  {/* The spec card is visual theater; readers get the spec inline. */}
+                  <span className="sr-only">
+                    {entry.description} {entry.deliverables.join(', ')}.
+                  </span>
+                </motion.li>
               ))}
             </ul>
 
@@ -521,12 +470,8 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
           </div>
         </div>
 
-        {/* The stage's It — takes the relay inside the pin */}
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute left-0 top-0 z-20 rounded-full bg-brand-600 will-change-transform"
-          style={{ x: sx, y: sy, width: sw, height: sw, scale: sq }}
-        />
+        <ProgressTrack progress={scrollYProgress} total={total} introFrac={introFrac} perFrac={perFrac} />
+        <IdleNudge label={copy.scrollCue} show={idle} />
       </div>
     </section>
   );
