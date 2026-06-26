@@ -1,4 +1,5 @@
 export * from './icons'
+export * from './stepIcons'
 export * from './ProcessStepContent'
 export * from './ProcessTimeline'
 export * from './ProjectTypeBadge'

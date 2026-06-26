@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion, useTransform, type MotionValue } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { stepIcons } from './icons';
+import { stepIcons } from './stepIcons';
 
 interface ProcessTimelineProps {
     steps: { title: string }[];

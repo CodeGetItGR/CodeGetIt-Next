@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import type { Translations } from '@/i18n/types';
 import { ProjectTypeBadge } from './ProjectTypeBadge';
-import { stepIcons } from './icons';
+import { stepIcons } from './stepIcons';
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 

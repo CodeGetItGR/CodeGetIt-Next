@@ -37,5 +37,3 @@ export function LaunchIcon({ size = 22, className, 'aria-hidden': ariaHidden }: 
     </svg>
   );
 }
-
-export const stepIcons = [DiscoverIcon, DesignIcon, BuildIcon, LaunchIcon];
