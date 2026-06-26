@@ -99,19 +99,64 @@ export const el: Translations = {
         // Dead code — layout.tsx always reads metadata from `en`, regardless of locale.
         seo: en.landing.seo,
         hero: {
-            // `navigation` is unused — the navbar hardcodes its own labels.
-            navigation: en.landing.hero.navigation,
+            navigation: {
+                links: {
+                    build: 'Ανάπτυξη',
+                    services: 'Υπηρεσίες',
+                    compare: 'Σύγκριση',
+                    process: 'Διαδικασία',
+                    work: 'Έργα',
+                    faq: 'Ερωτήσεις',
+                },
+                contactButton: 'Ζήτησε προσφορά',
+                openMenuAria: 'Άνοιγμα μενού',
+                closeMenuAria: 'Κλείσιμο μενού',
+            },
             // Act I — theme, left in English.
             actLabel: en.landing.hero.actLabel,
             line: en.landing.hero.line,
-            sub: en.landing.hero.sub,
+            sub: 'Μια ιδέα. Ένα πρόβλημα. Ένα σκίτσο σε χαρτί. Ό,τι κι αν είναι — μια ολοκληρωμένη εφαρμογή, μια ιστοσελίδα — ξεκινάει δικό σου, και παραμένει δικό σου.',
             ctas: {
                 primary: 'Πάμε να ξεκινήσουμε',
                 secondary: 'Δες τη δουλειά μας',
             },
         },
-        // Act II / III — the heart of the theme, left in English.
-        story: en.landing.story,
+        story: {
+            code: {
+                // Act II title — theme, left in English.
+                actLabel: en.landing.story.code.actLabel,
+                line: en.landing.story.code.line,
+                sub: 'Σχεδιασμός και ανάπτυξη κάτω από την ίδια στέγη, μέχρι αυτό που έχεις στο μυαλό σου να αποκτήσει όνομα, μορφή και τη δική του διεύθυνση στο διαδίκτυο.',
+                scrollCue: 'Συνέχισε να σκρολάρεις',
+                items: [
+                    {
+                        title: 'Σελίδες προσφοράς',
+                        description:
+                            'Μία σελίδα με έναν σκοπό: να μετατρέπει το ενδιαφέρον σε δράση. Καθαρή δομή, στιγμιαία φόρτωση, και ένας ξεκάθαρος δρόμος προς το κουμπί που μετράει.',
+                        deliverables: ['Πρώτα οι πωλήσεις', 'Συγκρίνεις εκδοχές', 'Έτοιμο σε μέρες'],
+                    },
+                    {
+                        title: 'Ιστοσελίδες στα μέτρα σου',
+                        description:
+                            'Σχεδιασμένες και φτιαγμένες από το μηδέν — χωρίς έτοιμα templates, χωρίς να μυρίζουν «καλούπι». Γρήγορες, προσβάσιμες, και προσαρμοσμένες στο περιεχόμενό σου, όχι σε κάποιο ξένο πρότυπο.',
+                        deliverables: ['Μοναδικός σχεδιασμός', 'Εύκολη διαχείριση περιεχομένου', 'Έτοιμο για Google'],
+                    },
+                    {
+                        title: 'Ολοκληρωμένες εφαρμογές',
+                        description:
+                            'Λογισμικό με μυαλό και πρόσωπο: μια προσεγμένη εμφάνιση μπροστά, και η λογική, τα δεδομένα και οι συνδέσεις σου να δουλεύουν από πίσω. Μία ομάδα έχει την ευθύνη για όλο το έργο, από την αρχή μέχρι το τέλος.',
+                        deliverables: ['Εφαρμογή + διασύνδεση', 'Πίνακες διαχείρισης', 'Συνδέσεις'],
+                    },
+                ],
+            },
+            get: {
+                // Act III title & CTA — the heart of the theme, left in English.
+                actLabel: en.landing.story.get.actLabel,
+                line: en.landing.story.get.line,
+                sub: 'Αναρτημένο online, πλήρως καταγραμμένο, και στα χέρια σου. Όχι νοικιασμένο, όχι παραχωρημένο με άδεια χρήσης — δικό σου.',
+                cta: en.landing.story.get.cta,
+            },
+        },
         // The parenthetical "It" voice — same theme, left in English.
         whispers: en.landing.whispers,
         stats: {

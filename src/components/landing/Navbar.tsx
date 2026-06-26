@@ -1,23 +1,32 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/i18n/UseLocale';
 import { DotlessWordmark, Socket } from './it';
 import { Logo } from './Logo';
 import { LanguageSwitch } from './LanguageSwitch';
 
-const links = [
-    { label: 'Build',    href: '#build',    id: 'build'    },
-    { label: 'Services', href: '#services', id: 'services' },
-    { label: 'Compare',  href: '#compare',  id: 'compare'  },
-    { label: 'Process',  href: '#process',  id: 'process'  },
-    { label: 'Work',     href: '#projects', id: 'projects' },
-    { label: 'FAQ',      href: '#faq',      id: 'faq'      },
-];
+const linkIds = ['build', 'services', 'compare', 'process', 'work', 'faq'] as const;
+const linkHrefs: Record<(typeof linkIds)[number], string> = {
+    build: '#build',
+    services: '#services',
+    compare: '#compare',
+    process: '#process',
+    work: '#projects',
+    faq: '#faq',
+};
 
 export function Navbar() {
+    const { t } = useLocale();
+    const navCopy = t.landing.hero.navigation;
+    const links = useMemo(
+        () => linkIds.map((id) => ({ id, href: linkHrefs[id], label: navCopy.links[id] })),
+        [navCopy]
+    );
+
     const [scrolled,    setScrolled]    = useState(false);
     const [mobileOpen,  setMobileOpen]  = useState(false);
     const [active,      setActive]      = useState<string | null>(null);
@@ -49,7 +58,7 @@ export function Navbar() {
 
         sections.forEach((el) => observer.observe(el));
         return () => observer.disconnect();
-    }, []);
+    }, [links]);
 
     // Lock body scroll while overlay is open
     useEffect(() => {
@@ -115,7 +124,7 @@ export function Navbar() {
                     className="group hidden items-center gap-2 rounded-full bg-brand-600 py-2 pr-2 pl-4 text-sm font-semibold text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-brand-700 active:scale-[0.98] md:inline-flex"
                 >
                     <Socket />
-                    Get a Quote
+                    {navCopy.contactButton}
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M7 17 17 7M9 7h8v8" />
@@ -127,7 +136,7 @@ export function Navbar() {
                 <button
                     className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-full md:hidden"
                     onClick={() => setMobileOpen((v) => !v)}
-                    aria-label="Toggle menu"
+                    aria-label={navCopy.openMenuAria}
                     aria-expanded={mobileOpen}
                 >
                     <span className={cn('block h-0.5 w-5 rounded-full bg-slate-900 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]', mobileOpen && 'translate-y-[7px] rotate-45')} />
@@ -149,7 +158,7 @@ export function Navbar() {
                         {/* Close button — top-right, always reachable */}
                         <button
                             onClick={() => setMobileOpen(false)}
-                            aria-label="Close menu"
+                            aria-label={navCopy.closeMenuAria}
                             className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
                         >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -192,7 +201,7 @@ export function Navbar() {
                                 transition={{ type: 'spring', stiffness: 300, damping: 26 }}
                                 className="mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-brand-600 px-6 py-3 text-base font-semibold text-white"
                             >
-                                Get a Quote
+                                {navCopy.contactButton}
                             </motion.a>
                         </motion.nav>
                     </motion.div>

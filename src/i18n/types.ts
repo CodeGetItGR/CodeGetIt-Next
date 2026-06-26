@@ -84,10 +84,17 @@ export interface Translations {
         };
         hero: {
             navigation: {
-                brandInitial: string;
-                brandLabel: string;
-                links: [string, string, string];
+                links: {
+                    build: string;
+                    services: string;
+                    compare: string;
+                    process: string;
+                    work: string;
+                    faq: string;
+                };
                 contactButton: string;
+                openMenuAria: string;
+                closeMenuAria: string;
             };
             /** Act I — the declaration is set without a trailing period; It is the period. */
             actLabel: string;

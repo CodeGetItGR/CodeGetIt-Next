@@ -566,10 +566,17 @@ export const en: Translations = {
         },
         hero: {
             navigation: {
-                brandInitial: 'C',
-                brandLabel: 'CodeGetIT',
-                links: ['Work', 'Services', 'About'],
-                contactButton: 'Get a free quote',
+                links: {
+                    build: 'Build',
+                    services: 'Services',
+                    compare: 'Compare',
+                    process: 'Process',
+                    work: 'Work',
+                    faq: 'FAQ',
+                },
+                contactButton: 'Get a Quote',
+                openMenuAria: 'Toggle menu',
+                closeMenuAria: 'Close menu',
             },
             actLabel: 'Act I',
             line: 'You bring it',
