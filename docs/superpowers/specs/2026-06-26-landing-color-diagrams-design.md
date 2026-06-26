@@ -56,11 +56,22 @@ exactly one real image on the whole page (a small boxed project screenshot).
   hero), and rectilinear/flat in keeping with Law 2 outside the spine — it
   is decorative ink, not a second "It."
 
-### 3. How We Work (`HowWeWorkSection.tsx` / `process/ProcessTimeline.tsx`)
-- No new graphic. The timeline already encodes progress data
-  (`fillProgress`, `activeIndex`). Re-skin the existing fill line and active
-  step indicator from slate/ink to the teal gradient scale so the
-  already-present data visualization reads as colorful instead of mono.
+### 3. How We Work (`HowWeWorkSection.tsx` / `process/ProcessTimeline.tsx` / `process/ProcessStepContent.tsx`)
+- Timeline (left column): no new graphic needed — it already encodes
+  progress data (`fillProgress`, `activeIndex`) and the active step chip is
+  already teal. Leave as-is, just confirm it doesn't get duplicated by the
+  change below.
+- Step content (right column, `ProcessStepContent.tsx`): currently plain
+  text with no visual element. Add one large, softly-tinted version of that
+  step's own icon (`DiscoverIcon` / `DesignIcon` / `BuildIcon` / `LaunchIcon`
+  — already imported in `ProcessTimeline.tsx`, reused here) as a background
+  mark behind/beside the step heading. No new icon shapes — reuse the
+  existing per-step icon set, just rendered larger and tinted in the brand
+  teal scale, low-opacity enough to stay a background mark rather than
+  compete with the text. This gives each step a distinct colored visual
+  identity as you scroll without inventing new artwork or attempting a
+  mockup-style illustration (explicitly decided against — too much
+  production effort for this pass).
 
 ### 4. Projects (`ProjectsSection.tsx`)
 - Replace the plain rounded-box image frame with a browser-chrome frame
