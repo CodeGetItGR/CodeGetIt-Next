@@ -255,7 +255,7 @@ function ItemRow({ entry, state, progress, segment, periodRef, enterDelay }: Ite
       >
         <span
           className={cn(
-            'act-title font-display text-[clamp(1.55rem,3.4vw,2.9rem)] font-bold leading-[1.15] tracking-[-0.02em]',
+            'act-title font-display text-[clamp(1.3rem,3.4vw,2.9rem)] font-bold leading-[1.15] tracking-[-0.02em]',
             state === 'draft' && 'act-title--draft',
             state === 'active' && 'act-title--active',
             state === 'done' && 'act-title--done',
@@ -450,7 +450,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
       style={{ height: `calc(100vh + ${trackVh}vh)` }}
     >
       <div ref={stageRef} className="sticky top-0 h-screen overflow-hidden supports-[height:100svh]:h-svh">
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-8 pt-28 md:pt-20 lg:px-10">
+        <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-4 pt-28 md:pt-20 lg:pb-8 lg:px-10">
           <motion.p
             {...fadeRiseInView(0, false)}
             className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500"
@@ -471,9 +471,9 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
             {copy.sub}
           </motion.p>
 
-          <div ref={gridRef} className="mt-10 grid items-center gap-10 lg:mt-14 lg:grid-cols-12 lg:gap-8">
+          <div ref={gridRef} className="mt-6 grid items-center gap-6 lg:mt-14 lg:grid-cols-12 lg:gap-8">
             {/* The build list — every line gets its own scroll segment */}
-            <ul className="order-1 space-y-5 lg:order-2 lg:col-span-7 lg:space-y-6">
+            <ul className="order-1 space-y-3 lg:order-2 lg:col-span-7 lg:space-y-6">
               {copy.items.map((entry, i) => (
                 <ItemRow
                   key={entry.title}
@@ -492,7 +492,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
             {/* The spec card — swaps in step with the dot, never leaves sight */}
             <div
               aria-hidden
-              className="relative order-2 min-h-75 border-t border-slate-900/10 pt-6 lg:order-1 lg:col-span-5 lg:min-h-70"
+              className="relative order-2 min-h-50 border-t border-slate-900/10 pt-6 lg:order-1 lg:col-span-5 lg:min-h-70"
             >
               <AnimatePresence>
                 {index >= 0 && index < total && (
