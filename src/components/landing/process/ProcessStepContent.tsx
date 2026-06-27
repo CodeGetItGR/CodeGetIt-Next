@@ -54,6 +54,7 @@ export function ProcessStepContent({ step, index, deliverablesLabel, outcomeLabe
                         <span>{deliverable.label}</span>
                         {deliverable.badge && (
                             <ProjectTypeBadge
+                                variant={deliverable.badge}
                                 label={badges[deliverable.badge].label}
                                 description={badges[deliverable.badge].description}
                                 className="ml-auto"

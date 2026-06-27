@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import { Whisper } from './it';
+import { FAQ_ICONS } from './faqIconsList';
 
 export function FAQSection() {
     const ref      = useRef(null);
@@ -14,13 +15,14 @@ export function FAQSection() {
     const faq    = t.landing.faq;
 
     return (
-        <section ref={ref} id="faq" className="px-6 py-28">
+        <section ref={ref} id="faq" className="px-6 py-28 ambient-mesh-rose">
             <div className="mx-auto max-w-3xl">
-                <SectionHeading eyebrow={faq.eyebrow} title={faq.title} description={''} />
+                <SectionHeading eyebrow={faq.eyebrow} title={faq.title} description={''} accent="teal" />
 
                 <div className="mt-14 space-y-3">
                     {faq.items.map((item, index) => {
                         const open = openIndex === index;
+                        const QuestionIcon = FAQ_ICONS[index] ?? FAQ_ICONS[0];
                         return (
                             <motion.article
                                 key={item.question}
@@ -34,7 +36,12 @@ export function FAQSection() {
                                     onClick={() => setOpenIndex(open ? null : index)}
                                     className="flex w-full items-center justify-between gap-6 bg-white px-6 py-5 text-left transition-colors duration-200 hover:bg-slate-50/80"
                                 >
-                                    <span className="text-[15px] font-semibold text-slate-900">{item.question}</span>
+                                    <span className="flex items-center gap-3.5">
+                                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-600/8 text-brand-600">
+                                            <QuestionIcon />
+                                        </span>
+                                        <span className="text-[15px] font-semibold text-slate-900">{item.question}</span>
+                                    </span>
                                     <span className={`flex h-7 w-7 shrink-0 items-center justify-center transition-all duration-300 ease-premium ${open ? 'bg-brand-600 text-white rotate-45 rounded-[4px]' : 'bg-slate-100 text-slate-500 rounded-[4px]'}`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M12 5v14M5 12h14" />

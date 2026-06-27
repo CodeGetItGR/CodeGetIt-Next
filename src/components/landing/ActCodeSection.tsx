@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTra
 
 import { useLocale } from '@/i18n/UseLocale';
 import type { Translations } from '@/i18n/types';
+import { cn } from '@/lib/utils';
 
 import { ACT2, ActLine, EASE, fadeRiseInView } from './it';
 
@@ -62,11 +63,18 @@ const drawShape = {
   }),
 };
 
-function Glyph({ shapes, animated, delay = 0 }: { shapes: Shape[]; animated: boolean; delay?: number }) {
-  return (
+/**
+ * `tiled` echoes the dot with a soft teal tile + lift behind the glyph — the
+ * same bg-brand-600/8 + text-brand-600 chip language already used for icons
+ * in the interior sections (Services factors, Comparison rows), brought onto
+ * the spine by explicit request. The glyph itself stays rectilinear ink
+ * line-work; only its color and the tile around it carry the accent.
+ */
+function Glyph({ shapes, animated, delay = 0, tiled = false }: { shapes: Shape[]; animated: boolean; delay?: number; tiled?: boolean }) {
+  const svg = (
     <svg
       viewBox="0 0 24 24"
-      className="h-9 w-9 text-slate-900 lg:h-10 lg:w-10"
+      className={cn('h-9 w-9 lg:h-10 lg:w-10', tiled ? 'text-brand-600' : 'text-slate-900')}
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
@@ -90,23 +98,35 @@ function Glyph({ shapes, animated, delay = 0 }: { shapes: Shape[]; animated: boo
       })}
     </svg>
   );
+
+  if (!tiled) return svg;
+
+  return (
+    <span className="inline-flex rounded-2xl bg-brand-600/8 p-4 ring-1 ring-brand-600/10 soft-shadow">
+      {svg}
+    </span>
+  );
 }
 
 /* ── Pinned-scene pieces ─────────────────────────────────────────────────── */
 
 /**
  * The card swap. Enter waits out ACT2.cardEnterDelay so the ink visibly takes
- * first — dot, then title, then card. Direction lives in the rolling index;
- * the card itself keeps one calm axis (no blur, no drift).
+ * first — dot, then title, then card. Direction lives in the rolling index.
+ * A slight rotateY/scale gives the swap real depth (the tiled glyph above is
+ * the other half of that — by explicit request, this is the one place on the
+ * spine where Law 4 is relaxed alongside Law 1).
  */
 const cardVariants = {
-  enter: { opacity: 0, x: -48 },
+  enter: { opacity: 0, x: -48, rotateY: -10, scale: 0.97 },
   center: {
     opacity: 1,
     x: 0,
+    rotateY: 0,
+    scale: 1,
     transition: { duration: ACT2.cardEnter, ease: EASE, delay: ACT2.cardEnterDelay },
   },
-  exit: { opacity: 0, x: 40, transition: { duration: ACT2.cardExit, ease: EASE } },
+  exit: { opacity: 0, x: 40, rotateY: 10, scale: 0.97, transition: { duration: ACT2.cardExit, ease: EASE } },
 };
 
 /** The persistent counter — the active digit rolls in the scroll direction. */
@@ -137,8 +157,8 @@ function SpecCard({ item, index }: { item: CodeItem; index: number }) {
   // adding the enter delay keeps them synced to the card's actual arrival.
   const base = ACT2.cardEnterDelay;
   return (
-    <motion.div variants={cardVariants} initial="enter" animate="center" exit="exit">
-      <Glyph shapes={GLYPHS[index % GLYPHS.length]} animated delay={base} />
+    <motion.div variants={cardVariants} initial="enter" animate="center" exit="exit" style={{ transformPerspective: 1000 }}>
+      <Glyph shapes={GLYPHS[index % GLYPHS.length]} animated delay={base} tiled />
 
       {/* Left-to-right wipe — the sentence is typeset in front of you */}
       <motion.p
@@ -157,7 +177,7 @@ function SpecCard({ item, index }: { item: CodeItem; index: number }) {
             initial={{ opacity: 0, x: -14 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, ease: EASE, delay: base + 0.24 + i * 0.06 }}
-            className="rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500 ring-1 ring-slate-900/10"
+            className="rounded-full bg-brand-600/6 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.12em] text-brand-700 ring-1 ring-brand-600/15"
           >
             {tag}
           </motion.span>
@@ -229,12 +249,16 @@ function TitleNode({ text }: { text: string }) {
 }
 
 /**
- * The Echo Dot — a small companion to the stage dot, riding a fixed track at
- * the screen edge so progress reads continuously no matter where the eye is
- * on the card or list. Same teal as the stage dot (it's the same character,
- * doing extra work), with a tick per item so the stops are countable too.
+ * The top scrubber bar — a bold, video/story-style progress bar fixed across
+ * the very top of the viewport, visible at every breakpoint (the previous
+ * `ProgressTrack` was a thin edge hairline hidden below `sm`, easy to miss
+ * even on desktop). Same `scrollYProgress` already driving the sequence,
+ * just remapped to `width` instead of vertical `top`. Per-item ticks make
+ * "N steps, here's where you are" legible at a glance. Sits in the ~16px gap
+ * above the navbar's floating pill (which starts at `mt-4`, not flush to the
+ * edge), at a lower z-index than the navbar (z-50) so it never competes.
  */
-function ProgressTrack({
+function TopScrubberBar({
   progress,
   total,
   introFrac,
@@ -245,24 +269,17 @@ function ProgressTrack({
   introFrac: number;
   perFrac: number;
 }) {
-  const top = useTransform(progress, [0, 1], ['0%', '100%']);
+  const width = useTransform(progress, [0, 1], ['0%', '100%']);
   return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute right-4 top-1/2 hidden h-[34vh] -translate-y-1/2 sm:block lg:right-10 lg:h-[40vh]"
-    >
-      <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-900/10" />
-      {Array.from({ length: total }, (_, i) => introFrac + (i + 0.5) * perFrac).map((t, i) => (
+    <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-40 h-[3px] bg-slate-900/10">
+      <motion.div style={{ width }} className="h-full bg-brand-600" />
+      {Array.from({ length: total }, (_, i) => introFrac + (i + 1) * perFrac).map((t, i) => (
         <span
           key={i}
-          style={{ top: `${t * 100}%` }}
-          className="absolute left-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-900/25"
+          style={{ left: `${t * 100}%` }}
+          className="absolute top-0 h-full w-px -translate-x-1/2 bg-[#fafafa]"
         />
       ))}
-      <motion.span
-        style={{ top }}
-        className="absolute left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600 shadow-[0_0_0_4px_rgba(13,148,136,0.14)]"
-      />
     </div>
   );
 }
@@ -329,6 +346,10 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
 
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
   const engaged = useInView(stageRef, { once: true, amount: 0.75 });
+  // Unlike `engaged` (sticky once true), this tracks whether the pinned stage
+  // is *currently* on screen — the fixed top scrubber bar should only show
+  // while this scene actually holds the viewport, not for the rest of the page.
+  const stageOnScreen = useInView(trackRef, { amount: 0 });
 
   // Scroll progress → sequence index (and travel direction for the swaps).
   // -1 = intro cue · 0..total-1 = items · total = the closing return.
@@ -470,7 +491,18 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
           </div>
         </div>
 
-        <ProgressTrack progress={scrollYProgress} total={total} introFrac={introFrac} perFrac={perFrac} />
+        <AnimatePresence>
+          {stageOnScreen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25, ease: EASE }}
+            >
+              <TopScrubberBar progress={scrollYProgress} total={total} introFrac={introFrac} perFrac={perFrac} />
+            </motion.div>
+          )}
+        </AnimatePresence>
         <IdleNudge label={copy.scrollCue} show={idle} />
       </div>
     </section>

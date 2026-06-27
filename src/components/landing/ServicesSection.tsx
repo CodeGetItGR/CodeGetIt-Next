@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { useQuery } from '@tanstack/react-query';
@@ -90,6 +90,7 @@ export function ServicesSection() {
     const containerRef        = useRef<HTMLDivElement | null>(null);
     const ref                 = useRef(null);
     const isInView            = useInView(ref, { once: true, margin: '-80px' });
+    const reduced              = useReducedMotion();
 
     const [hoverFeature,  setHoverFeature]  = useState<string | null>(null);
     const [lockedFeature, setLockedFeature] = useState<string | null>(null);
@@ -131,10 +132,12 @@ export function ServicesSection() {
     return (
         <section ref={ref} id="services" className="px-6 py-28 ambient-mesh">
             <div className="mx-auto max-w-6xl">
-                <SectionHeading eyebrow={services.eyebrow} title={services.title} description={services.description} />
+                <SectionHeading eyebrow={services.eyebrow} title={services.title} description={services.description} accent="amber" />
 
-                {/* Asymmetric bento — recommended tier is wider on lg */}
-                <div ref={containerRef} className="mt-16 grid gap-5 md:grid-cols-3">
+                {/* Asymmetric bento — recommended tier is wider on lg.
+                   `perspective` on the grid gives the cards' tilt-then-settle
+                   entrance below real visible depth instead of just a skew. */}
+                <div ref={containerRef} className="mt-16 grid gap-5 md:grid-cols-3" style={{ perspective: 1200 }}>
                     {services.items.map((service, index) => {
                         const Icon        = serviceIcons[index] ?? serviceIcons[0];
                         const features    = service.features ?? [];
@@ -148,14 +151,29 @@ export function ServicesSection() {
                         const isSpotlight    = index === spotlightIndex;
                         const isSpotlightDimmed = spotlightIndex !== null && index !== spotlightIndex;
                         const isDimmed    = isFeatureDimmed || isSpotlightDimmed;
+                        // Tilt-then-settle entrance: cards swing in from a slight 3D angle
+                        // (alternating direction so the row doesn't feel mechanical) and
+                        // settle flat — same anticipate-travel-settle grammar the dot's
+                        // Beat motion already uses, just applied to cards. Scroll-triggered
+                        // (isInView), not hover-only, so it's fully visible on mobile too.
+                        const tiltDir = index === 0 ? -1 : index === 2 ? 1 : 0;
 
                         return (
                             <motion.article
                                 key={service.title}
                                 id={`service-${index}`}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={isInView ? { opacity: isDimmed ? 0.38 : 1, y: 0 } : { opacity: 0, y: 20 }}
-                                transition={{ duration: 0.55, delay: index * 0.1, ease: [0.32, 0.72, 0, 1] }}
+                                style={{ transformPerspective: 1200 }}
+                                initial={reduced
+                                    ? { opacity: 0, y: 20 }
+                                    : { opacity: 0, y: 26, rotateX: 12, rotateY: tiltDir * 18, z: -90 }}
+                                animate={isInView
+                                    ? (reduced
+                                        ? { opacity: isDimmed ? 0.38 : 1, y: 0 }
+                                        : { opacity: isDimmed ? 0.38 : 1, y: 0, rotateX: 0, rotateY: 0, z: 0 })
+                                    : (reduced
+                                        ? { opacity: 0, y: 20 }
+                                        : { opacity: 0, y: 26, rotateX: 12, rotateY: tiltDir * 18, z: -90 })}
+                                transition={{ duration: 0.7, delay: index * 0.12, ease: [0.32, 0.72, 0, 1] }}
                                 whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
                                 className={cn(
                                     'relative flex flex-col rounded-[1.5rem] p-1.5 scroll-mt-28 transition-all duration-500',

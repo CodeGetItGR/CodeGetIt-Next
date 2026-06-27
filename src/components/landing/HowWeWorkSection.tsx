@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpr
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import { Whisper } from './it';
-import { ProcessStepContent, ProcessTimeline, ProjectTypeBadge } from './process';
+import { ProcessStepContent, ProcessStepDiagram, ProcessTimeline, ProjectTypeBadge } from './process';
 import { cn } from '@/lib/utils';
 
 export function HowWeWorkSection() {
@@ -58,22 +58,24 @@ export function HowWeWorkSection() {
     };
 
     return (
-        <section ref={ref} id="process" className="px-6 py-28">
+        <section ref={ref} id="process" className="px-6 py-28 ambient-mesh-amber">
             <div className="mx-auto max-w-6xl">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: 0.1, ease: [0.32, 0.72, 0, 1] }}
                 >
-                    <SectionHeading eyebrow={process.eyebrow} title={process.title} description={process.description} />
+                    <SectionHeading eyebrow={process.eyebrow} title={process.title} description={process.description} accent="teal" />
                 </motion.div>
 
                 {/* Badge legend — same component as the inline deliverable badges, so hovering here teaches their meaning */}
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                    <ProjectTypeBadge label={process.badges.allProjects.label} description={process.badges.allProjects.description} />
-                    <ProjectTypeBadge label={process.badges.webAppPlus.label} description={process.badges.webAppPlus.description} />
-                    <ProjectTypeBadge label={process.badges.fullStack.label} description={process.badges.fullStack.description} />
+                    <ProjectTypeBadge variant="allProjects" label={process.badges.allProjects.label} description={process.badges.allProjects.description} />
+                    <ProjectTypeBadge variant="webAppPlus" label={process.badges.webAppPlus.label} description={process.badges.webAppPlus.description} />
+                    <ProjectTypeBadge variant="fullStack" label={process.badges.fullStack.label} description={process.badges.fullStack.description} />
                 </div>
+
+                <ProcessStepDiagram labels={process.steps.map((step) => step.title)} className="mt-10" />
 
                 <div ref={sectionRef} className="mt-16 lg:grid lg:grid-cols-12 lg:gap-12">
                     {/* Left column: sticky step timeline — hidden on mobile where the floating pill takes over */}

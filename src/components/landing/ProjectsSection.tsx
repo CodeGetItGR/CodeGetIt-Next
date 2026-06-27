@@ -28,9 +28,9 @@ export function ProjectsSection() {
     const project: Project = (projectsData as Project[])[0];
 
     return (
-        <section ref={ref} id="projects" className="bg-[#f5f6f8] px-6 py-28">
+        <section ref={ref} id="projects" className="bg-[#f5f6f8] px-6 py-28 ambient-mesh-emerald">
             <div className="mx-auto max-w-6xl">
-                <SectionHeading eyebrow={eyebrow} title={title} description={description} />
+                <SectionHeading eyebrow={eyebrow} title={title} description={description} accent="emerald" />
 
                 <div className="mt-14 grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:items-center">
                     {/* Story — leads the hierarchy */}

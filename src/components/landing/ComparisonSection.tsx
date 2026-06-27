@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import { ComparisonGrowthDiagram } from './ComparisonGrowthDiagram';
+import { COMPARISON_ROW_ICONS } from './comparisonRowIconsList';
 
 function CheckIcon({ label }: { label: string }) {
   return (
@@ -51,9 +52,9 @@ export function ComparisonSection() {
     ];
 
     return (
-        <section ref={ref} id="compare" className="bg-[#f5f6f8] px-6 py-28">
+        <section ref={ref} id="compare" className="bg-[#f5f6f8] px-6 py-28 ambient-mesh-indigo">
             <div className="mx-auto max-w-5xl">
-                <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} />
+                <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} accent="teal" />
 
                 <ComparisonGrowthDiagram
                     labels={[
@@ -65,7 +66,7 @@ export function ComparisonSection() {
 
                 <div className="mt-14">
                     {/* ── Desktop table ── */}
-                    <div className="hidden rounded-[1.5rem] p-[6px] ring-1 ring-slate-900/[0.06] soft-shadow md:block">
+                    <div className="hidden rounded-[1.5rem] p-1.5 ring-1 ring-slate-900/6 soft-shadow md:block">
                         <div className="overflow-hidden rounded-[calc(1.5rem-6px)] bg-white">
                             <table className="min-w-full text-left">
                                 <thead>
@@ -79,7 +80,7 @@ export function ComparisonSection() {
                                         <th scope="col" className="px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                                             {comparison.headers.webApplication}
                                         </th>
-                                        <th scope="col" className="bg-slate-900/[0.03] px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-900">
+                                        <th scope="col" className="bg-slate-900/3 px-7 py-5 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-900">
                                             {comparison.headers.fullStackApplication}
                                         </th>
                                     </tr>
@@ -87,6 +88,7 @@ export function ComparisonSection() {
                                 <tbody>
                                     {comparison.rows.map((rowLabel, index) => {
                                         const row = rows[index];
+                                        const RowIcon = COMPARISON_ROW_ICONS[index] ?? COMPARISON_ROW_ICONS[0];
                                         return (
                                             <motion.tr
                                                 key={rowLabel}
@@ -95,7 +97,14 @@ export function ComparisonSection() {
                                                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                                                 transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1], delay: 0.2 + index * 0.045 }}
                                             >
-                                                <th scope="row" className="px-7 py-4 text-left text-sm font-medium text-slate-800">{rowLabel}</th>
+                                                <th scope="row" className="px-7 py-4 text-left text-sm font-medium text-slate-800">
+                                                    <span className="flex items-center gap-3">
+                                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-600/8 text-brand-600">
+                                                            <RowIcon />
+                                                        </span>
+                                                        {rowLabel}
+                                                    </span>
+                                                </th>
                                                 <td className="px-7 py-4 text-center">
                                                     {typeof row.static === 'boolean'
                                                         ? (row.static ? <CheckIcon label="Included" /> : <XIcon label="Not included" />)
@@ -106,7 +115,7 @@ export function ComparisonSection() {
                                                         ? (row.webApp ? <CheckIcon label="Included" /> : <XIcon label="Not included" />)
                                                         : <span className="text-sm text-slate-500">{row.webApp}</span>}
                                                 </td>
-                                                <td className="bg-slate-900/[0.02] px-7 py-4 text-center">
+                                                <td className="bg-slate-900/2 px-7 py-4 text-center">
                                                     {typeof row.fullStack === 'boolean'
                                                         ? (row.fullStack ? <CheckIcon label="Included" /> : <XIcon label="Not included" />)
                                                         : <span className="text-sm font-semibold text-slate-900">{row.fullStack}</span>}
@@ -120,18 +129,24 @@ export function ComparisonSection() {
                     </div>
 
                     {/* ── Mobile matrix ── */}
-                    <div className="overflow-hidden rounded-2xl ring-1 ring-slate-900/[0.06] soft-shadow md:hidden">
+                    <div className="overflow-hidden rounded-2xl ring-1 ring-slate-900/6 soft-shadow md:hidden">
                         <div className="grid grid-cols-[1fr_52px_60px_64px] items-center border-b border-slate-100 bg-white">
-                            <div className="px-3 py-3 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">{comparison.headers.feature}</div>
+                            <div className="px-3 py-3 text-[10px] font-semibold uppercase tracking-widest text-slate-500">{comparison.headers.feature}</div>
                             <div className="px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-500">{comparison.headers.staticWebsite}</div>
                             <div className="px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-500">{comparison.headers.webApplication}</div>
-                            <div className="bg-slate-900/[0.04] px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-900">{comparison.headers.fullStackApplication}</div>
+                            <div className="bg-slate-900/4 px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-900">{comparison.headers.fullStackApplication}</div>
                         </div>
                         {comparison.rows.map((rowLabel, index) => {
                             const row = rows[index];
+                            const RowIcon = COMPARISON_ROW_ICONS[index] ?? COMPARISON_ROW_ICONS[0];
                             return (
                                 <div key={rowLabel} className="grid grid-cols-[1fr_52px_60px_64px] border-b border-slate-50 bg-white last:border-none odd:bg-slate-50/40">
-                                    <div className="px-3 py-4 text-sm text-slate-800">{rowLabel}</div>
+                                    <div className="flex items-center gap-2 px-3 py-4 text-sm text-slate-800">
+                                        <span className="flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-md bg-brand-600/8 text-brand-600">
+                                            <RowIcon />
+                                        </span>
+                                        {rowLabel}
+                                    </div>
                                     <div className="flex items-center justify-center px-1">
                                         {typeof row.static === 'boolean'
                                             ? (row.static ? <CheckIcon label="Included" /> : <XIcon label="Not included" />)
@@ -142,7 +157,7 @@ export function ComparisonSection() {
                                             ? (row.webApp ? <CheckIcon label="Included" /> : <XIcon label="Not included" />)
                                             : <span className="text-center text-[10px] text-slate-500">{row.webApp}</span>}
                                     </div>
-                                    <div className="flex items-center justify-center bg-slate-900/[0.02] px-1">
+                                    <div className="flex items-center justify-center bg-slate-900/2 px-1">
                                         {typeof row.fullStack === 'boolean'
                                             ? (row.fullStack ? <CheckIcon label="Included" /> : <XIcon label="Not included" />)
                                             : <span className="text-center text-[10px] font-semibold text-slate-900">{row.fullStack}</span>}
