@@ -92,6 +92,7 @@ export function HowWeWorkSection() {
                             <div key={step.title} ref={(el) => { contentRefs.current[index] = el; }}>
                                 <ProcessStepContent
                                     step={step}
+                                    index={index}
                                     deliverablesLabel={process.deliverablesLabel}
                                     outcomeLabel={process.outcomeLabel}
                                     badges={process.badges}

@@ -4,6 +4,7 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
+import { ComparisonGrowthDiagram } from './ComparisonGrowthDiagram';
 
 function CheckIcon({ label }: { label: string }) {
   return (
@@ -53,6 +54,14 @@ export function ComparisonSection() {
         <section ref={ref} id="compare" className="bg-[#f5f6f8] px-6 py-28">
             <div className="mx-auto max-w-5xl">
                 <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} />
+
+                <ComparisonGrowthDiagram
+                    labels={[
+                        comparison.headers.staticWebsite,
+                        comparison.headers.webApplication,
+                        comparison.headers.fullStackApplication,
+                    ]}
+                />
 
                 <div className="mt-14">
                     {/* ── Desktop table ── */}

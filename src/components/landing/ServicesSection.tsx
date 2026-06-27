@@ -71,6 +71,15 @@ const FACTOR_ICONS = [
 // Middle card (index 1) is the recommended / highlighted tier
 const RECOMMENDED_INDEX = 1;
 
+// Per-tier icon chip tint — index 0 (static) stays neutral, index 1 (recommended)
+// gets the teal tint already used on its card, index 2 (full-stack) gets amber
+// so all three tiers read as visually distinct instead of two identical grays.
+const TIER_CHIP_STYLES = [
+    'bg-slate-100 text-slate-600',
+    'bg-brand-600/10 text-brand-700',
+    'bg-amber-50 text-amber-700',
+];
+
 // Matches the `#service-{index}` anchors used by FooterSection's "Services" links
 const SPOTLIGHT_ID_PATTERN = /^service-(\d+)$/;
 
@@ -172,7 +181,7 @@ export function ServicesSection() {
                                     {/* Icon */}
                                     <div className={cn(
                                         'mb-5 inline-flex w-fit rounded-xl p-2.5',
-                                        isRecommended ? 'bg-slate-900/5 text-slate-700' : 'bg-slate-100 text-slate-600'
+                                        TIER_CHIP_STYLES[index] ?? TIER_CHIP_STYLES[0],
                                     )}>
                                         <Icon />
                                     </div>
@@ -278,7 +287,7 @@ export function ServicesSection() {
                     <div className="mt-7 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-slate-100 pt-7 sm:grid-cols-2 lg:grid-cols-3">
                         {services.pricingFactors.map((factor, i) => (
                             <div key={factor.label} className="flex gap-3.5">
-                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-600/8 text-slate-500">
                                     {FACTOR_ICONS[i]}
                                 </div>
                                 <div>

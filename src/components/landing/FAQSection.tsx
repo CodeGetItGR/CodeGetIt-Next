@@ -35,7 +35,7 @@ export function FAQSection() {
                                     className="flex w-full items-center justify-between gap-6 bg-white px-6 py-5 text-left transition-colors duration-200 hover:bg-slate-50/80"
                                 >
                                     <span className="text-[15px] font-semibold text-slate-900">{item.question}</span>
-                                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center transition-all duration-300 ease-premium ${open ? 'bg-slate-900 text-white rotate-45 rounded-[4px]' : 'bg-slate-100 text-slate-500 rounded-[4px]'}`}>
+                                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center transition-all duration-300 ease-premium ${open ? 'bg-brand-600 text-white rotate-45 rounded-[4px]' : 'bg-slate-100 text-slate-500 rounded-[4px]'}`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M12 5v14M5 12h14" />
                                         </svg>

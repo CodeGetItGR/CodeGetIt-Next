@@ -4,21 +4,24 @@ import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import type { Translations } from '@/i18n/types';
 import { ProjectTypeBadge } from './ProjectTypeBadge';
+import { stepIcons } from './stepIcons';
 
 const EASE = [0.32, 0.72, 0, 1] as const;
 
 interface ProcessStepContentProps {
     step: Translations['landing']['process']['steps'][number];
+    index: number;
     deliverablesLabel: string;
     outcomeLabel: string;
     badges: Translations['landing']['process']['badges'];
 }
 
-export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badges }: ProcessStepContentProps) {
+export function ProcessStepContent({ step, index, deliverablesLabel, outcomeLabel, badges }: ProcessStepContentProps) {
     const ref = useRef(null);
     const inView = useInView(ref, { amount: 0.15 });
     const reduced = useReducedMotion();
     const active = reduced ? true : inView;
+    const StepIcon = stepIcons[index] ?? stepIcons[0];
 
     const fadeUp = (delay: number) => ({
         initial: reduced ? false : { opacity: 0, y: 14 },
@@ -27,7 +30,12 @@ export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badg
     });
 
     return (
-        <div ref={ref} className="max-w-[460px]">
+        <div ref={ref} className="relative max-w-[460px]">
+            <StepIcon
+                size={130}
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-3 right-0 -z-10 text-brand-600/[0.07]"
+            />
             <motion.h3 {...fadeUp(0)} className="font-display text-2xl font-semibold text-slate-900">
                 {step.title}
             </motion.h3>
@@ -39,8 +47,8 @@ export function ProcessStepContent({ step, deliverablesLabel, outcomeLabel, badg
                 {deliverablesLabel}
             </motion.h4>
             <ul className="mt-3.5 space-y-2.5">
-                {step.deliverables.map((deliverable, index) => (
-                    <motion.li key={deliverable.label} {...fadeUp(0.19 + index * 0.05)} className="flex items-center gap-2.5 text-sm text-slate-600">
+                {step.deliverables.map((deliverable, i) => (
+                    <motion.li key={deliverable.label} {...fadeUp(0.19 + i * 0.05)} className="flex items-center gap-2.5 text-sm text-slate-600">
                         {/* square ink tick — a filled circle would counterfeit It */}
                         <span className="h-[5px] w-[5px] shrink-0 bg-slate-300" />
                         <span>{deliverable.label}</span>
