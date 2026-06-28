@@ -6,6 +6,7 @@ import { contactMessageApi, type ContactMessageListQuery } from '@/api/contactMe
 import type { ContactMessageResponse } from '@/api';
 import { PaginationControls, MessageAiStatusBadge, AiAcknowledgmentTimeline } from '@/components';
 import { usePaginationState } from '@/hooks';
+import { cn } from '@/lib/utils';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
 const SNIPPET_LENGTH = 80;
@@ -66,7 +67,10 @@ export default function ContactMessagesPage() {
                                             role="button"
                                             tabIndex={0}
                                             aria-expanded={isExpanded}
-                                            className="cursor-pointer hover:bg-gray-50"
+                                            className={cn(
+                                                'cursor-pointer transition-colors',
+                                                isExpanded ? 'bg-gray-50' : 'hover:bg-gray-50'
+                                            )}
                                             onClick={() => handleToggleExpanded(msg.id)}
                                             onKeyDown={(event) => {
                                                 if (event.key === 'Enter' || event.key === ' ') {
@@ -75,8 +79,15 @@ export default function ContactMessagesPage() {
                                                 }
                                             }}
                                         >
-                                            <td className="px-4 py-3 font-medium text-gray-900">{msg.name}</td>
-                                            <td className="px-4 py-3">
+                                            <td
+                                                className={cn(
+                                                    'px-4 py-3 font-medium whitespace-nowrap text-gray-900',
+                                                    isExpanded && 'border-l-4 border-gray-900'
+                                                )}
+                                            >
+                                                {msg.name}
+                                            </td>
+                                            <td className="px-4 py-3 whitespace-nowrap">
                                                 <a
                                                     href={`mailto:${msg.email}`}
                                                     onClick={(event) => event.stopPropagation()}
@@ -85,18 +96,18 @@ export default function ContactMessagesPage() {
                                                     {msg.email}
                                                 </a>
                                             </td>
-                                            <td className="px-4 py-3 text-gray-600">{toSnippet(msg.message)}</td>
-                                            <td className="px-4 py-3">
+                                            <td className="max-w-xs truncate px-4 py-3 text-gray-600">{toSnippet(msg.message)}</td>
+                                            <td className="px-4 py-3 whitespace-nowrap">
                                                 <MessageAiStatusBadge aiAcknowledgments={msg.aiAcknowledgments} />
                                             </td>
-                                            <td className="px-4 py-3 text-gray-600">{new Date(msg.createdAt).toLocaleDateString()}</td>
-                                            <td className="px-4 py-3 text-gray-400">
+                                            <td className="px-4 py-3 whitespace-nowrap text-gray-600">{new Date(msg.createdAt).toLocaleDateString()}</td>
+                                            <td className={cn('px-4 py-3', isExpanded ? 'text-gray-900' : 'text-gray-400')}>
                                                 {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                                             </td>
                                         </tr>
                                         {isExpanded && (
                                             <tr className="bg-gray-50">
-                                                <td colSpan={6} className="px-4 py-4">
+                                                <td colSpan={6} className="border-l-4 border-gray-900 px-4 py-4">
                                                     <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700">{msg.message}</p>
 
                                                     <a

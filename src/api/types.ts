@@ -205,10 +205,13 @@ export interface ApiError {
     errorCode?: string;
 }
 
+/** The backend sends plain text on success, but may send a raw object (e.g. `{ body: string, ... }`) for debugging on a guardrail rejection. */
+export type AiAcknowledgmentResponseBody = string | { body: string; [key: string]: unknown } | null;
+
 export interface AiAcknowledgmentResponse {
     id: UUID;
     status: AiAcknowledgmentStatus;
-    response: string | null;
+    response: AiAcknowledgmentResponseBody;
     errorMessage: string | null;
     modelUsed: string;
     estimatedCost: number;
