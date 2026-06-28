@@ -204,6 +204,19 @@ export interface ApiError {
     errorCode?: string;
 }
 
+export type AiAcknowledgmentStatus = 'SUCCESS' | 'ERROR' | 'RATE_LIMITED' | 'TIMEOUT';
+
+export interface AiAcknowledgmentResponse {
+    id: UUID;
+    status: AiAcknowledgmentStatus;
+    response: string | null;
+    errorMessage: string | null;
+    modelUsed: string;
+    estimatedCost: number;
+    totalTokens: number;
+    createdAt: string;
+}
+
 export interface ContactMessageResponse {
     id: UUID;
     name: string;
@@ -211,6 +224,8 @@ export interface ContactMessageResponse {
     message: string;
     language: OfferLanguage;
     createdAt: string;
+    updatedAt: string;
+    aiAcknowledgments: AiAcknowledgmentResponse[];
 }
 
 export interface OfferAnalysisResponse {
