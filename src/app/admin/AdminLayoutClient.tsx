@@ -77,6 +77,7 @@ function AdminLayoutContent({children}: { children: React.ReactNode }) {
                         type="button"
                         onClick={handleToggleCollapsed}
                         title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
                     >
                         {isCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
@@ -88,7 +89,7 @@ function AdminLayoutContent({children}: { children: React.ReactNode }) {
                         const isActive = isLinkActive(link);
                         const Icon = link.icon;
                         return (
-                            <Link key={link.to} href={link.to} title={link.label} className={resolveNavLinkClassName(isActive)}>
+                            <Link key={link.to} href={link.to} title={link.label} aria-label={link.label} className={resolveNavLinkClassName(isActive)}>
                                 <Icon className="h-5 w-5 shrink-0" />
                                 {!isCollapsed && <span>{link.label}</span>}
                             </Link>
@@ -102,6 +103,7 @@ function AdminLayoutContent({children}: { children: React.ReactNode }) {
                             type="button"
                             onClick={logout}
                             title="Logout"
+                            aria-label="Logout"
                             className="flex w-full items-center justify-center rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
                         >
                             <LogOut className="h-5 w-5" />
