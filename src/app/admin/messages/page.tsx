@@ -1,13 +1,21 @@
 'use client'
 
-import { useCallback, useMemo } from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { contactMessageApi, type ContactMessageListQuery } from '@/api/contactMessages';
-import { PaginationControls } from '@/components';
+import type { ContactMessageResponse } from '@/api';
+import { PaginationControls, MessageAiStatusBadge, AiAcknowledgmentTimeline } from '@/components';
 import { usePaginationState } from '@/hooks';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+
+const SNIPPET_LENGTH = 80;
+
+const toSnippet = (message: string) =>
+    message.length > SNIPPET_LENGTH ? `${message.slice(0, SNIPPET_LENGTH)}…` : message;
 
 export default function ContactMessagesPage() {
     const { page, goToNextPage, goToPreviousPage } = usePaginationState();
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
     const queryParams = useMemo<ContactMessageListQuery>(() => ({ page, size: 15, sort: 'createdAt,desc' }), [page]);
 
@@ -20,6 +28,10 @@ export default function ContactMessagesPage() {
         goToNextPage(messagesQuery.data?.totalPages ?? 0);
     }, [goToNextPage, messagesQuery.data?.totalPages]);
 
+    const handleToggleExpanded = useCallback((id: string) => {
+        setExpandedId((current) => (current === id ? null : id));
+    }, []);
+
     return (
         <div>
             <div className="mb-6">
@@ -31,52 +43,90 @@ export default function ContactMessagesPage() {
                 </p>
             </div>
 
-            <div className="space-y-3">
-                {messagesQuery.isLoading && (
-                    <div className="rounded-2xl border border-gray-200 bg-white p-8 text-sm text-gray-500">Loading messages...</div>
-                )}
+            <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm md:p-5">
+                <div className="overflow-x-auto rounded-xl border border-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead className="bg-gray-50 text-left text-xs tracking-wide text-gray-500 uppercase">
+                            <tr>
+                                <th className="px-4 py-3">Name</th>
+                                <th className="px-4 py-3">Email</th>
+                                <th className="px-4 py-3">Message</th>
+                                <th className="px-4 py-3">AI status</th>
+                                <th className="px-4 py-3">Created</th>
+                                <th className="px-4 py-3" />
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 bg-white">
+                            {messagesQuery.data?.content.map((msg: ContactMessageResponse) => {
+                                const isExpanded = expandedId === msg.id;
 
+                                return (
+                                    <Fragment key={msg.id}>
+                                        <tr
+                                            className="cursor-pointer hover:bg-gray-50"
+                                            onClick={() => handleToggleExpanded(msg.id)}
+                                        >
+                                            <td className="px-4 py-3 font-medium text-gray-900">{msg.name}</td>
+                                            <td className="px-4 py-3">
+                                                <a
+                                                    href={`mailto:${msg.email}`}
+                                                    onClick={(event) => event.stopPropagation()}
+                                                    className="text-gray-600 underline decoration-gray-300 underline-offset-2 hover:text-gray-900"
+                                                >
+                                                    {msg.email}
+                                                </a>
+                                            </td>
+                                            <td className="px-4 py-3 text-gray-600">{toSnippet(msg.message)}</td>
+                                            <td className="px-4 py-3">
+                                                <MessageAiStatusBadge aiAcknowledgments={msg.aiAcknowledgments} />
+                                            </td>
+                                            <td className="px-4 py-3 text-gray-600">{new Date(msg.createdAt).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3 text-gray-400">
+                                                {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                            </td>
+                                        </tr>
+                                        {isExpanded && (
+                                            <tr className="bg-gray-50">
+                                                <td colSpan={6} className="px-4 py-4">
+                                                    <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700">{msg.message}</p>
+
+                                                    <a
+                                                        href={`mailto:${msg.email}?subject=Re: your message`}
+                                                        className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                                                    >
+                                                        Reply via email
+                                                    </a>
+
+                                                    <h4 className="mt-4 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                                                        AI acknowledgment history
+                                                    </h4>
+                                                    <div className="mt-2">
+                                                        <AiAcknowledgmentTimeline aiAcknowledgments={msg.aiAcknowledgments} />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </Fragment>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+
+                {messagesQuery.isLoading && <p className="mt-4 text-sm text-gray-500">Loading messages...</p>}
                 {!messagesQuery.isLoading && messagesQuery.data?.content.length === 0 && (
-                    <div className="rounded-2xl border border-gray-200 bg-white p-8 text-sm text-gray-500">No messages yet.</div>
+                    <p className="mt-4 text-sm text-gray-500">No messages yet.</p>
                 )}
 
-                {messagesQuery.data?.content.map((msg) => (
-                    <article key={msg.id} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                        <div className="flex flex-wrap items-start justify-between gap-4">
-                            <div>
-                                <p className="text-base font-semibold text-gray-900">{msg.name}</p>
-                                <a
-                                    href={`mailto:${msg.email}`}
-                                    className="text-sm text-gray-600 underline decoration-gray-300 underline-offset-2 hover:text-gray-900"
-                                >
-                                    {msg.email}
-                                </a>
-                            </div>
-                            <time className="text-xs text-gray-500 tabular-nums">{new Date(msg.createdAt).toLocaleString()}</time>
-                        </div>
-
-                        <p className="mt-4 text-sm leading-relaxed whitespace-pre-wrap text-gray-700">{msg.message}</p>
-
-                        <div className="mt-4 flex gap-3">
-                            <a
-                                href={`mailto:${msg.email}?subject=Re: your message`}
-                                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
-                            >
-                                Reply via email
-                            </a>
-                        </div>
-                    </article>
-                ))}
-            </div>
-
-            <div className="mt-6">
-                <PaginationControls
-                    page={page}
-                    totalPages={messagesQuery.data?.totalPages ?? 0}
-                    onPrevious={goToPreviousPage}
-                    onNext={handleNextPage}
-                />
-            </div>
+                <div className="mt-4">
+                    <PaginationControls
+                        page={page}
+                        totalPages={messagesQuery.data?.totalPages ?? 0}
+                        onPrevious={goToPreviousPage}
+                        onNext={handleNextPage}
+                    />
+                </div>
+            </section>
         </div>
     );
 };
