@@ -30,14 +30,15 @@ const colorMap: Record<StatusValue, string> = {
 
 interface StatusBadgeProps {
     value: StatusValue;
+    label?: string;
 }
 
-export const StatusBadge = ({ value }: StatusBadgeProps) => {
+export const StatusBadge = ({ value, label }: StatusBadgeProps) => {
     return (
         <span
             className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${colorMap[value] ?? 'border-gray-200 bg-gray-100 text-gray-700'}`}
         >
-            {value.replace(/_/g, ' ')}
+            {label ?? value.replace(/_/g, ' ')}
         </span>
     );
 };
