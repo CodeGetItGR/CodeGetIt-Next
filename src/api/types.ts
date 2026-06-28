@@ -19,6 +19,7 @@ export type BudgetRange = 'UNDER_2K' | 'FROM_2K_TO_5K' | 'FROM_5K_TO_10K' | 'FRO
 export type BudgetFlexibility = 'FIXED' | 'SOMEWHAT_FLEXIBLE' | 'FLEXIBLE' | 'UNKNOWN';
 export type CommunicationPreference = 'EMAIL' | 'PHONE' | 'VIDEO_CALL' | 'MESSAGING_APP';
 export type DataSensitivity = 'NONE' | 'BASIC_PERSONAL_DATA' | 'SENSITIVE_PERSONAL_DATA' | 'FINANCIAL_DATA' | 'HEALTHCARE_DATA' | 'OTHER';
+export type AiAcknowledgmentStatus = 'SUCCESS' | 'ERROR' | 'RATE_LIMITED' | 'TIMEOUT';
 
 export interface PagedResponse<T> {
     content: T[];
@@ -203,8 +204,6 @@ export interface ApiError {
     fieldErrors?: Record<string, string>;
     errorCode?: string;
 }
-
-export type AiAcknowledgmentStatus = 'SUCCESS' | 'ERROR' | 'RATE_LIMITED' | 'TIMEOUT';
 
 export interface AiAcknowledgmentResponse {
     id: UUID;
