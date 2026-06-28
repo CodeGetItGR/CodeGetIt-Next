@@ -1,11 +1,29 @@
 import { type AppSettingType } from '@/api';
 import type { Translations } from '@/i18n/types.ts';
-import { ArrowRight, DollarSign, Globe2, type LucideIcon, Mail, Megaphone, Sparkles } from 'lucide-react';
+import { DollarSign, Globe2, type LucideIcon, ListFilter, Mail, Megaphone } from 'lucide-react';
 
-export const GROUP_ORDER: SettingGroup[] = ['Availability', 'Pricing', 'Marketing Hero', 'CTA', 'Banner', 'Contact'];
+export const GROUP_ORDER: SettingGroup[] = ['Availability', 'Pricing', 'Banner', 'Contact'];
 export const DEFAULT_BANNER_SEVERITIES = ['INFO', 'SUCCESS', 'WARNING', 'ERROR'] as const;
-export type SettingGroup = 'Availability' | 'Pricing' | 'Marketing Hero' | 'CTA' | 'Banner' | 'Contact';
+export type SettingGroup = 'Availability' | 'Pricing' | 'Banner' | 'Contact';
 export type SettingControl = 'toggle' | 'text' | 'number' | 'percent' | 'select' | 'textarea';
+
+export type SettingsTab = 'general' | 'pricing' | 'contact' | 'requestOptions';
+
+export const TAB_ORDER: SettingsTab[] = ['general', 'pricing', 'contact', 'requestOptions'];
+
+export const TAB_GROUP_MAP: Record<SettingsTab, SettingGroup[]> = {
+    general: ['Availability', 'Banner'],
+    pricing: ['Pricing'],
+    contact: ['Contact'],
+    requestOptions: [],
+};
+
+export const TAB_META: Record<SettingsTab, { icon: LucideIcon }> = {
+    general: { icon: Globe2 },
+    pricing: { icon: DollarSign },
+    contact: { icon: Mail },
+    requestOptions: { icon: ListFilter },
+};
 
 const NUMBER_FORMAT = new Intl.NumberFormat('en-US');
 
@@ -59,63 +77,11 @@ export const optionGroupMatchesQuery = (group: { key: string; label: string; ite
 
 export const BASE_DEFINITIONS: Omit<SettingDefinition, 'label'>[] = [
     {
-        key: 'availability.acceptingProjects',
-        group: 'Availability',
-        type: 'BOOLEAN',
-        defaultValue: 'true',
-        control: 'toggle',
-    },
-    {
-        key: 'availability.statusMessage',
-        group: 'Availability',
-        type: 'STRING',
-        defaultValue: 'I am currently accepting new projects.',
-        control: 'textarea',
-        description: 'Shown when visitors need a quick status update.',
-    },
-    {
         key: 'availability.contactFormEnabled',
         group: 'Availability',
         type: 'BOOLEAN',
         defaultValue: 'true',
         control: 'toggle',
-    },
-    {
-        key: 'availability.requestSubmissionEnabled',
-        group: 'Availability',
-        type: 'BOOLEAN',
-        defaultValue: 'true',
-        control: 'toggle',
-    },
-    {
-        key: 'marketing.heroTitle',
-        group: 'Marketing Hero',
-        type: 'STRING',
-        defaultValue: '',
-        control: 'text',
-        description: 'The strongest headline on the public marketing section.',
-    },
-    {
-        key: 'marketing.heroSubtitle',
-        group: 'Marketing Hero',
-        type: 'STRING',
-        defaultValue: '',
-        control: 'textarea',
-    },
-    {
-        key: 'marketing.ctaPrimaryText',
-        group: 'CTA',
-        type: 'STRING',
-        defaultValue: 'Start a project',
-        control: 'text',
-    },
-    {
-        key: 'marketing.ctaPrimaryUrl',
-        group: 'CTA',
-        type: 'STRING',
-        defaultValue: '#contact',
-        control: 'text',
-        inputType: 'url',
     },
     {
         key: 'marketing.bannerEnabled',
@@ -146,6 +112,13 @@ export const BASE_DEFINITIONS: Omit<SettingDefinition, 'label'>[] = [
         defaultValue: 'hello@codegetit.com',
         control: 'text',
         inputType: 'email',
+    },
+    {
+        key: 'marketing.scopedRequestsSubmissionEnabled',
+        group: 'Contact',
+        type: 'BOOLEAN',
+        defaultValue: 'true',
+        control: 'toggle',
     },
     {
         key: 'marketing.staticStartingPrice',
@@ -194,8 +167,6 @@ export const BASE_DEFINITIONS: Omit<SettingDefinition, 'label'>[] = [
 export const GROUP_META: Record<SettingGroup, { icon: LucideIcon; accent: string }> = {
     Availability: { icon: Globe2, accent: 'bg-sky-50 text-sky-700' },
     Pricing: { icon: DollarSign, accent: 'bg-emerald-50 text-emerald-700' },
-    'Marketing Hero': { icon: Sparkles, accent: 'bg-violet-50 text-violet-700' },
-    CTA: { icon: ArrowRight, accent: 'bg-amber-50 text-amber-700' },
     Banner: { icon: Megaphone, accent: 'bg-rose-50 text-rose-700' },
     Contact: { icon: Mail, accent: 'bg-cyan-50 text-cyan-700' },
 };

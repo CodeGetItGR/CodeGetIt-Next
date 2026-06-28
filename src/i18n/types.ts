@@ -265,6 +265,9 @@ export interface Translations {
             linkLabel: string;
             dismiss: string;
         };
+        marketingBanner: {
+            dismissAria: string;
+        };
     };
 
     // Testimonials Section
@@ -341,14 +344,6 @@ export interface Translations {
                     title: string;
                     description: string;
                 };
-                marketingHero: {
-                    title: string;
-                    description: string;
-                };
-                cta: {
-                    title: string;
-                    description: string;
-                };
                 banner: {
                     title: string;
                     description: string;
@@ -365,6 +360,12 @@ export interface Translations {
                     noGroups: string;
                     noMatch: string;
                 };
+            };
+            tabs: {
+                general: string;
+                pricing: string;
+                contact: string;
+                requestOptions: string;
             };
             states: {
                 modified: string;
@@ -387,18 +388,7 @@ export interface Translations {
             };
             fields: {
                 availability: {
-                    acceptingProjects: string;
-                    statusMessage: string;
                     contactFormEnabled: string;
-                    requestSubmissionEnabled: string;
-                };
-                marketingHero: {
-                    heroTitle: string;
-                    heroSubtitle: string;
-                };
-                cta: {
-                    primaryText: string;
-                    primaryUrl: string;
                 };
                 banner: {
                     bannerEnabled: string;

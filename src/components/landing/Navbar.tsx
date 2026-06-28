@@ -67,7 +67,10 @@ export function Navbar() {
     }, [mobileOpen]);
 
     return (
-        <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4">
+        <header
+            className="fixed inset-x-0 z-50 flex justify-center px-4 transition-[top] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
+            style={{ top: 'var(--marketing-banner-offset, 0px)' }}
+        >
             {/* ── Floating glass pill ── */}
             <div
                 className={cn(

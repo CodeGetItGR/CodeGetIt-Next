@@ -12,6 +12,7 @@ import {
     HeroSection,
     HowWeWorkSection,
     ItProvider,
+    MarketingBanner,
     ProjectsSection,
     ServicesSection,
     Navbar,
@@ -28,6 +29,7 @@ export default function LandingPage() {
                         {/* Fixed film-grain overlay — one instance for the whole page */}
                         <div className="page-grain" aria-hidden="true" />
                         {/* The It journey: Act I (hero) → Act II (hop list) → absence → Act III (handover) */}
+                        <MarketingBanner />
                         <ItProvider>
                             <Navbar />
                             <HeroSection />

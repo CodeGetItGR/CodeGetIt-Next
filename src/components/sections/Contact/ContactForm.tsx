@@ -1,4 +1,4 @@
-import { type ChangeEvent, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { HiArrowRight } from 'react-icons/hi';
 import * as React from 'react';
@@ -8,6 +8,8 @@ import {DetailedRequestFormState, SubmitState} from "@/components/sections/Conta
 import {premiumEase, premiumMotion} from "@/lib";
 import {DetailedRequestWizard, MagneticButton} from "@/components";
 import {EASE, Socket, TRAVEL} from "@/components/landing/it";
+import {useSettingsOptions} from "@/hooks";
+import {usePublicSettings} from "@/settings/usePublicSettings";
 
 interface ContactFormLabels {
     nameLabel: string;
@@ -187,9 +189,14 @@ export const ContactForm = ({
         wasSubmittingRef.current = isSubmitting;
     }, [isSubmitting, reduced]);
 
+    const { getBool } = usePublicSettings();
+    const scopedRequestsEnabled = useMemo(()=>getBool('marketing.scopedRequestsSubmissionEnabled', false),[getBool]);
+
+    console.log(scopedRequestsEnabled)
+
     // Ready and idle: It sits in the socket. After success it's gone — handed
     // over. After an error it pops back in: it didn't go; it's still yours.
-    const docked = ready && !isSubmitting && submitState !== 'success';
+    const docked = useMemo(()=> ready && !isSubmitting && submitState !== 'success',[isSubmitting, ready, submitState]);
 
     return (
     <motion.div
@@ -201,12 +208,12 @@ export const ContactForm = ({
         className="relative rounded-3xl border border-slate-900/6 bg-white p-7 soft-shadow md:p-9 lg:col-span-7"
     >
         <form ref={formRef} onSubmit={onSubmit} className="space-y-8">
-            <ToggleCard
+            {scopedRequestsEnabled && <ToggleCard
                 checked={useDetailedRequest}
                 onChange={onDetailedRequestToggle}
                 title={detailedCopy.detailedToggleTitle}
                 hint={detailedCopy.detailedToggleHint}
-            />
+            />}
 
             {(!useDetailedRequest || currentStep === 0) && (
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2">

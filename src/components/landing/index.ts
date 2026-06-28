@@ -9,6 +9,7 @@ export * from './HowWeWorkSection';
 export * from './hero';
 export * from './LanguageSwitch';
 export * from './it';
+export * from './MarketingBanner';
 export * from './Navbar';
 export * from './ProjectsSection';
 export * from './service-contact-presets'

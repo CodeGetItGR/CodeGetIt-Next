@@ -30,7 +30,7 @@ function FooterEpilogue({ caption }: { caption: string }) {
             />
 
             {/* Wordmark — slow final rise */}
-            <p className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
+            <p className="overflow-hidden pb-[0.12em] mb-[-0.12em]">
                 <motion.span
                     className="inline-block align-bottom font-display text-[clamp(2.6rem,8vw,6rem)] font-extrabold leading-none tracking-[-0.03em] text-slate-900 will-change-transform"
                     initial={reduced ? false : { y: '112%' }}

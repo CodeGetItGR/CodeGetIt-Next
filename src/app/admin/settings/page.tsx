@@ -1,10 +1,9 @@
 'use client'
 
-import { useCallback, useDeferredValue, useMemo, useState, type ChangeEvent } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowRight, ListFilter, RotateCcw, Save } from 'lucide-react';
+import { ArrowRight, RotateCcw, Save } from 'lucide-react';
 import { queryKeys, settingsApi } from '@/api';
-import {  } from '../../../api/settings';
 import { useLocale } from '@/i18n/UseLocale';
 import { cn } from '@/lib/utils';
 import {
@@ -17,15 +16,21 @@ import {
     INPUT_CLASS,
     optionGroupMatchesQuery,
     PANEL_CLASS,
+    TAB_GROUP_MAP,
+    TAB_META,
+    TAB_ORDER,
     type SettingDefinition,
+    type SettingsTab,
 } from '@/components';
-import { SettingsField, Switch, SettingsPageHeader, SectionCard} from '@/components';
+import { SettingsField, RequestOptionsGroup, SettingsPageHeader, SectionCard} from '@/components';
+
 export default function SettingsPage(){
     const { t } = useLocale();
     const copy = t.admin.settings;
     const queryClient = useQueryClient();
     const [draftValues, setDraftValues] = useState<Record<string, string>>({});
     const [mode, setMode] = useState<'draft' | 'published'>('draft');
+    const [activeTab, setActiveTab] = useState<SettingsTab>('general');
     const [searchValue, setSearchValue] = useState('');
     const deferredSearchValue = useDeferredValue(searchValue.trim().toLowerCase());
 
@@ -55,14 +60,7 @@ export default function SettingsPage(){
     const localizedDefinitions = useMemo<SettingDefinition[]>(() => {
         const labels = copy.fields;
         const labelMap: Record<string, string> = {
-            'availability.acceptingProjects': labels.availability.acceptingProjects,
-            'availability.statusMessage': labels.availability.statusMessage,
             'availability.contactFormEnabled': labels.availability.contactFormEnabled,
-            'availability.requestSubmissionEnabled': labels.availability.requestSubmissionEnabled,
-            'marketing.heroTitle': labels.marketingHero.heroTitle,
-            'marketing.heroSubtitle': labels.marketingHero.heroSubtitle,
-            'marketing.ctaPrimaryText': labels.cta.primaryText,
-            'marketing.ctaPrimaryUrl': labels.cta.primaryUrl,
             'marketing.bannerEnabled': labels.banner.bannerEnabled,
             'marketing.bannerText': labels.banner.bannerText,
             'marketing.bannerSeverity': labels.banner.bannerSeverity,
@@ -115,6 +113,31 @@ export default function SettingsPage(){
         const group = optionsQuery.data?.groups.find((item) => item.key === 'settings.marketing.bannerSeverity');
         return group?.items.length ? group.items.map((item) => item.value) : DEFAULT_BANNER_SEVERITIES;
     }, [optionsQuery.data?.groups]);
+
+    const visibleGroupsForTab = useMemo(
+        () => groupedDefinitions.filter(({ group }) => TAB_GROUP_MAP[activeTab].includes(group)),
+        [activeTab, groupedDefinitions]
+    );
+
+    const tabHasMatches = useCallback(
+        (tab: SettingsTab) => {
+            if (tab === 'requestOptions') {
+                return configurableOptionGroups.length > 0;
+            }
+            return groupedDefinitions.some(({ group }) => TAB_GROUP_MAP[tab].includes(group));
+        },
+        [configurableOptionGroups.length, groupedDefinitions]
+    );
+
+    useEffect(() => {
+        if (!deferredSearchValue || tabHasMatches(activeTab)) {
+            return;
+        }
+        const firstMatch = TAB_ORDER.find(tabHasMatches);
+        if (firstMatch) {
+            setActiveTab(firstMatch);
+        }
+    }, [deferredSearchValue, activeTab, tabHasMatches]);
 
     const saveMutation = useMutation({
         mutationFn: async () => {
@@ -240,6 +263,28 @@ export default function SettingsPage(){
 
             {hasError && <div className="rounded-3xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">{copy.page.loadError}</div>}
 
+            {!loading && !hasError && (
+                <div className="inline-flex flex-wrap gap-2 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-sm">
+                    {TAB_ORDER.map((tab) => {
+                        const Icon = TAB_META[tab].icon;
+                        return (
+                            <button
+                                key={tab}
+                                type="button"
+                                onClick={() => setActiveTab(tab)}
+                                className={cn(
+                                    'inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition',
+                                    activeTab === tab ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-100'
+                                )}
+                            >
+                                <Icon className="h-4 w-4" />
+                                {copy.tabs[tab]}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+
             {!loading && !hasError && !searchHasResults && deferredSearchValue && (
                 <div className="rounded-3xl border border-gray-200 bg-white p-6 text-sm text-gray-600 shadow-sm">
                     {copy.page.noMatches} “{searchValue.trim()}”.
@@ -248,20 +293,16 @@ export default function SettingsPage(){
 
             {!loading && !hasError && searchHasResults && (
                 <div className="space-y-6">
-                    {groupedDefinitions.map(({ group, items }) => {
+                    {activeTab !== 'requestOptions' && visibleGroupsForTab.map(({ group, items }) => {
                         const meta = GROUP_META[group];
                         const sectionCopy =
                             group === 'Availability'
                                 ? copy.sections.availability
                                 : group === 'Pricing'
                                   ? copy.sections.pricing
-                                  : group === 'Marketing Hero'
-                                    ? copy.sections.marketingHero
-                                    : group === 'CTA'
-                                      ? copy.sections.cta
-                                      : group === 'Banner'
-                                        ? copy.sections.banner
-                                        : copy.sections.contact;
+                                  : group === 'Banner'
+                                    ? copy.sections.banner
+                                    : copy.sections.contact;
 
                         return (
                             <SectionCard
@@ -417,83 +458,49 @@ export default function SettingsPage(){
                         </div>
                     )}
 
-                    <SectionCard
-                        title={copy.sections.requestOptions.title}
-                        description={copy.sections.requestOptions.description}
-                        icon={ListFilter}
-                        count={configurableOptionGroups.length}
-                        sectionLabel={copy.states.sectionLabel}
-                        fieldLabel={copy.states.fieldsLabel}
-                        accentClassName="bg-gray-50 text-gray-700"
-                    >
-                        {optionsQuery.isLoading && <p className="text-sm text-gray-500">{copy.sections.requestOptions.loading}</p>}
+                    {activeTab === 'requestOptions' && (
+                        <SectionCard
+                            title={copy.sections.requestOptions.title}
+                            description={copy.sections.requestOptions.description}
+                            icon={TAB_META.requestOptions.icon}
+                            count={configurableOptionGroups.length}
+                            sectionLabel={copy.states.sectionLabel}
+                            fieldLabel={copy.states.fieldsLabel}
+                            accentClassName="bg-gray-50 text-gray-700"
+                        >
+                            {optionsQuery.isLoading && <p className="text-sm text-gray-500">{copy.sections.requestOptions.loading}</p>}
 
-                        {optionsQuery.isError && (
-                            <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                                {copy.sections.requestOptions.failed}
-                            </p>
-                        )}
-
-                        {!optionsQuery.isLoading && !optionsQuery.isError && configurableOptionGroups.length === 0 && (
-                            <p className="text-sm text-gray-500">
-                                {deferredSearchValue ? copy.sections.requestOptions.noMatch : copy.sections.requestOptions.noGroups}
-                            </p>
-                        )}
-
-                        <div className="space-y-4">
-                            {configurableOptionGroups.map((group) => (
-                                <article key={group.key} className="rounded-2xl border border-gray-200 bg-gray-50/40 p-4">
-                                    <div className="flex flex-wrap items-center justify-between gap-3">
-                                        <div>
-                                            <p className="text-sm font-semibold text-gray-900">{group.label}</p>
-                                            <p className="mt-1 text-xs text-gray-500">
-                                                {group.items.filter((item) => item.enabled).length} {copy.states.enabled} of {group.items.length}
-                                            </p>
-                                        </div>
-
-                                        <span className="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-medium text-gray-600">
-                                            {copy.states.groupKeyLabel}: {group.key}
-                                        </span>
-                                    </div>
-
-                                    <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                                        {group.items.map((item) => (
-                                            <label
-                                                key={item.value}
-                                                className={cn(
-                                                    'flex items-center justify-between gap-4 rounded-2xl border bg-white p-4 transition',
-                                                    item.enabled ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
-                                                )}
-                                            >
-                                                <div>
-                                                    <p className={cn('text-sm font-medium', item.enabled ? 'text-gray-900' : 'text-gray-500')}>
-                                                        {item.label}
-                                                    </p>
-                                                    <p className="mt-1 text-xs text-gray-500">{item.value}</p>
-                                                </div>
-
-                                                <Switch
-                                                    checked={item.enabled}
-                                                    disabled={updateDisabledOptionsMutation.isPending || mode === 'published'}
-                                                    onChange={handleOptionToggle}
-                                                    inputProps={{
-                                                        'data-group-key': group.key,
-                                                        'data-option-value': item.value,
-                                                    }}
-                                                />
-                                            </label>
-                                        ))}
-                                    </div>
-                                </article>
-                            ))}
-
-                            {updateDisabledOptionsMutation.isError && (
+                            {optionsQuery.isError && (
                                 <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                                     {copy.sections.requestOptions.failed}
                                 </p>
                             )}
-                        </div>
-                    </SectionCard>
+
+                            {!optionsQuery.isLoading && !optionsQuery.isError && configurableOptionGroups.length === 0 && (
+                                <p className="text-sm text-gray-500">
+                                    {deferredSearchValue ? copy.sections.requestOptions.noMatch : copy.sections.requestOptions.noGroups}
+                                </p>
+                            )}
+
+                            <div className="space-y-4">
+                                {configurableOptionGroups.map((group) => (
+                                    <RequestOptionsGroup
+                                        key={group.key}
+                                        group={group}
+                                        disabled={updateDisabledOptionsMutation.isPending || mode === 'published'}
+                                        onToggle={handleOptionToggle}
+                                        copy={copy}
+                                    />
+                                ))}
+
+                                {updateDisabledOptionsMutation.isError && (
+                                    <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                                        {copy.sections.requestOptions.failed}
+                                    </p>
+                                )}
+                            </div>
+                        </SectionCard>
+                    )}
                 </div>
             )}
 

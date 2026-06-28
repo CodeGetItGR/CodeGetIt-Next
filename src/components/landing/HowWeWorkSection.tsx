@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpr
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import { Whisper } from './it';
-import { ProcessStepContent, ProcessStepDiagram, ProcessTimeline, ProjectTypeBadge } from './process';
+import { ProcessStepContent, ProcessTimeline, ProjectTypeBadge } from './process';
 import { cn } from '@/lib/utils';
 
 export function HowWeWorkSection() {
@@ -74,8 +74,6 @@ export function HowWeWorkSection() {
                     <ProjectTypeBadge variant="webAppPlus" label={process.badges.webAppPlus.label} description={process.badges.webAppPlus.description} />
                     <ProjectTypeBadge variant="fullStack" label={process.badges.fullStack.label} description={process.badges.fullStack.description} />
                 </div>
-
-                <ProcessStepDiagram labels={process.steps.map((step) => step.title)} className="mt-10" />
 
                 <div ref={sectionRef} className="mt-16 lg:grid lg:grid-cols-12 lg:gap-12">
                     {/* Left column: sticky step timeline — hidden on mobile where the floating pill takes over */}

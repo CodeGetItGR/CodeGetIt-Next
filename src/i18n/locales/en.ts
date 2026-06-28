@@ -155,14 +155,6 @@ export const en: Translations = {
                     title: 'Pricing',
                     description: 'Starting prices shown in the marketing and proposal experience.',
                 },
-                marketingHero: {
-                    title: 'Marketing hero',
-                    description: 'Homepage hero copy and the first impression visitors see.',
-                },
-                cta: {
-                    title: 'CTA',
-                    description: 'Primary actions that drive visitors toward conversion.',
-                },
                 banner: {
                     title: 'Banner',
                     description: 'Announcement banners and top-of-page alerts.',
@@ -179,6 +171,12 @@ export const en: Translations = {
                     noGroups: 'No configurable option groups available.',
                     noMatch: 'No configurable option groups match your search.',
                 },
+            },
+            tabs: {
+                general: 'General',
+                pricing: 'Pricing',
+                contact: 'Contact',
+                requestOptions: 'Request options',
             },
             states: {
                 modified: 'Modified',
@@ -201,18 +199,7 @@ export const en: Translations = {
             },
             fields: {
                 availability: {
-                    acceptingProjects: 'Accepting new projects',
-                    statusMessage: 'Availability message',
                     contactFormEnabled: 'Contact form enabled',
-                    requestSubmissionEnabled: 'Request submission CTA enabled',
-                },
-                marketingHero: {
-                    heroTitle: 'Hero title',
-                    heroSubtitle: 'Hero subtitle',
-                },
-                cta: {
-                    primaryText: 'Primary CTA text',
-                    primaryUrl: 'Primary CTA URL',
                 },
                 banner: {
                     bannerEnabled: 'Banner enabled',
@@ -858,6 +845,9 @@ export const en: Translations = {
             text: "We don't use tracking cookies or analytics on this site.",
             linkLabel: 'Learn more',
             dismiss: 'Got it',
+        },
+        marketingBanner: {
+            dismissAria: 'Dismiss announcement',
         },
     },
     publicOffer: {

@@ -130,7 +130,7 @@ export const settingsApi = {
     },
 
     batchUpdate: async (payload: AppConfigBatchPayload) => {
-        const { data } = await apiClient.patch<AppConfigResponse[]>('/settings/batch', payload);
+        const { data } = await apiClient.put<AppConfigResponse[]>('/settings/batch', payload);
         return data;
     },
 

@@ -375,6 +375,9 @@ export const el: Translations = {
             linkLabel: 'Μάθε περισσότερα',
             dismiss: 'Το κατάλαβα',
         },
+        marketingBanner: {
+            dismissAria: 'Απόρριψη ανακοίνωσης',
+        },
     },
     publicOffer: {
         loadingOffer: 'Φόρτωση προσφοράς...',
