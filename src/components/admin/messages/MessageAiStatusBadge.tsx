@@ -19,7 +19,10 @@ export const MessageAiStatusBadge = ({ aiAcknowledgments }: MessageAiStatusBadge
 
     const latest = aiAcknowledgments[0];
     const retryCount = aiAcknowledgments.length - 1;
-    const label = retryCount > 0 ? `${labelByStatus[latest.status]} · ${retryCount} retry` : labelByStatus[latest.status];
+    const label =
+        retryCount > 0
+            ? `${labelByStatus[latest.status]} · ${retryCount} ${retryCount === 1 ? 'retry' : 'retries'}`
+            : labelByStatus[latest.status];
 
     return <StatusBadge value={latest.status} label={label} />;
 };

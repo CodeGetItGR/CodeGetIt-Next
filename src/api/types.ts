@@ -224,6 +224,7 @@ export interface ContactMessageResponse {
     language: OfferLanguage;
     createdAt: string;
     updatedAt: string;
+    /** Ordered newest first by the API. */
     aiAcknowledgments: AiAcknowledgmentResponse[];
 }
 
