@@ -63,8 +63,17 @@ export default function ContactMessagesPage() {
                                 return (
                                     <Fragment key={msg.id}>
                                         <tr
+                                            role="button"
+                                            tabIndex={0}
+                                            aria-expanded={isExpanded}
                                             className="cursor-pointer hover:bg-gray-50"
                                             onClick={() => handleToggleExpanded(msg.id)}
+                                            onKeyDown={(event) => {
+                                                if (event.key === 'Enter' || event.key === ' ') {
+                                                    event.preventDefault();
+                                                    handleToggleExpanded(msg.id);
+                                                }
+                                            }}
                                         >
                                             <td className="px-4 py-3 font-medium text-gray-900">{msg.name}</td>
                                             <td className="px-4 py-3">
