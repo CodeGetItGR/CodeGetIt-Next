@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.claude/worktrees" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/.superpowers/brainstorm/1843-1781373179" />
+      <excludeFolder url="file://$MODULE_DIR$/.superpowers/brainstorm/376-1781375559" />
+      <excludeFolder url="file://$MODULE_DIR$/.superpowers/brainstorm/511-1781380036" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
