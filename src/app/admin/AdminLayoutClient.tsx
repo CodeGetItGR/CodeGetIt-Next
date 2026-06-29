@@ -6,6 +6,7 @@ import {useNavigation} from "@/hooks";
 import {useAuth} from "@/auth/useAuth";
 import {
     LayoutDashboard,
+    BarChart3,
     Inbox,
     FileText,
     FolderKanban,
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 
 const links: ReadonlyArray<{ to: string; label: string; end?: boolean; icon: LucideIcon }> = [
     { to: '/admin', label: 'Overview', end: true, icon: LayoutDashboard },
+    { to: '/admin/ai-usage', label: 'AI usage', icon: BarChart3 },
     { to: '/admin/requests/list', label: 'Requests', icon: Inbox },
     { to: '/admin/offers/list', label: 'Offers', icon: FileText },
     { to: '/admin/projects/list', label: 'Projects', icon: FolderKanban },

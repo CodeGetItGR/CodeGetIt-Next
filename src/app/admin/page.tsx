@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { offerApi, projectApi, queryKeys, requestApi} from '@/api';
 import Link from "next/link";
+import { AiUsageAnalytics } from '@/components/admin/ai-usage/AiUsageAnalytics';
 
 interface StatCardProps {
     label: string;
@@ -85,6 +86,10 @@ export default function AdminPage() {
                     </Link>
                 ))}
             </section>
+
+            <div className="mt-8">
+                <AiUsageAnalytics mode="overview" />
+            </div>
         </div>
     );
 };

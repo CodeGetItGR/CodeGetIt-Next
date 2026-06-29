@@ -5,6 +5,8 @@ import type {
     AiThreadResponse,
     AiMessageResponse,
     AiUsageStatsResponse,
+    AiUsageStatsQuery,
+    AiOfferUsageStatsResponse,
     RequestAnalysisResponse,
     RequestAnalysisStatusResponse,
 } from './types';
@@ -84,7 +86,20 @@ export const aiApi = {
 
     // Usage Stats
     getOfferUsageStats: async (offerId: UUID) => {
-        const { data } = await apiClient.get<AiUsageStatsResponse>(`/ai/offers/${offerId}/usage-stats`);
+        const { data } = await apiClient.get<AiOfferUsageStatsResponse>(`/ai/offers/${offerId}/usage-stats`);
+        return data;
+    },
+
+    getUsageStats: async (query: AiUsageStatsQuery = {}) => {
+        const params = new URLSearchParams();
+
+        if (query.from) params.set('from', query.from);
+        if (query.to) params.set('to', query.to);
+        if (query.model) params.set('model', query.model);
+        if (query.interactionType) params.set('interactionType', query.interactionType);
+
+        const suffix = params.toString();
+        const { data } = await apiClient.get<AiUsageStatsResponse>(`/ai/usage-stats${suffix ? `?${suffix}` : ''}`);
         return data;
     },
 };

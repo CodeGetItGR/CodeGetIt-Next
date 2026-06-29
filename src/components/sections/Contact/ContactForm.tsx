@@ -8,7 +8,6 @@ import {DetailedRequestFormState, SubmitState} from "@/components/sections/Conta
 import {premiumEase, premiumMotion} from "@/lib";
 import {DetailedRequestWizard, MagneticButton} from "@/components";
 import {EASE, Socket, TRAVEL} from "@/components/landing/it";
-import {useSettingsOptions} from "@/hooks";
 import {usePublicSettings} from "@/settings/usePublicSettings";
 
 interface ContactFormLabels {

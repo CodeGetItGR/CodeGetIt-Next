@@ -20,6 +20,14 @@ export type BudgetFlexibility = 'FIXED' | 'SOMEWHAT_FLEXIBLE' | 'FLEXIBLE' | 'UN
 export type CommunicationPreference = 'EMAIL' | 'PHONE' | 'VIDEO_CALL' | 'MESSAGING_APP';
 export type DataSensitivity = 'NONE' | 'BASIC_PERSONAL_DATA' | 'SENSITIVE_PERSONAL_DATA' | 'FINANCIAL_DATA' | 'HEALTHCARE_DATA' | 'OTHER';
 export type AiAcknowledgmentStatus = 'SUCCESS' | 'ERROR' | 'RATE_LIMITED' | 'TIMEOUT';
+export type AiInteractionType =
+    | 'REQUEST_ANALYSIS'
+    | 'CHAT_MESSAGE'
+    | 'AUTO_SUMMARY'
+    | 'THREAD_CONTEXT_SWITCH'
+    | 'CUSTOM'
+    | 'CONTACT_ACKNOWLEDGMENT';
+export type AiInteractionStatus = AiAcknowledgmentStatus;
 
 export interface PagedResponse<T> {
     content: T[];
@@ -217,6 +225,65 @@ export interface AiAcknowledgmentResponse {
     createdAt: string;
 }
 
+export interface AiUsageSummary {
+    total_calls: number;
+    total_input_tokens: number;
+    total_output_tokens: number;
+    total_tokens: number;
+    total_cost: number;
+    avg_cost_per_call: number;
+    success_rate: number;
+}
+
+export interface AiDailyUsage {
+    date: string;
+    calls: number;
+    input_tokens: number;
+    output_tokens: number;
+    total_tokens: number;
+    cost: number;
+}
+
+export interface AiModelUsage {
+    model: string;
+    calls: number;
+    input_tokens: number;
+    output_tokens: number;
+    total_tokens: number;
+    cost: number;
+}
+
+export interface AiInteractionTypeUsage {
+    interaction_type: AiInteractionType;
+    calls: number;
+    input_tokens: number;
+    output_tokens: number;
+    total_tokens: number;
+    cost: number;
+}
+
+export interface AiStatusUsage {
+    status: AiInteractionStatus;
+    calls: number;
+}
+
+export interface AiUsageStatsResponse {
+    from: string;
+    to: string;
+    summary: AiUsageSummary;
+    by_day: AiDailyUsage[];
+    by_model: AiModelUsage[];
+    by_interaction_type: AiInteractionTypeUsage[];
+    by_status: AiStatusUsage[];
+}
+
+export interface AiUsageStatsQuery {
+    from?: string;
+    to?: string;
+    model?: string;
+    interactionType?: AiInteractionType;
+}
+
 export interface ContactMessageResponse {
     id: UUID;
     name: string;
@@ -299,7 +366,7 @@ export interface AiMessageResponse {
     createdAt: string;
 }
 
-export interface AiUsageStatsResponse {
+export interface AiOfferUsageStatsResponse {
     offerId: UUID;
     totalTokens: number;
     totalCost: number;

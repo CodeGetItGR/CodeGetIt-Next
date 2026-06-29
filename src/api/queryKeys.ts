@@ -1,4 +1,4 @@
-import type { EntityType, UUID } from './types';
+import type { AiUsageStatsQuery, EntityType, UUID } from './types';
 
 interface EntityQueryKeys {
     root: readonly [string];
@@ -40,6 +40,7 @@ interface QueryKeys {
         thread: (threadId: UUID) => readonly [string, string, UUID];
         messages: (threadId: UUID, limit: number) => readonly [string, string, UUID, number];
         stats: (offerId: UUID) => readonly [string, string, UUID];
+        usageStats: (query: AiUsageStatsQuery) => readonly [string, string, AiUsageStatsQuery];
     };
 }
 
@@ -90,5 +91,6 @@ export const queryKeys: QueryKeys = {
         thread: (threadId) => ['ai', 'thread', threadId] as const,
         messages: (threadId, limit) => ['ai', 'messages', threadId, limit] as const,
         stats: (offerId) => ['ai', 'stats', offerId] as const,
+        usageStats: (query) => ['ai', 'usage-stats', query] as const,
     },
 };
