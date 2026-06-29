@@ -19,6 +19,7 @@ export type BudgetRange = 'UNDER_2K' | 'FROM_2K_TO_5K' | 'FROM_5K_TO_10K' | 'FRO
 export type BudgetFlexibility = 'FIXED' | 'SOMEWHAT_FLEXIBLE' | 'FLEXIBLE' | 'UNKNOWN';
 export type CommunicationPreference = 'EMAIL' | 'PHONE' | 'VIDEO_CALL' | 'MESSAGING_APP';
 export type DataSensitivity = 'NONE' | 'BASIC_PERSONAL_DATA' | 'SENSITIVE_PERSONAL_DATA' | 'FINANCIAL_DATA' | 'HEALTHCARE_DATA' | 'OTHER';
+export type AiAcknowledgmentStatus = 'SUCCESS' | 'ERROR' | 'RATE_LIMITED' | 'TIMEOUT';
 
 export interface PagedResponse<T> {
     content: T[];
@@ -204,6 +205,18 @@ export interface ApiError {
     errorCode?: string;
 }
 
+export interface AiAcknowledgmentResponse {
+    id: UUID;
+    status: AiAcknowledgmentStatus;
+    /** Plain text on success. May be a JSON-encoded string containing a `body` field for debugging on a guardrail rejection. */
+    response: string | null;
+    errorMessage: string | null;
+    modelUsed: string;
+    estimatedCost: number;
+    totalTokens: number;
+    createdAt: string;
+}
+
 export interface ContactMessageResponse {
     id: UUID;
     name: string;
@@ -211,6 +224,8 @@ export interface ContactMessageResponse {
     message: string;
     language: OfferLanguage;
     createdAt: string;
+    /** Ordered newest first by the API. */
+    aiAcknowledgments: AiAcknowledgmentResponse[];
 }
 
 export interface OfferAnalysisResponse {

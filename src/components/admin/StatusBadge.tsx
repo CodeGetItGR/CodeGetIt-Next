@@ -1,6 +1,6 @@
-import type { GithubRepoStatus, OfferStatus, Priority, ProjectStatus, RequestStatus } from '@/api';
+import type { AiAcknowledgmentStatus, GithubRepoStatus, OfferStatus, Priority, ProjectStatus, RequestStatus } from '@/api';
 
-type StatusValue = RequestStatus | OfferStatus | ProjectStatus | Priority | GithubRepoStatus;
+type StatusValue = RequestStatus | OfferStatus | ProjectStatus | Priority | GithubRepoStatus | AiAcknowledgmentStatus;
 
 const colorMap: Record<StatusValue, string> = {
     DRAFT: 'bg-slate-100 text-slate-700 border-slate-200',
@@ -22,18 +22,23 @@ const colorMap: Record<StatusValue, string> = {
     MEDIUM: 'bg-blue-50 text-blue-700 border-blue-200',
     HIGH: 'bg-amber-50 text-amber-700 border-amber-200',
     URGENT: 'bg-rose-50 text-rose-700 border-rose-200',
+    SUCCESS: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+    ERROR: 'bg-rose-50 text-rose-700 border-rose-200',
+    RATE_LIMITED: 'bg-amber-50 text-amber-700 border-amber-200',
+    TIMEOUT: 'bg-amber-50 text-amber-700 border-amber-200',
 };
 
 interface StatusBadgeProps {
     value: StatusValue;
+    label?: string;
 }
 
-export const StatusBadge = ({ value }: StatusBadgeProps) => {
+export const StatusBadge = ({ value, label }: StatusBadgeProps) => {
     return (
         <span
             className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${colorMap[value] ?? 'border-gray-200 bg-gray-100 text-gray-700'}`}
         >
-            {value.replace(/_/g, ' ')}
+            {label ?? value.replace(/_/g, ' ')}
         </span>
     );
 };
