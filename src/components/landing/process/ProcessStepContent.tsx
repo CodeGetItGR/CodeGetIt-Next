@@ -15,10 +15,11 @@ interface ProcessStepContentProps {
     index: number;
     deliverablesLabel: string;
     outcomeLabel: string;
+    artifactEyebrow: string;
     badges: Translations['landing']['process']['badges'];
 }
 
-export function ProcessStepContent({ step, index, deliverablesLabel, outcomeLabel, badges }: ProcessStepContentProps) {
+export function ProcessStepContent({ step, index, deliverablesLabel, outcomeLabel, artifactEyebrow, badges }: ProcessStepContentProps) {
     const ref = useRef(null);
     const inView = useInView(ref, { amount: 0.15 });
     const reduced = useReducedMotion();
@@ -106,7 +107,7 @@ export function ProcessStepContent({ step, index, deliverablesLabel, outcomeLabe
             <ArtifactPlate
                 variant={PROCESS_ARTIFACTS[index] ?? 'brief'}
                 plate={`Step ${String(index + 1).padStart(2, '0')}`}
-                eyebrow="process artifact"
+                eyebrow={artifactEyebrow}
                 caption={step.title}
                 compact
                 delay={0.12}

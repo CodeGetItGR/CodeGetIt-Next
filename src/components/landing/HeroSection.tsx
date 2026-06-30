@@ -59,8 +59,8 @@ export function HeroSection() {
           <ArtifactPlate
             variant="idea"
             plate="Plate 00"
-            eyebrow="you bring it"
-            caption="A rough thought, exactly as it comes."
+            eyebrow={copy.plates.idea.eyebrow}
+            caption={copy.plates.idea.caption}
             compact
             depth
             className="relative rotate-[1deg]"
@@ -69,8 +69,8 @@ export function HeroSection() {
           <ArtifactPlate
             variant="brief"
             plate="Plate 01"
-            eyebrow="we scope it"
-            caption="The same idea, shaped into a plan."
+            eyebrow={copy.plates.brief.eyebrow}
+            caption={copy.plates.brief.caption}
             compact
             depth
             className="-mt-10 ml-auto max-w-[86%] rotate-[-1deg]"

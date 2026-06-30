@@ -104,6 +104,10 @@ export interface Translations {
                 primary: string;
                 secondary: string;
             };
+            plates: {
+                idea: { eyebrow: string; caption: string };
+                brief: { eyebrow: string; caption: string };
+            };
         };
         /** The three-act story the name spells out: you bring it, we code it, you get it. */
         story: {
@@ -113,6 +117,7 @@ export interface Translations {
                 sub: string;
                 /** Cue shown while the pinned scene waits for the first scroll segment. */
                 scrollCue: string;
+                artifactEyebrow: string;
                 /** The hop list — the dot serves as each item's period while its spec card swaps in. */
                 items: Array<{
                     title: string;
@@ -150,6 +155,7 @@ export interface Translations {
             description: string;
             featured: string;
             getStarted: string;
+            artifactEyebrow: string;
             estimatedTimelineLabel: string;
             timelineEstimates: [string, string, string];
             priceDisclaimer: string;
@@ -182,6 +188,11 @@ export interface Translations {
             managedLabel: string;
             customLabel: string;
             disclaimer: string;
+            plates: {
+                tierStatic: { eyebrow: string; caption: string };
+                tierApp: { eyebrow: string; caption: string };
+                tierFull: { eyebrow: string; caption: string };
+            };
         };
         process: {
             eyebrow: string;
@@ -189,6 +200,7 @@ export interface Translations {
             description: string;
             deliverablesLabel: string;
             outcomeLabel: string;
+            artifactEyebrow: string;
             badges: {
                 allProjects: { label: string; description: string };
                 webAppPlus: { label: string; description: string };
@@ -212,6 +224,8 @@ export interface Translations {
             solutionLabel: string;
             visitSite: string;
             live: string;
+            artifactEyebrow: string;
+            artifactCaption: string;
         };
         testimonials: {
             eyebrow: string;
@@ -267,6 +281,19 @@ export interface Translations {
         };
         marketingBanner: {
             dismissAria: string;
+        };
+        /** Default metadata for each plate variant — used as locale-aware fallbacks inside ArtifactPlate. */
+        artifacts: {
+            variants: {
+                idea:       { eyebrow: string; title: string;};
+                brief:      { eyebrow: string; title: string;};
+                design:     { eyebrow: string; title: string;};
+                build:      { eyebrow: string; title: string;};
+                handover:   { eyebrow: string; title: string;};
+                tierStatic: { eyebrow: string; title: string;};
+                tierApp:    { eyebrow: string; title: string;};
+                tierFull:   { eyebrow: string; title: string;};
+            };
         };
     };
 

@@ -22,7 +22,7 @@ export function ProjectsSection() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: '-100px' });
     const { t } = useLocale();
-    const { eyebrow, title, description, challengeLabel, solutionLabel, visitSite, live } = t.landing.projects;
+    const { eyebrow, title, description, challengeLabel, solutionLabel, visitSite, live, artifactEyebrow, artifactCaption } = t.landing.projects;
     const project: Project = (projectsData as Project[])[0];
 
     return (
@@ -72,8 +72,8 @@ export function ProjectsSection() {
                         <ArtifactPlate
                             variant="handover"
                             plate="Live 01"
-                            eyebrow="you get it"
-                            caption="A modest first build, delivered and owned."
+                            eyebrow={artifactEyebrow}
+                            caption={artifactCaption}
                             depth
                             className="relative"
                             delay={0.1}

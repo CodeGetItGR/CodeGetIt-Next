@@ -202,7 +202,7 @@ export function ServicesSection() {
                                     <ArtifactPlate
                                         variant={SERVICE_ARTIFACTS[index] ?? SERVICE_ARTIFACTS[0]}
                                         plate={`Receive ${index + 1}`}
-                                        eyebrow="what you get"
+                                        eyebrow={services.artifactEyebrow}
                                         caption={service.title}
                                         compact
                                         delay={0.1 + index * 0.06}

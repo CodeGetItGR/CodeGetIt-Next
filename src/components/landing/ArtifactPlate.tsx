@@ -4,6 +4,7 @@ import { useId, useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/i18n/UseLocale';
 
 import { EASE } from './it';
 
@@ -425,17 +426,6 @@ function Handover({ active }: { active: boolean }) {
     );
 }
 
-const variantMeta: Record<ArtifactVariant, { eyebrow: string; title: string; note: string }> = {
-    idea: { eyebrow: 'the idea', title: 'It arrives', note: 'a rough thought, captured' },
-    brief: { eyebrow: 'the brief', title: 'Scoped', note: 'goals, and a path to them' },
-    design: { eyebrow: 'design & architecture', title: 'Shaped', note: 'layout, components, structure' },
-    build: { eyebrow: 'building & testing', title: 'Built', note: 'shipped in tested iterations' },
-    handover: { eyebrow: 'delivery', title: "It's yours", note: 'deployed, live, owned' },
-    tierStatic: { eyebrow: 'static site', title: 'A fast, clear page', note: 'frontend, built for speed' },
-    tierApp: { eyebrow: 'web app', title: 'Interactive UI', note: 'dashboards, auth, integrations' },
-    tierFull: { eyebrow: 'full-stack', title: 'End-to-end system', note: 'frontend, backend, database' },
-};
-
 function ArtifactVisual({ variant, active }: { variant: ArtifactVariant; active: boolean }) {
     switch (variant) {
         case 'idea':
@@ -467,13 +457,14 @@ export function ArtifactPlate({
     compact = false,
     depth = false,
 }: ArtifactPlateProps) {
+    const { t } = useLocale();
     const reduced = useReducedMotion();
     const ref = useRef<HTMLElement>(null);
     // Idle loops run only while the plate is on screen (and motion is allowed) —
     // keeps a page full of animated plates cheap, and is mobile/battery-friendly.
     const inView = useInView(ref, { amount: 0.35 });
     const active = !reduced && inView;
-    const meta = variantMeta[variant];
+    const meta = t.landing.artifacts.variants[variant];
 
     return (
         <motion.figure
@@ -503,7 +494,7 @@ export function ArtifactPlate({
                         {eyebrow ?? meta.eyebrow}
                     </p>
                     <p className="mt-1 text-sm font-semibold leading-5 text-slate-800">{caption || meta.title}</p>
-                    <p className="mt-1 text-xs leading-5 text-slate-500">{meta.note}</p>
+                    {/*<p className="mt-1 text-xs leading-5 text-slate-500">{meta.note}</p>*/}
                 </div>
             </figcaption>
         </motion.figure>

@@ -60,8 +60,8 @@ export function ComparisonSection() {
                     <ArtifactPlate
                         variant="tierStatic"
                         plate="Tier 01"
-                        eyebrow="static"
-                        caption="A fast, focused page."
+                        eyebrow={comparison.plates.tierStatic.eyebrow}
+                        caption={comparison.plates.tierStatic.caption}
                         compact
                         delay={0.05}
                         className="shadow-none"
@@ -69,8 +69,8 @@ export function ComparisonSection() {
                     <ArtifactPlate
                         variant="tierApp"
                         plate="Tier 02"
-                        eyebrow="web app"
-                        caption="Interactive UI and managed services."
+                        eyebrow={comparison.plates.tierApp.eyebrow}
+                        caption={comparison.plates.tierApp.caption}
                         compact
                         delay={0.12}
                         className="shadow-none"
@@ -78,8 +78,8 @@ export function ComparisonSection() {
                     <ArtifactPlate
                         variant="tierFull"
                         plate="Tier 03"
-                        eyebrow="full stack"
-                        caption="Custom backend, data, and ownership."
+                        eyebrow={comparison.plates.tierFull.eyebrow}
+                        caption={comparison.plates.tierFull.caption}
                         compact
                         delay={0.19}
                         className="shadow-none"

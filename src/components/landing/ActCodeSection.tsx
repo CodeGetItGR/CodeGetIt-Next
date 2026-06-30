@@ -132,7 +132,7 @@ const cardVariants = {
 
 const ACT2_ARTIFACTS: ArtifactVariant[] = ['tierStatic', 'tierApp', 'tierFull'];
 
-function SpecCard({ item, index }: { item: CodeItem; index: number }) {
+function SpecCard({ item, index, artifactEyebrow }: { item: CodeItem; index: number; artifactEyebrow: string }) {
   // Children count time from the card's mount (after the old card's exit) —
   // adding the enter delay keeps them synced to the card's actual arrival.
   const base = ACT2.cardEnterDelay;
@@ -141,7 +141,7 @@ function SpecCard({ item, index }: { item: CodeItem; index: number }) {
       <ArtifactPlate
         variant={ACT2_ARTIFACTS[index % ACT2_ARTIFACTS.length]}
         plate={`Plate ${String(index + 2).padStart(2, '0')}`}
-        eyebrow="shop artifact"
+        eyebrow={artifactEyebrow}
         caption={item.title}
         compact
         delay={base}
@@ -461,7 +461,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
                   className="relative mt-6 min-h-50 border-t border-slate-900/10 pt-4 lg:mt-0 lg:min-h-80 lg:border-0 lg:pt-0"
                 >
                   <AnimatePresence mode="wait" initial={false}>
-                    <SpecCard key={index} item={copy.items[index]} index={index} />
+                    <SpecCard key={index} item={copy.items[index]} index={index} artifactEyebrow={copy.artifactEyebrow} />
                   </AnimatePresence>
                 </div>
               </motion.div>
