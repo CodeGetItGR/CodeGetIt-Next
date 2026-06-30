@@ -67,28 +67,28 @@ export function ComparisonSection() {
 
                 <div className="mt-10 grid gap-4 md:grid-cols-3">
                     <ArtifactPlate
-                        variant="wireframe"
+                        variant="tierStatic"
                         plate="Tier 01"
                         eyebrow="static"
-                        caption="A focused page system for clear action."
+                        caption="A fast, focused page."
                         compact
                         delay={0.05}
                         className="shadow-none"
                     />
                     <ArtifactPlate
-                        variant="uiFlow"
+                        variant="tierApp"
                         plate="Tier 02"
                         eyebrow="web app"
-                        caption="Interface states and managed services."
+                        caption="Interactive UI and managed services."
                         compact
                         delay={0.12}
                         className="shadow-none"
                     />
                     <ArtifactPlate
-                        variant="systemMap"
+                        variant="tierFull"
                         plate="Tier 03"
                         eyebrow="full stack"
-                        caption="Custom logic, data, and ownership."
+                        caption="Custom backend, data, and ownership."
                         compact
                         delay={0.19}
                         className="shadow-none"

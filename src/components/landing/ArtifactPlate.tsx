@@ -1,12 +1,21 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { useId, useRef } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 
 import { cn } from '@/lib/utils';
 
-import { EASE, TRAVEL } from './it';
+import { EASE } from './it';
 
-export type ArtifactVariant = 'brief' | 'wireframe' | 'systemMap' | 'uiFlow' | 'handover';
+export type ArtifactVariant =
+    | 'idea'
+    | 'brief'
+    | 'design'
+    | 'build'
+    | 'handover'
+    | 'tierStatic'
+    | 'tierApp'
+    | 'tierFull';
 
 interface ArtifactPlateProps {
     variant: ArtifactVariant;
@@ -25,50 +34,23 @@ interface ArtifactPlateProps {
 }
 
 /**
- * The brand teal — "It". This is the only teal in every plate; the dot is the
- * protagonist of each scene, shown at a different stage of becoming. (Inside an
- * illustration plate Law 2 is relaxed for incidental ink geometry, but teal
- * stays exclusive to the dot — see docs/creative-direction-it.md.)
+ * The brand teal — "It". Teal stays exclusive to the idea/data wherever it shows
+ * (a focal action, the agreed scope, a packet of data moving through the stack):
+ * it is never decoration. Everything else is ink on paper. (Inside an illustration
+ * plate Law 2/4 are relaxed for incidental geometry + depth — see
+ * docs/creative-direction-it.md — but teal exclusivity, Law 1, holds.)
  */
 const TEAL = '#0d9488';
-const VIEWPORT = { once: true, margin: '0px 0px -10% 0px' } as const;
-
-const variantMeta: Record<ArtifactVariant, { eyebrow: string; title: string; note: string }> = {
-    brief: {
-        eyebrow: 'the idea',
-        title: 'It arrives',
-        note: 'a rough thought, exactly as it comes',
-    },
-    wireframe: {
-        eyebrow: 'first shape',
-        title: 'It gets a shape',
-        note: 'structure forms around the idea',
-    },
-    uiFlow: {
-        eyebrow: 'in motion',
-        title: 'It finds its path',
-        note: 'the idea, set in motion',
-    },
-    systemMap: {
-        eyebrow: 'how it works',
-        title: 'It connects',
-        note: 'the few parts that matter, joined',
-    },
-    handover: {
-        eyebrow: 'delivery',
-        title: "It's yours",
-        note: 'docked, live, owned',
-    },
-};
 
 /* ── Shared scene primitives ──────────────────────────────────────────────── */
 
-function Scene({ children, className }: { children: React.ReactNode; className?: string }) {
+function Scene({ children }: { children: React.ReactNode }) {
     return (
         <svg
             viewBox="0 0 320 200"
-            className={cn('h-full min-h-[188px] w-full bg-[#fbfbfa] text-slate-800', className)}
+            className="h-full min-h-[188px] w-full bg-[#fbfbfa] text-slate-800"
             fill="none"
+            strokeWidth={1.5}
             aria-hidden
         >
             {children}
@@ -76,275 +58,362 @@ function Scene({ children, className }: { children: React.ReactNode; className?:
     );
 }
 
-/** Shared draw-in transition for any ink hairline (line/path/rect via pathLength). */
-function drawProps(active: boolean, delay: number, duration: number, opacity: number) {
-    return {
-        stroke: 'currentColor',
-        strokeOpacity: opacity,
-        vectorEffect: 'non-scaling-stroke' as const,
-        initial: active ? ({ pathLength: 0, opacity: 0 } as const) : (false as const),
-        whileInView: { pathLength: 1, opacity: 1 },
-        viewport: VIEWPORT,
-        transition: { duration: active ? duration : 0, ease: EASE, delay },
-    };
+/** A skeleton placeholder block — the grey content stand-in. */
+function Sk({ x, y, w, h, rx = 3, o = 0.07 }: { x: number; y: number; w: number; h: number; rx?: number; o?: number }) {
+    return <rect x={x} y={y} width={w} height={h} rx={rx} fill="currentColor" fillOpacity={o} />;
 }
 
-function DrawLine({
-    x1,
-    y1,
-    x2,
-    y2,
-    active,
-    delay = 0,
-    duration = 0.4,
-    opacity = 0.5,
-}: {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
-    active: boolean;
-    delay?: number;
-    duration?: number;
-    opacity?: number;
-}) {
-    return <motion.line x1={x1} y1={y1} x2={x2} y2={y2} {...drawProps(active, delay, duration, opacity)} />;
-}
-
-function DrawPath({
-    d,
-    active,
-    delay = 0,
-    duration = 0.7,
-    opacity = 0.5,
-}: {
-    d: string;
-    active: boolean;
-    delay?: number;
-    duration?: number;
-    opacity?: number;
-}) {
-    return <motion.path d={d} {...drawProps(active, delay, duration, opacity)} />;
-}
-
-function DrawRect({
-    x,
-    y,
-    width,
-    height,
-    rx,
-    active,
-    delay = 0,
-    duration = 0.8,
-    opacity = 0.4,
-}: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    rx?: number;
-    active: boolean;
-    delay?: number;
-    duration?: number;
-    opacity?: number;
-}) {
-    return <motion.rect x={x} y={y} width={width} height={height} rx={rx} {...drawProps(active, delay, duration, opacity)} />;
-}
-
-/** The dot pops and settles in place (anticipate → travel → settle). */
-function Dot({ cx, cy, r = 7, active, delay = 0 }: { cx: number; cy: number; r?: number; active: boolean; delay?: number }) {
-    if (!active) return <circle cx={cx} cy={cy} r={r} fill={TEAL} />;
+/** A browser/app window chrome — frame + title bar + three squared controls. */
+function Win({ x, y, w, h, rx = 12 }: { x: number; y: number; w: number; h: number; rx?: number }) {
     return (
-        <motion.circle
-            cx={cx}
-            cy={cy}
-            r={r}
-            fill={TEAL}
-            style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-            initial={{ scale: 0, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={VIEWPORT}
-            transition={{ type: 'spring', ...TRAVEL, delay }}
-        />
-    );
-}
-
-/* ── 1 · It arrives — the raw idea, caught in a scribble ──────────────────── */
-
-function BriefArtifact({ animated, delay }: { animated: boolean; delay: number }) {
-    return (
-        <Scene>
-            {/* you bring it: an inbound arrow toward the tangle */}
-            <DrawLine x1={36} y1={166} x2={92} y2={132} active={animated} delay={delay} opacity={0.35} duration={0.45} />
-            <DrawPath d="M84 124 L92 132 L82 136" active={animated} delay={delay + 0.1} opacity={0.35} duration={0.3} />
-            {/* the messy thought */}
-            <DrawPath
-                d="M70 118 C 54 90, 100 70, 130 86 C 158 101, 124 138, 108 118 C 95 102, 138 90, 162 104 C 188 119, 172 150, 152 138"
-                active={animated}
-                delay={delay + 0.18}
-                duration={0.9}
-                opacity={0.6}
-            />
-            <DrawPath d="M176 78 C 196 70, 214 88, 206 104" active={animated} delay={delay + 0.5} duration={0.4} opacity={0.3} />
-            {/* the idea itself, caught at the tangle's heart */}
-            <Dot cx={132} cy={104} active={animated} delay={animated ? delay + 0.7 : 0} />
-        </Scene>
-    );
-}
-
-/* ── 2 · It gets a shape — structure forms around the idea ────────────────── */
-
-function WireframeArtifact({ animated, delay }: { animated: boolean; delay: number }) {
-    return (
-        <Scene>
-            {/* the frame assembles around the centered idea */}
-            <DrawRect x={72} y={42} width={176} height={116} active={animated} delay={delay} duration={0.9} opacity={0.4} />
-            {/* guides crossing through the dot — it's the anchor, not caged */}
-            <DrawLine x1={72} y1={100} x2={140} y2={100} active={animated} delay={delay + 0.3} opacity={0.22} />
-            <DrawLine x1={180} y1={100} x2={248} y2={100} active={animated} delay={delay + 0.34} opacity={0.22} />
-            <DrawLine x1={160} y1={42} x2={160} y2={82} active={animated} delay={delay + 0.38} opacity={0.22} />
-            <DrawLine x1={160} y1={118} x2={160} y2={158} active={animated} delay={delay + 0.42} opacity={0.22} />
-            {/* corner ticks — the hand-set registration marks */}
-            <DrawPath d="M88 56 L88 44 L100 44" active={animated} delay={delay + 0.5} opacity={0.3} duration={0.3} />
-            <DrawPath d="M232 144 L232 156 L220 156" active={animated} delay={delay + 0.56} opacity={0.3} duration={0.3} />
-            <Dot cx={160} cy={100} active={animated} delay={animated ? delay + 0.62 : 0} />
-        </Scene>
-    );
-}
-
-/* ── 3 · It finds its path — the idea, set in motion ──────────────────────── */
-
-const FLOW_PTS = [
-    { x: 54, y: 150 },
-    { x: 116, y: 84 },
-    { x: 190, y: 128 },
-    { x: 262, y: 70 },
-];
-
-function UiFlowArtifact({ animated, delay }: { animated: boolean; delay: number }) {
-    const d = `M${FLOW_PTS.map((p) => `${p.x} ${p.y}`).join(' L')}`;
-    const rest = FLOW_PTS[animated ? FLOW_PTS.length - 1 : 0];
-
-    return (
-        <Scene>
-            <DrawPath d={d} active={animated} delay={delay} duration={1} opacity={0.35} />
-            {/* waypoints the idea passes through */}
-            {FLOW_PTS.map((p, i) => (
-                <motion.rect
-                    key={i}
-                    x={p.x - 4}
-                    y={p.y - 4}
-                    width={8}
-                    height={8}
-                    stroke="currentColor"
-                    strokeOpacity={0.4}
-                    vectorEffect="non-scaling-stroke"
-                    initial={animated ? { opacity: 0, scale: 0.6 } : false}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={VIEWPORT}
-                    style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-                    transition={{ duration: animated ? 0.3 : 0, ease: EASE, delay: delay + 0.2 + i * 0.18 }}
-                />
+        <>
+            <rect x={x} y={y} width={w} height={h} rx={rx} stroke="currentColor" strokeOpacity={0.45} vectorEffect="non-scaling-stroke" />
+            <line x1={x} y1={y + 16} x2={x + w} y2={y + 16} stroke="currentColor" strokeOpacity={0.16} vectorEffect="non-scaling-stroke" />
+            {[0, 1, 2].map((i) => (
+                <rect key={i} x={x + 10 + i * 7} y={y + 6} width={4} height={4} fill="currentColor" fillOpacity={0.25} />
             ))}
-            {/* the idea travels the route and settles at the end */}
-            {animated ? (
-                <motion.circle
-                    r={7}
-                    fill={TEAL}
-                    initial={{ cx: FLOW_PTS[0].x, cy: FLOW_PTS[0].y, opacity: 0 }}
-                    whileInView={{
-                        cx: FLOW_PTS.map((p) => p.x),
-                        cy: FLOW_PTS.map((p) => p.y),
-                        opacity: 1,
-                    }}
-                    viewport={VIEWPORT}
-                    transition={{
-                        cx: { duration: 1.5, ease: EASE, delay: delay + 0.4 },
-                        cy: { duration: 1.5, ease: EASE, delay: delay + 0.4 },
-                        opacity: { duration: 0.2, delay: delay + 0.4 },
-                    }}
-                />
-            ) : (
-                <circle cx={rest.x} cy={rest.y} r={7} fill={TEAL} />
-            )}
-        </Scene>
+        </>
     );
 }
 
-/* ── 4 · It connects — the few parts that matter, joined ──────────────────── */
+/* ── Tier scenes — shared by Services + Comparison (the same three tiers) ──── */
 
-const NODES = [
-    { x: 34, label: 'Page' },
-    { x: 125, label: 'Data' },
-    { x: 216, label: 'You' },
-];
-const NODE_W = 70;
-const NODE_Y = 72;
-const NODE_H = 56;
-
-function SystemMapArtifact({ animated, delay }: { animated: boolean; delay: number }) {
+/** Static: a fast, clear page that scrolls forever behind skeleton placeholders. */
+function TierStatic({ active }: { active: boolean }) {
+    const clip = `as-${useId()}`;
     return (
         <Scene>
-            {/* the connecting spine */}
-            <DrawLine x1={104} y1={100} x2={125} y2={100} active={animated} delay={delay + 0.3} opacity={0.3} duration={0.3} />
-            <DrawLine x1={195} y1={100} x2={216} y2={100} active={animated} delay={delay + 0.36} opacity={0.3} duration={0.3} />
-            {NODES.map((node, i) => (
+            <Win x={104} y={24} w={112} h={152} />
+            <clipPath id={clip}>
+                <rect x={106} y={42} width={108} height={132} />
+            </clipPath>
+            <g clipPath={`url(#${clip})`}>
                 <motion.g
-                    key={node.label}
-                    initial={animated ? { opacity: 0, y: 8 } : false}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={VIEWPORT}
-                    transition={{ duration: animated ? 0.45 : 0, ease: EASE, delay: delay + i * 0.1 }}
+                    initial={{ y: 0 }}
+                    animate={active ? { y: [0, -78] } : { y: 0 }}
+                    transition={active ? { duration: 5.5, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' } : { duration: 0 }}
                 >
-                    <rect
-                        x={node.x}
-                        y={NODE_Y}
-                        width={NODE_W}
-                        height={NODE_H}
-                        stroke="currentColor"
-                        strokeOpacity={0.28}
-                        vectorEffect="non-scaling-stroke"
-                    />
-                    <text
-                        x={node.x + NODE_W / 2}
-                        y={104}
-                        textAnchor="middle"
-                        className="fill-slate-500 text-[11px] font-semibold uppercase tracking-[0.12em]"
-                    >
-                        {node.label}
-                    </text>
+                    <Sk x={114} y={50} w={92} h={36} rx={6} o={0.09} />
+                    <Sk x={114} y={94} w={64} h={6} o={0.1} />
+                    <Sk x={114} y={104} w={88} h={5} />
+                    <Sk x={114} y={114} w={78} h={5} />
+                    {/* the one action that matters — the teal dot is the CTA */}
+                    <Sk x={114} y={130} w={50} h={14} rx={7} o={0.12} />
+                    <circle cx={177} cy={137} r={5} fill={TEAL} />
+                    <Sk x={114} y={158} w={92} h={28} rx={6} />
+                    <Sk x={114} y={194} w={70} h={5} />
+                    <Sk x={114} y={204} w={86} h={5} />
+                    <Sk x={114} y={214} w={58} h={5} />
+                    <Sk x={114} y={228} w={92} h={24} rx={6} />
                 </motion.g>
-            ))}
-            {/* the idea, riding the connection between build and owner */}
-            <Dot cx={205} cy={100} r={6} active={animated} delay={animated ? delay + 0.5 : 0} />
+            </g>
         </Scene>
     );
 }
 
-/* ── 5 · It's yours — the idea docks into a finished, owned mark ──────────── */
-
-function HandoverArtifact({ animated, delay }: { animated: boolean; delay: number }) {
+/** Web app: the page + a live dashboard — bars updating, a toggle, a live point. */
+function TierApp({ active }: { active: boolean }) {
+    const bars = [
+        { lo: 18, hi: 34 },
+        { lo: 30, hi: 16 },
+        { lo: 12, hi: 40 },
+        { lo: 24, hi: 20 },
+    ];
+    const baseY = 146;
     return (
         <Scene>
-            {/* the owned mark — a squared ink pill, echo of Act III's [ • Get it ] */}
-            <DrawRect x={84} y={76} width={152} height={48} rx={10} active={animated} delay={delay} duration={0.8} opacity={0.4} />
-            {/* a typeset label beside the docked idea */}
-            <DrawLine x1={130} y1={94} x2={198} y2={94} active={animated} delay={delay + 0.5} opacity={0.32} />
-            <DrawLine x1={130} y1={106} x2={176} y2={106} active={animated} delay={delay + 0.56} opacity={0.2} />
-            {/* delivered, checked */}
-            <DrawPath d="M204 100 L210 106 L220 94" active={animated} delay={delay + 0.64} opacity={0.45} duration={0.3} />
-            {/* the idea, docked and at rest */}
-            <Dot cx={110} cy={100} active={animated} delay={animated ? delay + 0.7 : 0} />
+            <Win x={36} y={40} w={248} h={120} />
+            {/* sidebar */}
+            <Sk x={48} y={66} w={36} h={82} rx={6} o={0.05} />
+            <Sk x={56} y={74} w={20} h={4} />
+            <Sk x={56} y={84} w={24} h={4} />
+            <Sk x={56} y={94} w={18} h={4} />
+            {/* KPI tiles */}
+            <Sk x={98} y={64} w={64} h={22} rx={5} o={0.05} />
+            <Sk x={172} y={64} w={64} h={22} rx={5} o={0.05} />
+            <Sk x={114} y={70} w={36} h={4} />
+            {/* a live, pulsing data point */}
+            <motion.circle
+                cx={108}
+                cy={75}
+                r={4}
+                fill={TEAL}
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                animate={active ? { opacity: [1, 0.4, 1], scale: [1, 1.3, 1] } : { opacity: 1, scale: 1 }}
+                transition={active ? { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            />
+            {/* a toggle that flips on its own */}
+            <rect x={196} y={69} width={24} height={12} rx={6} stroke="currentColor" strokeOpacity={0.3} vectorEffect="non-scaling-stroke" />
+            <motion.rect
+                width={8}
+                height={8}
+                y={71}
+                rx={4}
+                fill="currentColor"
+                fillOpacity={0.4}
+                initial={{ x: 199 }}
+                animate={active ? { x: [199, 209, 209, 199, 199] } : { x: 199 }}
+                transition={active ? { duration: 4, repeat: Infinity, ease: 'easeInOut', times: [0, 0.25, 0.5, 0.75, 1] } : { duration: 0 }}
+            />
+            {/* bar chart — figures updating */}
+            <line x1={100} y1={baseY} x2={236} y2={baseY} stroke="currentColor" strokeOpacity={0.2} vectorEffect="non-scaling-stroke" />
+            {bars.map((b, i) => {
+                const x = 108 + i * 32;
+                return (
+                    <motion.rect
+                        key={i}
+                        x={x}
+                        width={16}
+                        rx={2}
+                        fill="currentColor"
+                        fillOpacity={0.14}
+                        initial={{ height: (b.lo + b.hi) / 2, y: baseY - (b.lo + b.hi) / 2 }}
+                        animate={active ? { height: [b.lo, b.hi, b.lo], y: [baseY - b.lo, baseY - b.hi, baseY - b.lo] } : { height: (b.lo + b.hi) / 2, y: baseY - (b.lo + b.hi) / 2 }}
+                        transition={active ? { duration: 2.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 } : { duration: 0 }}
+                    />
+                );
+            })}
         </Scene>
     );
 }
 
-function ArtifactVisual({ variant, animated, delay }: { variant: ArtifactVariant; animated: boolean; delay: number }) {
-    if (variant === 'brief') return <BriefArtifact animated={animated} delay={delay} />;
-    if (variant === 'wireframe') return <WireframeArtifact animated={animated} delay={delay} />;
-    if (variant === 'systemMap') return <SystemMapArtifact animated={animated} delay={delay} />;
-    if (variant === 'uiFlow') return <UiFlowArtifact animated={animated} delay={delay} />;
-    return <HandoverArtifact animated={animated} delay={delay} />;
+/** Full-stack: interface → API → database, with teal data flowing through. */
+function TierFull({ active }: { active: boolean }) {
+    return (
+        <Scene>
+            {/* frontend */}
+            <rect x={108} y={22} width={104} height={40} rx={8} stroke="currentColor" strokeOpacity={0.45} vectorEffect="non-scaling-stroke" />
+            <Sk x={118} y={32} w={40} h={5} />
+            <Sk x={118} y={42} w={62} h={5} />
+            {/* api / logic */}
+            <rect x={122} y={86} width={76} height={32} rx={8} stroke="currentColor" strokeOpacity={0.45} vectorEffect="non-scaling-stroke" />
+            <Sk x={134} y={98} w={52} h={6} o={0.1} />
+            {/* database */}
+            <g stroke="currentColor" strokeOpacity={0.45} fill="none" vectorEffect="non-scaling-stroke">
+                <ellipse cx={160} cy={146} rx={42} ry={10} />
+                <path d="M118 146 v22 a42 10 0 0 0 84 0 v-22" />
+                <ellipse cx={160} cy={168} rx={42} ry={10} strokeOpacity={0.2} />
+            </g>
+            {/* connectors */}
+            <line x1={160} y1={62} x2={160} y2={86} stroke="currentColor" strokeOpacity={0.22} vectorEffect="non-scaling-stroke" />
+            <line x1={160} y1={118} x2={160} y2={136} stroke="currentColor" strokeOpacity={0.22} vectorEffect="non-scaling-stroke" />
+            {/* the data — teal, moving through the whole stack and back */}
+            <motion.circle
+                r={4}
+                cx={160}
+                fill={TEAL}
+                initial={{ cy: 74 }}
+                animate={active ? { cy: [62, 86, 118, 136] } : { cy: 100 }}
+                transition={active ? { duration: 2.2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            />
+            <motion.circle
+                r={3}
+                cx={160}
+                fill={TEAL}
+                fillOpacity={0.7}
+                initial={{ cy: 124 }}
+                animate={active ? { cy: [136, 118, 86, 62] } : { cy: 80 }}
+                transition={active ? { duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 1.1 } : { duration: 0 }}
+            />
+        </Scene>
+    );
+}
+
+/* ── Story / process scenes ───────────────────────────────────────────────── */
+
+/** Idea: a rough thought captured on a note, the teal dot circled as its core. */
+function Idea({ active }: { active: boolean }) {
+    return (
+        <Scene>
+            <rect x={92} y={40} width={136} height={118} rx={8} stroke="currentColor" strokeOpacity={0.4} vectorEffect="non-scaling-stroke" />
+            <path d="M110 70 C 132 62, 150 80, 174 68" stroke="currentColor" strokeOpacity={0.3} fill="none" vectorEffect="non-scaling-stroke" />
+            <line x1={110} y1={128} x2={188} y2={128} stroke="currentColor" strokeOpacity={0.18} vectorEffect="non-scaling-stroke" />
+            <line x1={110} y1={138} x2={160} y2={138} stroke="currentColor" strokeOpacity={0.18} vectorEffect="non-scaling-stroke" />
+            {/* a hand-drawn ring around the idea */}
+            <path
+                d="M150 92 C 137 100, 150 117, 167 112 C 181 107, 178 90, 161 90"
+                stroke="currentColor"
+                strokeOpacity={0.22}
+                fill="none"
+                vectorEffect="non-scaling-stroke"
+            />
+            <motion.circle
+                cx={160}
+                cy={100}
+                r={9}
+                fill={TEAL}
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                animate={active ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+                transition={active ? { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            />
+        </Scene>
+    );
+}
+
+/** Brief: goals as a checklist + a roadmap, the teal dot on the agreed scope. */
+function Brief({ active }: { active: boolean }) {
+    return (
+        <Scene>
+            <rect x={86} y={28} width={148} height={120} rx={8} stroke="currentColor" strokeOpacity={0.4} vectorEffect="non-scaling-stroke" />
+            <Sk x={100} y={42} w={60} h={7} rx={3} o={0.12} />
+            {[86, 72, 94].map((w, i) => (
+                <g key={i}>
+                    <rect x={100} y={62 + i * 16} width={9} height={9} rx={2} stroke="currentColor" strokeOpacity={0.3} vectorEffect="non-scaling-stroke" />
+                    <Sk x={116} y={64 + i * 16} w={w} h={5} />
+                </g>
+            ))}
+            {/* roadmap */}
+            <line x1={100} y1={126} x2={220} y2={126} stroke="currentColor" strokeOpacity={0.25} vectorEffect="non-scaling-stroke" />
+            {[100, 140, 180, 220].map((x, i) => (
+                <rect key={i} x={x - 3} y={123} width={6} height={6} fill="currentColor" fillOpacity={0.3} />
+            ))}
+            <motion.circle
+                cx={180}
+                cy={126}
+                r={6}
+                fill={TEAL}
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                animate={active ? { scale: [1, 1.18, 1] } : { scale: 1 }}
+                transition={active ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            />
+        </Scene>
+    );
+}
+
+/** Design: an artboard — layout grid, a component, swatches; teal selection handle. */
+function Design({ active }: { active: boolean }) {
+    return (
+        <Scene>
+            <rect x={70} y={28} width={180} height={144} rx={6} stroke="currentColor" strokeOpacity={0.4} vectorEffect="non-scaling-stroke" />
+            {[112, 160, 208].map((x, i) => (
+                <line key={i} x1={x} y1={36} x2={x} y2={164} stroke="currentColor" strokeOpacity={0.12} strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
+            ))}
+            <Sk x={84} y={42} w={152} h={20} rx={4} />
+            <rect x={84} y={74} width={92} height={60} rx={6} stroke="currentColor" strokeOpacity={0.3} vectorEffect="non-scaling-stroke" />
+            <Sk x={94} y={84} w={48} h={6} />
+            <Sk x={94} y={96} w={66} h={4} />
+            <Sk x={94} y={104} w={60} h={4} />
+            <Sk x={94} y={118} w={36} h={10} rx={5} o={0.12} />
+            {[0.18, 0.1, 0.06].map((o, i) => (
+                <rect key={i} x={188 + i * 16} y={84} width={11} height={11} rx={2} fill="currentColor" fillOpacity={o} />
+            ))}
+            {/* selection handle */}
+            <motion.circle
+                cx={176}
+                cy={74}
+                r={5}
+                fill={TEAL}
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                animate={active ? { scale: [1, 1.2, 1], opacity: [1, 0.6, 1] } : { scale: 1, opacity: 1 }}
+                transition={active ? { duration: 1.8, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            />
+        </Scene>
+    );
+}
+
+/** Build: sprint bars filling, a QA check, and the teal "current build" marker. */
+function Build({ active }: { active: boolean }) {
+    const fills = [78, 120, 60, 100];
+    return (
+        <Scene>
+            {fills.map((fillTo, i) => {
+                const y = 46 + i * 26;
+                return (
+                    <g key={i}>
+                        <Sk x={70} y={y} w={20} h={8} rx={2} o={0.1} />
+                        <rect x={100} y={y} width={150} height={8} rx={4} fill="currentColor" fillOpacity={0.06} />
+                        <motion.rect
+                            x={100}
+                            y={y}
+                            height={8}
+                            rx={4}
+                            fill="currentColor"
+                            fillOpacity={0.16}
+                            initial={{ width: fillTo }}
+                            animate={active ? { width: [0, fillTo, fillTo] } : { width: fillTo }}
+                            transition={active ? { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4, times: [0, 0.45, 1] } : { duration: 0 }}
+                        />
+                    </g>
+                );
+            })}
+            {/* QA pass (ink — teal stays the dot) */}
+            <motion.path
+                d="M210 152 L218 160 L232 144"
+                stroke="currentColor"
+                strokeOpacity={0.5}
+                strokeWidth={2}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+                initial={{ pathLength: 1, opacity: 1 }}
+                animate={active ? { pathLength: [0, 1, 1], opacity: [0, 1, 1] } : { pathLength: 1, opacity: 1 }}
+                transition={active ? { duration: 3, repeat: Infinity, ease: 'easeInOut', times: [0, 0.5, 1] } : { duration: 0 }}
+            />
+            {/* current build marker travelling the sprint list */}
+            <motion.circle
+                cx={94}
+                r={4}
+                fill={TEAL}
+                initial={{ cy: 50 }}
+                animate={active ? { cy: [50, 76, 102, 128, 50] } : { cy: 50 }}
+                transition={active ? { duration: 4.5, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            />
+        </Scene>
+    );
+}
+
+/** Handover: the idea docked into a finished, owned mark — delivered and live. */
+function Handover({ active }: { active: boolean }) {
+    return (
+        <Scene>
+            <rect x={84} y={76} width={152} height={48} rx={10} stroke="currentColor" strokeOpacity={0.4} vectorEffect="non-scaling-stroke" />
+            <line x1={130} y1={94} x2={198} y2={94} stroke="currentColor" strokeOpacity={0.32} vectorEffect="non-scaling-stroke" />
+            <line x1={130} y1={106} x2={176} y2={106} stroke="currentColor" strokeOpacity={0.2} vectorEffect="non-scaling-stroke" />
+            <path d="M204 100 L210 106 L220 94" stroke="currentColor" strokeOpacity={0.45} fill="none" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
+            <motion.circle
+                cx={110}
+                cy={100}
+                r={7}
+                fill={TEAL}
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                animate={active ? { scale: [1, 1.12, 1] } : { scale: 1 }}
+                transition={active ? { duration: 2.2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            />
+        </Scene>
+    );
+}
+
+const variantMeta: Record<ArtifactVariant, { eyebrow: string; title: string; note: string }> = {
+    idea: { eyebrow: 'the idea', title: 'It arrives', note: 'a rough thought, captured' },
+    brief: { eyebrow: 'the brief', title: 'Scoped', note: 'goals, and a path to them' },
+    design: { eyebrow: 'design & architecture', title: 'Shaped', note: 'layout, components, structure' },
+    build: { eyebrow: 'building & testing', title: 'Built', note: 'shipped in tested iterations' },
+    handover: { eyebrow: 'delivery', title: "It's yours", note: 'deployed, live, owned' },
+    tierStatic: { eyebrow: 'static site', title: 'A fast, clear page', note: 'frontend, built for speed' },
+    tierApp: { eyebrow: 'web app', title: 'Interactive UI', note: 'dashboards, auth, integrations' },
+    tierFull: { eyebrow: 'full-stack', title: 'End-to-end system', note: 'frontend, backend, database' },
+};
+
+function ArtifactVisual({ variant, active }: { variant: ArtifactVariant; active: boolean }) {
+    switch (variant) {
+        case 'idea':
+            return <Idea active={active} />;
+        case 'brief':
+            return <Brief active={active} />;
+        case 'design':
+            return <Design active={active} />;
+        case 'build':
+            return <Build active={active} />;
+        case 'tierStatic':
+            return <TierStatic active={active} />;
+        case 'tierApp':
+            return <TierApp active={active} />;
+        case 'tierFull':
+            return <TierFull active={active} />;
+        default:
+            return <Handover active={active} />;
+    }
 }
 
 export function ArtifactPlate({
@@ -358,15 +427,20 @@ export function ArtifactPlate({
     depth = false,
 }: ArtifactPlateProps) {
     const reduced = useReducedMotion();
-    const animated = !reduced;
+    const ref = useRef<HTMLElement>(null);
+    // Idle loops run only while the plate is on screen (and motion is allowed) —
+    // keeps a page full of animated plates cheap, and is mobile/battery-friendly.
+    const inView = useInView(ref, { amount: 0.35 });
+    const active = !reduced && inView;
     const meta = variantMeta[variant];
 
     return (
         <motion.figure
-            initial={animated ? { opacity: 0, y: 18, rotate: -0.4 } : false}
+            ref={ref}
+            initial={reduced ? false : { opacity: 0, y: 18, rotate: -0.4 }}
             whileInView={{ opacity: 1, y: 0, rotate: 0 }}
             viewport={{ once: true, margin: '0px 0px -12% 0px' }}
-            transition={{ duration: animated ? 0.6 : 0, ease: EASE, delay }}
+            transition={{ duration: reduced ? 0 : 0.6, ease: EASE, delay }}
             className={cn(
                 'group relative overflow-hidden rounded-[1.15rem] border border-slate-900/10 bg-white p-1.5',
                 // Depth is a desktop-friendly lift; on touch it's just a richer
@@ -378,7 +452,7 @@ export function ArtifactPlate({
             )}
         >
             <div className="overflow-hidden rounded-[calc(1.15rem-6px)] border border-slate-900/[0.04]">
-                <ArtifactVisual variant={variant} animated={animated} delay={delay + 0.1} />
+                <ArtifactVisual variant={variant} active={active} />
             </div>
 
             <figcaption className={cn('grid gap-3 px-4 pb-4 pt-3', compact ? 'grid-cols-1' : 'sm:grid-cols-[auto_1fr]')}>

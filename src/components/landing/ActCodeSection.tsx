@@ -130,7 +130,7 @@ const cardVariants = {
   exit: { opacity: 0, x: 40, rotateY: 10, scale: 0.97, transition: { duration: ACT2.cardExit, ease: EASE } },
 };
 
-const ACT2_ARTIFACTS: ArtifactVariant[] = ['wireframe', 'uiFlow', 'systemMap'];
+const ACT2_ARTIFACTS: ArtifactVariant[] = ['tierStatic', 'tierApp', 'tierFull'];
 
 /** The persistent counter — the active digit rolls in the scroll direction. */
 function RollingIndex({ index, dir, total }: { index: number; dir: number; total: number }) {

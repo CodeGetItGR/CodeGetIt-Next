@@ -60,7 +60,7 @@ export const ContactSidebar = ({
             </div>
 
             <ArtifactPlate
-                variant="handover"
+                variant="idea"
                 plate="Request"
                 eyebrow="start here"
                 caption="The rough version is enough to begin."

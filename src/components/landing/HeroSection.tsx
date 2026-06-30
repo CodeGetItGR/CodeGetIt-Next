@@ -57,7 +57,7 @@ export function HeroSection() {
         >
           <div className="absolute -left-5 top-10 hidden h-28 w-24 rotate-[-5deg] border border-slate-900/10 bg-white/80 shadow-sm lg:block" />
           <ArtifactPlate
-            variant="brief"
+            variant="idea"
             plate="Plate 00"
             eyebrow="you bring it"
             caption="A rough thought, exactly as it comes."
@@ -67,10 +67,10 @@ export function HeroSection() {
             delay={T.ctas + 0.18}
           />
           <ArtifactPlate
-            variant="wireframe"
+            variant="brief"
             plate="Plate 01"
-            eyebrow="first shape"
-            caption="Structure forms around the idea."
+            eyebrow="we scope it"
+            caption="The same idea, shaped into a plan."
             compact
             depth
             className="-mt-10 ml-auto max-w-[86%] rotate-[-1deg]"

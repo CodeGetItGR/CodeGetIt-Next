@@ -81,7 +81,7 @@ const TIER_CHIP_STYLES = [
     'bg-amber-50 text-amber-700',
 ];
 
-const SERVICE_ARTIFACTS: ArtifactVariant[] = ['wireframe', 'uiFlow', 'systemMap'];
+const SERVICE_ARTIFACTS: ArtifactVariant[] = ['tierStatic', 'tierApp', 'tierFull'];
 
 // Matches the `#service-{index}` anchors used by FooterSection's "Services" links
 const SPOTLIGHT_ID_PATTERN = /^service-(\d+)$/;

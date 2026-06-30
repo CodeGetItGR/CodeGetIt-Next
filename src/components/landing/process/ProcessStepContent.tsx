@@ -8,7 +8,7 @@ import { ProjectTypeBadge } from './ProjectTypeBadge';
 import { stepIcons } from './stepIcons';
 
 const EASE = [0.32, 0.72, 0, 1] as const;
-const PROCESS_ARTIFACTS: ArtifactVariant[] = ['brief', 'wireframe', 'uiFlow', 'handover'];
+const PROCESS_ARTIFACTS: ArtifactVariant[] = ['brief', 'design', 'build', 'handover'];
 
 interface ProcessStepContentProps {
     step: Translations['landing']['process']['steps'][number];
