@@ -221,30 +221,56 @@ function TierFull({ active }: { active: boolean }) {
 
 /* ── Story / process scenes ───────────────────────────────────────────────── */
 
-/** Idea: a rough thought captured on a note, the teal dot circled as its core. */
+/** Idea: a thought being captured — a note still being written, the idea sparking. */
 function Idea({ active }: { active: boolean }) {
     return (
         <Scene>
-            <rect x={92} y={40} width={136} height={118} rx={8} stroke="currentColor" strokeOpacity={0.4} vectorEffect="non-scaling-stroke" />
-            <path d="M110 70 C 132 62, 150 80, 174 68" stroke="currentColor" strokeOpacity={0.3} fill="none" vectorEffect="non-scaling-stroke" />
-            <line x1={110} y1={128} x2={188} y2={128} stroke="currentColor" strokeOpacity={0.18} vectorEffect="non-scaling-stroke" />
-            <line x1={110} y1={138} x2={160} y2={138} stroke="currentColor" strokeOpacity={0.18} vectorEffect="non-scaling-stroke" />
+            <rect x={88} y={38} width={144} height={120} rx={8} stroke="currentColor" strokeOpacity={0.4} vectorEffect="non-scaling-stroke" />
+            {/* a heading and a couple of jotted, hand-written lines */}
+            <Sk x={104} y={54} w={46} h={7} rx={3} o={0.12} />
+            <path d="M104 78 C 126 72, 154 82, 188 74" stroke="currentColor" strokeOpacity={0.28} fill="none" vectorEffect="non-scaling-stroke" />
+            <path d="M104 92 C 120 87, 146 95, 170 90" stroke="currentColor" strokeOpacity={0.26} fill="none" vectorEffect="non-scaling-stroke" />
+            {/* the line still being written, with a blinking caret */}
+            <line x1={104} y1={106} x2={146} y2={106} stroke="currentColor" strokeOpacity={0.28} vectorEffect="non-scaling-stroke" />
+            <motion.line
+                x1={151}
+                y1={100}
+                x2={151}
+                y2={112}
+                stroke="currentColor"
+                strokeOpacity={0.55}
+                vectorEffect="non-scaling-stroke"
+                initial={{ opacity: 1 }}
+                animate={active ? { opacity: [1, 1, 0, 0] } : { opacity: 1 }}
+                transition={active ? { duration: 1.1, repeat: Infinity, ease: 'linear', times: [0, 0.5, 0.5, 1] } : { duration: 0 }}
+            />
+            {/* the spark — a teal ripple radiating from the idea */}
+            <motion.circle
+                cx={176}
+                cy={132}
+                fill={TEAL}
+                initial={{ r: 9, opacity: 0 }}
+                animate={active ? { r: [9, 24], opacity: [0.32, 0] } : { r: 9, opacity: 0 }}
+                transition={active ? { duration: 2.4, repeat: Infinity, ease: 'easeOut' } : { duration: 0 }}
+            />
             {/* a hand-drawn ring around the idea */}
             <path
-                d="M150 92 C 137 100, 150 117, 167 112 C 181 107, 178 90, 161 90"
+                d="M165 123 C 152 131, 165 148, 183 143 C 197 138, 193 121, 176 121"
                 stroke="currentColor"
                 strokeOpacity={0.22}
                 fill="none"
                 vectorEffect="non-scaling-stroke"
             />
+            {/* the idea itself */}
             <motion.circle
-                cx={160}
-                cy={100}
+                cx={176}
+                cy={132}
                 r={9}
                 fill={TEAL}
                 style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-                animate={active ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-                transition={active ? { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+                initial={{ scale: 1 }}
+                animate={active ? { scale: [1, 1.09, 1] } : { scale: 1 }}
+                transition={active ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
             />
         </Scene>
     );
@@ -363,22 +389,37 @@ function Build({ active }: { active: boolean }) {
     );
 }
 
-/** Handover: the idea docked into a finished, owned mark — delivered and live. */
+/** Handover: the finished product, deployed and live — the idea climbing its metric. */
+const DELIVER_PTS: [number, number][] = [
+    [88, 126],
+    [116, 118],
+    [146, 122],
+    [178, 106],
+    [212, 90],
+];
+
 function Handover({ active }: { active: boolean }) {
+    const d = `M${DELIVER_PTS.map((p) => p.join(' ')).join(' L')}`;
+    const peak = DELIVER_PTS[DELIVER_PTS.length - 1];
     return (
         <Scene>
-            <rect x={84} y={76} width={152} height={48} rx={10} stroke="currentColor" strokeOpacity={0.4} vectorEffect="non-scaling-stroke" />
-            <line x1={130} y1={94} x2={198} y2={94} stroke="currentColor" strokeOpacity={0.32} vectorEffect="non-scaling-stroke" />
-            <line x1={130} y1={106} x2={176} y2={106} stroke="currentColor" strokeOpacity={0.2} vectorEffect="non-scaling-stroke" />
-            <path d="M204 100 L210 106 L220 94" stroke="currentColor" strokeOpacity={0.45} fill="none" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
+            {/* the delivered product, in its own window */}
+            <Win x={64} y={34} w={192} h={108} />
+            <Sk x={80} y={60} w={64} h={8} rx={3} o={0.12} />
+            <Sk x={80} y={76} w={96} h={5} />
+            <Sk x={80} y={86} w={78} h={5} />
+            {/* owned, signed off */}
+            <path d="M214 60 L220 66 L232 52" stroke="currentColor" strokeOpacity={0.42} fill="none" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+            {/* live and climbing — the analytics it now drives */}
+            <line x1={80} y1={130} x2={240} y2={130} stroke="currentColor" strokeOpacity={0.18} vectorEffect="non-scaling-stroke" />
+            <path d={d} stroke="currentColor" strokeOpacity={0.36} fill="none" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+            {/* the idea, now live, riding the metric to its peak */}
             <motion.circle
-                cx={110}
-                cy={100}
-                r={7}
+                r={6}
                 fill={TEAL}
-                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-                animate={active ? { scale: [1, 1.12, 1] } : { scale: 1 }}
-                transition={active ? { duration: 2.2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+                initial={{ cx: peak[0], cy: peak[1] }}
+                animate={active ? { cx: DELIVER_PTS.map((p) => p[0]), cy: DELIVER_PTS.map((p) => p[1]) } : { cx: peak[0], cy: peak[1] }}
+                transition={active ? { duration: 3.6, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' } : { duration: 0 }}
             />
         </Scene>
     );
