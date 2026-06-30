@@ -132,29 +132,6 @@ const cardVariants = {
 
 const ACT2_ARTIFACTS: ArtifactVariant[] = ['tierStatic', 'tierApp', 'tierFull'];
 
-/** The persistent counter — the active digit rolls in the scroll direction. */
-function RollingIndex({ index, dir, total }: { index: number; dir: number; total: number }) {
-  return (
-    <span className="inline-flex items-baseline text-[11px] font-medium tracking-[0.18em] text-slate-500 tabular-nums">
-      <span className="inline-flex h-[1.2em] overflow-hidden">
-        <AnimatePresence mode="popLayout" initial={false} custom={dir}>
-          <motion.span
-            key={index}
-            initial={{ y: `${dir * 110}%` }}
-            animate={{ y: '0%' }}
-            exit={{ y: `${dir * -110}%` }}
-            transition={{ duration: 0.4, ease: EASE }}
-            className="inline-block"
-          >
-            {String(index + 1).padStart(2, '0')}
-          </motion.span>
-        </AnimatePresence>
-      </span>
-      <span className="ml-1">/ {String(total).padStart(2, '0')}</span>
-    </span>
-  );
-}
-
 function SpecCard({ item, index }: { item: CodeItem; index: number }) {
   // Children count time from the card's mount (after the old card's exit) —
   // adding the enter delay keeps them synced to the card's actual arrival.
@@ -252,7 +229,7 @@ function ActDot() {
  */
 function TitleNode({ text }: { text: string }) {
   return (
-    <span className="font-display block text-[clamp(0.95rem,1.6vw,1.3rem)] font-bold leading-[1.25] tracking-[-0.02em] text-slate-900/30">
+    <span className="font-display block text-[clamp(0.95rem,1.6vw,1.3rem)] font-bold leading-tight tracking-[-0.02em] text-slate-900/30">
       {text}
     </span>
   );
@@ -281,7 +258,7 @@ function TopScrubberBar({
 }) {
   const width = useTransform(progress, [0, 1], ['0%', '100%']);
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-40 h-[3px] bg-slate-900/10">
+    <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-40 h-0.75 bg-slate-900/10">
       <motion.div style={{ width }} className="h-full bg-brand-600" />
       {Array.from({ length: total }, (_, i) => introFrac + (i + 1) * perFrac).map((t, i) => (
         <span
@@ -351,7 +328,6 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
   const indexRef = useRef(-1);
 
   const [index, setIndex] = useState(-1);
-  const [dir, setDir] = useState(1);
   const [idle, setIdle] = useState(false);
 
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
@@ -372,7 +348,6 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
       const prev = indexRef.current;
       if (next !== prev) {
         indexRef.current = next;
-        setDir(next > prev ? 1 : -1);
         setIndex(next);
       }
     };
@@ -410,95 +385,88 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
     >
       <div ref={stageRef} className="sticky top-0 h-screen overflow-hidden supports-[height:100svh]:h-svh">
         <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-4 pt-28 md:pt-20 lg:pb-8 lg:px-10">
-          <motion.p
-            {...fadeRiseInView(0, false)}
-            className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500"
-          >
-            {copy.actLabel}
-          </motion.p>
-
-          <div className="relative mt-4">
-            {/* Same fade-and-rise entrance every other section's heading uses —
-               no shared-layout move, just a clean swap each hop. */}
-            <AnimatePresence mode="wait" initial={false}>
-              {index < 0 || index >= total ? (
-                <motion.h2
-                  key="line"
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } }}
-                  exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: EASE } }}
-                  className="font-display text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900"
-                >
+          <AnimatePresence mode="wait">
+            {index < 0 || index >= total ? (
+              /* ── Framing: centered, bookends the sequence ── */
+              <motion.div
+                key="framing"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } }}
+                exit={{ opacity: 0, y: -10, transition: { duration: 0.25, ease: EASE } }}
+                className="flex w-full flex-col items-center text-center"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
+                  {copy.actLabel}
+                </p>
+                <h2 className="mt-4 font-display text-[clamp(2.5rem,7vw,5rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900">
                   {copy.line}
                   <ActDot />
-                </motion.h2>
-              ) : (
-                <motion.h2
-                  key={`item-${index}`}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } }}
-                  exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: EASE } }}
-                  className="font-display text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900"
+                </h2>
+                <p className="mt-5 hidden max-w-[48ch] text-[1.02rem] leading-[1.75] text-slate-500 text-pretty md:block">
+                  {copy.sub}
+                </p>
+                <div className="mt-10">
+                  {index < 0 ? (
+                    <ScrollCue label={copy.scrollCue} />
+                  ) : (
+                    <ClosingNote text={closingNote} />
+                  )}
+                </div>
+              </motion.div>
+            ) : (
+              /* ── Sequence: two-column, heading left / card right ── */
+              <motion.div
+                key="sequence"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: 0.4, ease: EASE } }}
+                exit={{ opacity: 0, transition: { duration: 0.25, ease: EASE } }}
+                className="w-full lg:grid lg:grid-cols-[5fr_7fr] lg:items-start lg:gap-x-14"
+              >
+                {/* Left: label + live title + subtitle + build queue */}
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
+                    {copy.actLabel}
+                  </p>
+                  <div className="relative mt-4">
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.h2
+                        key={`item-${index}`}
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } }}
+                        exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: EASE } }}
+                        className="font-display text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900 lg:text-[clamp(1.9rem,3.5vw,3rem)]"
+                      >
+                        {copy.items[index].title}
+                        <ActDot />
+                      </motion.h2>
+                    </AnimatePresence>
+                  </div>
+                  <p className="mt-5 hidden max-w-[42ch] text-[1.02rem] leading-[1.75] text-slate-500 text-pretty md:block">
+                    {copy.sub}
+                  </p>
+                  <ul className="mt-6 space-y-2 lg:mt-10 lg:space-y-4">
+                    {copy.items.map((entry, i) => (
+                      <motion.li key={entry.title} layout transition={{ duration: 0.5, ease: EASE }}>
+                        {i > index && <TitleNode text={entry.title} />}
+                        <span className="sr-only">
+                          {entry.description} {entry.deliverables.join(', ')}.
+                        </span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+                {/* Right: artifact card */}
+                <div
+                  aria-hidden
+                  className="relative mt-6 min-h-50 border-t border-slate-900/10 pt-4 lg:mt-0 lg:min-h-80 lg:border-0 lg:pt-0"
                 >
-                  {copy.items[index].title}
-                  <ActDot />
-                </motion.h2>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <motion.p
-            {...fadeRiseInView(0.15, false)}
-            className="mt-5 hidden max-w-[52ch] text-[1.02rem] leading-[1.75] text-slate-500 text-pretty md:block"
-          >
-            {copy.sub}
-          </motion.p>
-
-          <div className="mt-6 grid items-center gap-6 lg:mt-14 lg:grid-cols-12 lg:gap-8">
-            {/* The build list — only what's still ahead; read items leave for
-               good, reappearing only if you scroll back up past them. */}
-            <ul className="order-1 space-y-2 lg:order-2 lg:col-span-7 lg:space-y-4">
-              {copy.items.map((entry, i) => (
-                <motion.li key={entry.title} layout transition={{ duration: 0.5, ease: EASE }}>
-                  {i > index && <TitleNode text={entry.title} />}
-                  {/* The spec card is visual theater; readers get the spec inline. */}
-                  <span className="sr-only">
-                    {entry.description} {entry.deliverables.join(', ')}.
-                  </span>
-                </motion.li>
-              ))}
-            </ul>
-
-            {/* The spec card — swaps in step with the dot, never leaves sight */}
-            <div
-              aria-hidden
-              className="relative order-2 min-h-50 border-t border-slate-900/10 pt-6 lg:order-1 lg:col-span-5 lg:min-h-70"
-            >
-              <AnimatePresence>
-                {index >= 0 && index < total && (
-                  <motion.span
-                    key="counter"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2, ease: EASE }}
-                    className="absolute right-0 top-6"
-                  >
-                    <RollingIndex index={index} dir={dir} total={total} />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-              <AnimatePresence mode="wait" initial={false}>
-                {index < 0 ? (
-                  <ScrollCue key="cue" label={copy.scrollCue} />
-                ) : index >= total ? (
-                  <ClosingNote key="closing" text={closingNote} />
-                ) : (
-                  <SpecCard key={index} item={copy.items[index]} index={index} />
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
+                  <AnimatePresence mode="wait" initial={false}>
+                    <SpecCard key={index} item={copy.items[index]} index={index} />
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <AnimatePresence>

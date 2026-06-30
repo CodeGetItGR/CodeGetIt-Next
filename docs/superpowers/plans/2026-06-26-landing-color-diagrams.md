@@ -102,7 +102,6 @@ git commit -m "Tint Services icon chips per tier instead of flat slate"
 ### Task 2: Comparison — growth diagram
 
 **Files:**
-- Create: `src/components/landing/ComparisonGrowthDiagram.tsx`
 - Modify: `src/components/landing/ComparisonSection.tsx`
 - Modify: `src/components/landing/index.ts` (barrel export, if `ComparisonSection` co-exports siblings — verify pattern first)
 
@@ -113,10 +112,6 @@ git commit -m "Tint Services icon chips per tier instead of flat slate"
 Run: `cat src/components/landing/index.ts | head -20`
 
 If `ComparisonSection` is exported from a barrel file (`src/components/landing/index.ts`), the new `ComparisonGrowthDiagram` component does NOT need its own barrel entry since it's only imported directly by `ComparisonSection.tsx` (it's an internal implementation detail of that section, not part of the public `@/components/landing` surface). Skip modifying the barrel.
-
-- [ ] **Step 2: Create the diagram component**
-
-Create `src/components/landing/ComparisonGrowthDiagram.tsx`:
 
 ```tsx
 'use client'
@@ -198,11 +193,6 @@ Expected: no new errors.
 Open the landing page, scroll to Comparison. Confirm: a small three-node diagram appears above the table, growing in size and color left to right, labeled with the same three column headers as the table below it. Confirm it does not look like a circular brand-dot reference (nodes are rounded squares).
 
 - [ ] **Step 6: Commit**
-
-```bash
-git add src/components/landing/ComparisonGrowthDiagram.tsx src/components/landing/ComparisonSection.tsx
-git commit -m "Add growth diagram above Comparison table"
-```
 
 ---
 

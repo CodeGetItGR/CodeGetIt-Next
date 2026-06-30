@@ -5,7 +5,6 @@ import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
 import { ArtifactPlate } from '@/components/landing/ArtifactPlate';
-import { ComparisonGrowthDiagram } from './ComparisonGrowthDiagram';
 import { COMPARISON_ROW_ICONS } from './comparisonRowIconsList';
 
 function CheckIcon({ label }: { label: string }) {
@@ -56,14 +55,6 @@ export function ComparisonSection() {
         <section ref={ref} id="compare" className="bg-[#f5f6f8] px-6 py-28 ambient-mesh-indigo">
             <div className="mx-auto max-w-5xl">
                 <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} accent="teal" />
-
-                <ComparisonGrowthDiagram
-                    labels={[
-                        comparison.headers.staticWebsite,
-                        comparison.headers.webApplication,
-                        comparison.headers.fullStackApplication,
-                    ]}
-                />
 
                 <div className="mt-10 grid gap-4 md:grid-cols-3">
                     <ArtifactPlate

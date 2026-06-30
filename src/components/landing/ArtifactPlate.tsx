@@ -19,7 +19,7 @@ export type ArtifactVariant =
 
 interface ArtifactPlateProps {
     variant: ArtifactVariant;
-    plate: string;
+    plate?: string;
     caption: string;
     eyebrow?: string;
     className?: string;
@@ -459,7 +459,7 @@ function ArtifactVisual({ variant, active }: { variant: ArtifactVariant; active:
 
 export function ArtifactPlate({
     variant,
-    plate,
+    // plate,
     caption,
     eyebrow,
     className,
@@ -492,12 +492,12 @@ export function ArtifactPlate({
                 className,
             )}
         >
-            <div className="overflow-hidden rounded-[calc(1.15rem-6px)] border border-slate-900/[0.04]">
+            <div className="overflow-hidden rounded-[calc(1.15rem-6px)] border border-slate-900/4">
                 <ArtifactVisual variant={variant} active={active} />
             </div>
 
             <figcaption className={cn('grid gap-3 px-4 pb-4 pt-3', compact ? 'grid-cols-1' : 'sm:grid-cols-[auto_1fr]')}>
-                <div className="font-display text-xs font-bold uppercase tracking-[0.18em] text-slate-900">{plate}</div>
+                {/*<div className="font-display text-xs font-bold uppercase tracking-[0.18em] text-slate-900">{plate}</div>*/}
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                         {eyebrow ?? meta.eyebrow}
