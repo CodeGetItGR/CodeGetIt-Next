@@ -1,9 +1,9 @@
 [
     {
         "title": "Pado Living",
-        "lede": "PLACEHOLDER — one sentence summarizing what Pado Living is and who it's for.",
-        "challenge": "PLACEHOLDER — describe the problem Pado Living needed solved, in the client's terms (no tech jargon).",
-        "solution": "PLACEHOLDER — describe how the problem was resolved and what capability it gave the client.",
+        "lede": "An early live reference point for the studio: a real brand presence treated with the same care as a larger build.",
+        "challenge": "At the beginning, the work is less about showing a crowded portfolio and more about proving taste, clarity, and follow-through.",
+        "solution": "The site presents the build as a handover artifact: modest, live, and honest about the stage CodeGetIt is in.",
         "image": "/projects/logos/PadoLivingLogo.png",
         "url": "https://www.padoliving.com/"
     }

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { premiumEase, premiumMotion } from '@/lib/motion';
+import { ArtifactPlate } from '@/components/landing/ArtifactPlate';
 
 interface ContactSidebarProps {
     emailLabel: string;
@@ -57,6 +58,16 @@ export const ContactSidebar = ({
             <div className="rounded-2xl border border-slate-900/[0.06] bg-slate-50 px-4 py-4">
                 <p className="text-sm leading-relaxed text-slate-600">{trustNote}</p>
             </div>
+
+            <ArtifactPlate
+                variant="handover"
+                plate="Request"
+                eyebrow="start here"
+                caption="The rough version is enough to begin."
+                compact
+                className="shadow-none"
+                delay={0.12}
+            />
         </div>
     </motion.div>
 );

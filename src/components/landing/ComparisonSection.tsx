@@ -4,13 +4,14 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
+import { ArtifactPlate } from '@/components/landing/ArtifactPlate';
 import { ComparisonGrowthDiagram } from './ComparisonGrowthDiagram';
 import { COMPARISON_ROW_ICONS } from './comparisonRowIconsList';
 
 function CheckIcon({ label }: { label: string }) {
   return (
     <span className="inline-flex items-center justify-center">
-      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-brand-600">
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-slate-700">
         <path d="M20 6 9 17l-5-5" />
       </svg>
       <span className="sr-only">{label}</span>
@@ -64,6 +65,36 @@ export function ComparisonSection() {
                     ]}
                 />
 
+                <div className="mt-10 grid gap-4 md:grid-cols-3">
+                    <ArtifactPlate
+                        variant="wireframe"
+                        plate="Tier 01"
+                        eyebrow="static"
+                        caption="A focused page system for clear action."
+                        compact
+                        delay={0.05}
+                        className="shadow-none"
+                    />
+                    <ArtifactPlate
+                        variant="uiFlow"
+                        plate="Tier 02"
+                        eyebrow="web app"
+                        caption="Interface states and managed services."
+                        compact
+                        delay={0.12}
+                        className="shadow-none"
+                    />
+                    <ArtifactPlate
+                        variant="systemMap"
+                        plate="Tier 03"
+                        eyebrow="full stack"
+                        caption="Custom logic, data, and ownership."
+                        compact
+                        delay={0.19}
+                        className="shadow-none"
+                    />
+                </div>
+
                 <div className="mt-14">
                     {/* ── Desktop table ── */}
                     <div className="hidden rounded-[1.5rem] p-1.5 ring-1 ring-slate-900/6 soft-shadow md:block">
@@ -99,7 +130,7 @@ export function ComparisonSection() {
                                             >
                                                 <th scope="row" className="px-7 py-4 text-left text-sm font-medium text-slate-800">
                                                     <span className="flex items-center gap-3">
-                                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-600/8 text-brand-600">
+                                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-900/6 text-slate-500">
                                                             <RowIcon />
                                                         </span>
                                                         {rowLabel}
@@ -142,7 +173,7 @@ export function ComparisonSection() {
                             return (
                                 <div key={rowLabel} className="grid grid-cols-[1fr_52px_60px_64px] border-b border-slate-50 bg-white last:border-none odd:bg-slate-50/40">
                                     <div className="flex items-center gap-2 px-3 py-4 text-sm text-slate-800">
-                                        <span className="flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-md bg-brand-600/8 text-brand-600">
+                                        <span className="flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-md bg-slate-900/6 text-slate-500">
                                             <RowIcon />
                                         </span>
                                         {rowLabel}

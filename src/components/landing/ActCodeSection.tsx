@@ -7,6 +7,7 @@ import { useLocale } from '@/i18n/UseLocale';
 import type { Translations } from '@/i18n/types';
 import { cn } from '@/lib/utils';
 
+import { ArtifactPlate, type ArtifactVariant } from './ArtifactPlate';
 import { ACT2, ActLine, EASE, fadeRiseInView } from './it';
 
 type CodeCopy = Translations['landing']['story']['code'];
@@ -74,7 +75,7 @@ function Glyph({ shapes, animated, delay = 0, tiled = false }: { shapes: Shape[]
   const svg = (
     <svg
       viewBox="0 0 24 24"
-      className={cn('h-9 w-9 lg:h-10 lg:w-10', tiled ? 'text-brand-600' : 'text-slate-900')}
+      className={cn('h-9 w-9 lg:h-10 lg:w-10', tiled ? 'text-slate-700' : 'text-slate-900')}
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
@@ -102,7 +103,7 @@ function Glyph({ shapes, animated, delay = 0, tiled = false }: { shapes: Shape[]
   if (!tiled) return svg;
 
   return (
-    <span className="inline-flex rounded-2xl bg-brand-600/8 p-4 ring-1 ring-brand-600/10 soft-shadow">
+    <span className="inline-flex rounded-2xl bg-slate-900/6 p-4 ring-1 ring-slate-900/10 soft-shadow">
       {svg}
     </span>
   );
@@ -128,6 +129,8 @@ const cardVariants = {
   },
   exit: { opacity: 0, x: 40, rotateY: 10, scale: 0.97, transition: { duration: ACT2.cardExit, ease: EASE } },
 };
+
+const ACT2_ARTIFACTS: ArtifactVariant[] = ['wireframe', 'uiFlow', 'systemMap'];
 
 /** The persistent counter — the active digit rolls in the scroll direction. */
 function RollingIndex({ index, dir, total }: { index: number; dir: number; total: number }) {
@@ -158,7 +161,14 @@ function SpecCard({ item, index }: { item: CodeItem; index: number }) {
   const base = ACT2.cardEnterDelay;
   return (
     <motion.div variants={cardVariants} initial="enter" animate="center" exit="exit" style={{ transformPerspective: 1000 }}>
-      <Glyph shapes={GLYPHS[index % GLYPHS.length]} animated delay={base} tiled />
+      <ArtifactPlate
+        variant={ACT2_ARTIFACTS[index % ACT2_ARTIFACTS.length]}
+        plate={`Plate ${String(index + 2).padStart(2, '0')}`}
+        eyebrow="shop artifact"
+        caption={item.title}
+        compact
+        delay={base}
+      />
 
       {/* Left-to-right wipe — the sentence is typeset in front of you */}
       <motion.p

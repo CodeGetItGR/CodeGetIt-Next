@@ -7,13 +7,12 @@ interface ProjectTypeBadgeProps {
     variant?: 'allProjects' | 'webAppPlus' | 'fullStack';
 }
 
-// allProjects stays neutral (it applies everywhere); webAppPlus and fullStack
-// pick up the same amber/teal pairing used for tiers elsewhere on the page,
-// so "how big a project this applies to" reads at a glance, not just on hover.
+// allProjects stays neutral (it applies everywhere); larger scopes use muted
+// non-teal accents so the moving dot remains the page's primary teal object.
 const VARIANT_STYLES: Record<string, string> = {
     allProjects: 'text-slate-500 ring-slate-900/10',
     webAppPlus: 'text-amber-700 ring-amber-200 bg-amber-50/60',
-    fullStack: 'text-brand-700 ring-brand-600/20 bg-brand-600/8',
+    fullStack: 'text-emerald-700 ring-emerald-200 bg-emerald-50/70',
 };
 
 export function ProjectTypeBadge({ label, description, className, variant }: ProjectTypeBadgeProps) {

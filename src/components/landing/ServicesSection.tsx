@@ -10,6 +10,7 @@ import { useContactRequest, useScrollHighlight } from '@/providers';
 import { getServiceContactPreset } from '@/components/landing/service-contact-presets';
 import { cn } from '@/lib/utils';
 import { SectionHeading } from '@/components/landing/SectionHeading';
+import { ArtifactPlate, type ArtifactVariant } from '@/components/landing/ArtifactPlate';
 import { Socket, Whisper } from './it';
 
 // Ultra-light inline SVG icons (1.5 stroke — Phosphor-style)
@@ -53,19 +54,19 @@ const serviceDiscountKeys = ['marketing.staticDiscount', 'marketing.webDiscount'
 
 const FACTOR_ICONS = [
     // Scope & features
-    <svg key="scope" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
+    <svg key="scope" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
     // Design complexity
-    <svg key="design" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
+    <svg key="design" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
     // Integrations
-    <svg key="integrations" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
+    <svg key="integrations" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
     // Timeline
-    <svg key="timeline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    <svg key="timeline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
     // Content volume
-    <svg key="content" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    <svg key="content" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
     // Tech stack
-    <svg key="tech" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+    <svg key="tech" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
     // Post-launch support
-    <svg key="support" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    <svg key="support" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
 ];
 
 // Middle card (index 1) is the recommended / highlighted tier
@@ -76,9 +77,11 @@ const RECOMMENDED_INDEX = 1;
 // so all three tiers read as visually distinct instead of two identical grays.
 const TIER_CHIP_STYLES = [
     'bg-slate-100 text-slate-600',
-    'bg-brand-600/10 text-brand-700',
+    'bg-slate-900/8 text-slate-700',
     'bg-amber-50 text-amber-700',
 ];
+
+const SERVICE_ARTIFACTS: ArtifactVariant[] = ['wireframe', 'uiFlow', 'systemMap'];
 
 // Matches the `#service-{index}` anchors used by FooterSection's "Services" links
 const SPOTLIGHT_ID_PATTERN = /^service-(\d+)$/;
@@ -196,6 +199,16 @@ export function ServicesSection() {
                                     isRecommended ? 'bg-brand-600/4' : 'bg-white',
                                     'shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
                                 )}>
+                                    <ArtifactPlate
+                                        variant={SERVICE_ARTIFACTS[index] ?? SERVICE_ARTIFACTS[0]}
+                                        plate={`Receive ${index + 1}`}
+                                        eyebrow="what you get"
+                                        caption={service.title}
+                                        compact
+                                        delay={0.1 + index * 0.06}
+                                        className="mb-6 shadow-none"
+                                    />
+
                                     {/* Icon */}
                                     <div className={cn(
                                         'mb-5 inline-flex w-fit rounded-xl p-2.5',
@@ -305,7 +318,7 @@ export function ServicesSection() {
                     <div className="mt-7 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-slate-100 pt-7 sm:grid-cols-2 lg:grid-cols-3">
                         {services.pricingFactors.map((factor, i) => (
                             <div key={factor.label} className="flex gap-3.5">
-                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-600/8 text-slate-500">
+                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-900/6 text-slate-500">
                                     {FACTOR_ICONS[i]}
                                 </div>
                                 <div>
