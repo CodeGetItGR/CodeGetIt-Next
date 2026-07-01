@@ -4,13 +4,13 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { SectionHeading } from '@/components/landing/SectionHeading';
-import { ComparisonGrowthDiagram } from './ComparisonGrowthDiagram';
+import { ArtifactPlate } from '@/components/landing/ArtifactPlate';
 import { COMPARISON_ROW_ICONS } from './comparisonRowIconsList';
 
 function CheckIcon({ label }: { label: string }) {
   return (
     <span className="inline-flex items-center justify-center">
-      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-brand-600">
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-slate-700">
         <path d="M20 6 9 17l-5-5" />
       </svg>
       <span className="sr-only">{label}</span>
@@ -56,13 +56,35 @@ export function ComparisonSection() {
             <div className="mx-auto max-w-5xl">
                 <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} accent="teal" />
 
-                <ComparisonGrowthDiagram
-                    labels={[
-                        comparison.headers.staticWebsite,
-                        comparison.headers.webApplication,
-                        comparison.headers.fullStackApplication,
-                    ]}
-                />
+                <div className="mt-10 grid gap-4 md:grid-cols-3">
+                    <ArtifactPlate
+                        variant="tierStatic"
+                        plate="Tier 01"
+                        eyebrow={comparison.plates.tierStatic.eyebrow}
+                        caption={comparison.plates.tierStatic.caption}
+                        compact
+                        delay={0.05}
+                        className="shadow-none"
+                    />
+                    <ArtifactPlate
+                        variant="tierApp"
+                        plate="Tier 02"
+                        eyebrow={comparison.plates.tierApp.eyebrow}
+                        caption={comparison.plates.tierApp.caption}
+                        compact
+                        delay={0.12}
+                        className="shadow-none"
+                    />
+                    <ArtifactPlate
+                        variant="tierFull"
+                        plate="Tier 03"
+                        eyebrow={comparison.plates.tierFull.eyebrow}
+                        caption={comparison.plates.tierFull.caption}
+                        compact
+                        delay={0.19}
+                        className="shadow-none"
+                    />
+                </div>
 
                 <div className="mt-14">
                     {/* ── Desktop table ── */}
@@ -99,7 +121,7 @@ export function ComparisonSection() {
                                             >
                                                 <th scope="row" className="px-7 py-4 text-left text-sm font-medium text-slate-800">
                                                     <span className="flex items-center gap-3">
-                                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-600/8 text-brand-600">
+                                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-900/6 text-slate-500">
                                                             <RowIcon />
                                                         </span>
                                                         {rowLabel}
@@ -142,7 +164,7 @@ export function ComparisonSection() {
                             return (
                                 <div key={rowLabel} className="grid grid-cols-[1fr_52px_60px_64px] border-b border-slate-50 bg-white last:border-none odd:bg-slate-50/40">
                                     <div className="flex items-center gap-2 px-3 py-4 text-sm text-slate-800">
-                                        <span className="flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-md bg-brand-600/8 text-brand-600">
+                                        <span className="flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-md bg-slate-900/6 text-slate-500">
                                             <RowIcon />
                                         </span>
                                         {rowLabel}

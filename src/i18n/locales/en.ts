@@ -572,6 +572,10 @@ export const en: Translations = {
                 primary: 'Start a project',
                 secondary: 'See the work',
             },
+            plates: {
+                idea:  { eyebrow: 'you bring it', caption: 'A rough thought, exactly as it comes.' },
+                brief: { eyebrow: 'we scope it',  caption: 'The same idea, shaped into a plan.' },
+            },
         },
         story: {
             code: {
@@ -579,6 +583,7 @@ export const en: Translations = {
                 line: 'We code it',
                 sub: 'Design and engineering under one roof, until the thing in your head has a name, a shape, and a URL.',
                 scrollCue: 'Keep scrolling',
+                artifactEyebrow: 'shop artifact',
                 items: [
                     {
                         title: 'Landing pages',
@@ -625,6 +630,7 @@ export const en: Translations = {
                 'From streamlined marketing sites to full-scale web applications, we design and build solutions tailored to what actually moves your business forward.  Each tier builds on the previous one, unlocking more capability and business impact.',
             featured: 'Most requested',
             getStarted: 'Get Started',
+            artifactEyebrow: 'what you get',
             estimatedTimelineLabel: 'Estimated timeline',
             timelineEstimates: ['2–4 weeks', '4–8 weeks', '8–16+ weeks'],
             priceDisclaimer: 'These are honest starting points — not fixed quotes. Every project is scoped in a brief discovery call, so the number you pay reflects what you actually need.',
@@ -690,7 +696,12 @@ export const en: Translations = {
             maintenanceFull: 'Ongoing (updates, scaling)',
             managedLabel: 'Managed',
             customLabel: 'Custom',
-            disclaimer: 'Feature availability and implementation complexity vary depending on project scope. Full-stack solutions are custom systems and may include additional components not listed above.'
+            disclaimer: 'Feature availability and implementation complexity vary depending on project scope. Full-stack solutions are custom systems and may include additional components not listed above.',
+            plates: {
+                tierStatic: { eyebrow: 'static',     caption: 'A fast, focused page.' },
+                tierApp:    { eyebrow: 'web app',    caption: 'Interactive UI and managed services.' },
+                tierFull:   { eyebrow: 'full stack', caption: 'Custom backend, data, and ownership.' },
+            },
         },
         process: {
             eyebrow: 'Process',
@@ -698,6 +709,7 @@ export const en: Translations = {
             description: 'Every project follows the same proven path — what changes is the scope of work within each step.',
             deliverablesLabel: 'Deliverables',
             outcomeLabel: 'Outcome',
+            artifactEyebrow: 'process artifact',
             badges: {
                 allProjects: { label: 'All Projects', description: 'Applies to every project type' },
                 webAppPlus: { label: 'Web App+', description: 'Web Applications and Full-Stack Solutions' },
@@ -755,13 +767,15 @@ export const en: Translations = {
             ],
         },
         projects: {
-            eyebrow: 'Previous It',
-            title: 'One idea, delivered',
-            description: 'A closer look at how a single idea became a finished product — the problem, the approach, and the result.',
+            eyebrow: 'Selected Work',
+            title: 'Work built to last',
+            description: 'Each project is scoped carefully, built precisely, and delivered in full — a product you own outright, working hard for your business from day one.',
             challengeLabel: 'The Challenge',
-            solutionLabel: 'The Solution',
+            solutionLabel: 'Our Approach',
             visitSite: 'Visit the live site',
             live: 'Live',
+            artifactEyebrow: 'you get it',
+            artifactCaption: 'Built, delivered, and in your hands.',
         },
         testimonials: {
             eyebrow: 'Testimonials',
@@ -848,6 +862,18 @@ export const en: Translations = {
         },
         marketingBanner: {
             dismissAria: 'Dismiss announcement',
+        },
+        artifacts: {
+            variants: {
+                idea:       { eyebrow: 'the idea',              title: 'It arrives'},
+                brief:      { eyebrow: 'the brief',             title: 'Scoped'},
+                design:     { eyebrow: 'design & architecture', title: 'Shaped'},
+                build:      { eyebrow: 'building & testing',    title: 'Built'},
+                handover:   { eyebrow: 'delivery',              title: "It's yours"},
+                tierStatic: { eyebrow: 'static site',           title: 'A fast, clear page'},
+                tierApp:    { eyebrow: 'web app',               title: 'Interactive UI'},
+                tierFull:   { eyebrow: 'full-stack',            title: 'End-to-end system'},
+            },
         },
     },
     publicOffer: {

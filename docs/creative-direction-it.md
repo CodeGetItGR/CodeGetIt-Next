@@ -24,6 +24,18 @@ captioned *"(you have it now.)"*
    cannot finish its sentence without the brand.
 4. **Depth is forbidden.** Paper is flat; the dot lives on the page, not in a world.
 
+> **Illustration-plate exception** (added ~2026-06-30). The `ArtifactPlate`
+> scenes are a sanctioned carve-out: each plate is a *frame of the dot's life*
+> (it arrives → gets a shape → finds its path → connects → docks as yours), so
+> two laws are relaxed **inside the plates only**:
+> - Law 4: selective depth is allowed — soft shadow, slight tilt, a layered
+>   stack, a desktop-only hover lift — used *just enough* at high-impact moments
+>   (hero, handover) to feel alive, never everywhere.
+> - Law 2: incidental ink geometry (frames, waypoints, nodes) may appear, but
+>   the **teal dot stays the only teal circle** and remains the plate's
+>   protagonist. Law 1 (teal exclusivity) is untouched.
+> Outside the plates, all four laws hold as written.
+
 ## The three acts
 
 | Act | Line          | Where                         | The dot's role                            |

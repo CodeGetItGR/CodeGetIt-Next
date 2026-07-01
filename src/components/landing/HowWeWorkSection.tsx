@@ -95,6 +95,7 @@ export function HowWeWorkSection() {
                                     index={index}
                                     deliverablesLabel={process.deliverablesLabel}
                                     outcomeLabel={process.outcomeLabel}
+                                    artifactEyebrow={process.artifactEyebrow}
                                     badges={process.badges}
                                 />
                             </div>

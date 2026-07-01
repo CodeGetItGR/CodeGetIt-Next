@@ -120,6 +120,10 @@ export const el: Translations = {
                 primary: 'Πάμε να ξεκινήσουμε',
                 secondary: 'Δες τη δουλειά μας',
             },
+            plates: {
+                idea:  { eyebrow: en.landing.hero.plates.idea.eyebrow,  caption: 'Μια σκέψη, ακριβώς όπως είναι.' },
+                brief: { eyebrow: en.landing.hero.plates.brief.eyebrow, caption: 'Η ίδια ιδέα, διαμορφωμένη σε πλάνο.' },
+            },
         },
         story: {
             code: {
@@ -128,6 +132,7 @@ export const el: Translations = {
                 line: en.landing.story.code.line,
                 sub: 'Σχεδιασμός και ανάπτυξη κάτω από την ίδια στέγη, μέχρι αυτό που έχεις στο μυαλό σου να αποκτήσει όνομα, μορφή και τη δική του διεύθυνση στο διαδίκτυο.',
                 scrollCue: 'Συνέχισε να σκρολάρεις',
+                artifactEyebrow: en.landing.story.code.artifactEyebrow,
                 items: [
                     {
                         title: 'Σελίδες που πουλάνε',
@@ -164,6 +169,7 @@ export const el: Translations = {
         },
         services: {
             from: 'Από {price} €',
+            artifactEyebrow: en.landing.services.artifactEyebrow,
             eyebrow: 'Υπηρεσίες',
             title: 'Επίλεξε τη λύση που ταιριάζει στο έργο σου',
             description:
@@ -230,11 +236,17 @@ export const el: Translations = {
             customLabel: 'Φτιαγμένο στα μέτρα σου',
             disclaimer:
                 'Τα χαρακτηριστικά και η πολυπλοκότητα διαφέρουν ανάλογα με το έργο. Οι Full-Stack λύσεις είναι φτιαγμένες στα μέτρα σου και μπορεί να περιλαμβάνουν επιπλέον στοιχεία που δεν αναφέρονται παραπάνω.',
+            plates: {
+                tierStatic: { eyebrow: en.landing.comparison.plates.tierStatic.eyebrow, caption: 'Μια γρήγορη, στοχευμένη σελίδα.' },
+                tierApp:    { eyebrow: en.landing.comparison.plates.tierApp.eyebrow,    caption: 'Διαδραστική σελίδα και διαχειριζόμενες υπηρεσίες.' },
+                tierFull:   { eyebrow: en.landing.comparison.plates.tierFull.eyebrow,   caption: 'Custom backend, δεδομένα και πλήρης κυριότητα.' },
+            },
         },
         process: {
             eyebrow: 'Διαδικασία',
             title: 'Απλή διαδικασία, γρήγορος ρυθμός',
             description: 'Κάθε έργο ακολουθεί την ίδια δοκιμασμένη πορεία — αυτό που αλλάζει είναι το αντικείμενο εργασίας σε κάθε βήμα.',
+            artifactEyebrow: en.landing.process.artifactEyebrow,
             deliverablesLabel: 'Παραδοτέα',
             outcomeLabel: 'Αποτέλεσμα',
             badges: {
@@ -300,12 +312,26 @@ export const el: Translations = {
         projects: {
             // "Previous It" is the same wordplay device as the Acts — left in English.
             eyebrow: en.landing.projects.eyebrow,
-            title: 'Μια ιδέα, υλοποιημένη',
-            description: 'Μια πιο κοντινή ματιά σε πώς μια ιδέα έγινε ένα ολοκληρωμένο προϊόν — το πρόβλημα, η προσέγγιση και το αποτέλεσμα.',
+            artifactEyebrow: en.landing.projects.artifactEyebrow,
+            artifactCaption: 'Κατασκευάστηκε, παραδόθηκε και ανήκει σε σένα.',
+            title: 'Δουλειά που παραμένει',
+            description: 'Κάθε έργο σχεδιάζεται με ακρίβεια, υλοποιείται με επιμέλεια και παραδίδεται στο σύνολό του — ένα προϊόν που σου ανήκει εξ ολοκλήρου.',
             challengeLabel: 'Η Πρόκληση',
             solutionLabel: 'Η Λύση',
             visitSite: 'Επισκέψου την ιστοσελίδα',
             live: 'Live',
+        },
+        artifacts: {
+            variants: {
+                idea:       { eyebrow: en.landing.artifacts.variants.idea.eyebrow,       title: en.landing.artifacts.variants.idea.title},
+                brief:      { eyebrow: en.landing.artifacts.variants.brief.eyebrow,      title: en.landing.artifacts.variants.brief.title},
+                design:     { eyebrow: en.landing.artifacts.variants.design.eyebrow,     title: en.landing.artifacts.variants.design.title},
+                build:      { eyebrow: en.landing.artifacts.variants.build.eyebrow,      title: en.landing.artifacts.variants.build.title },
+                handover:   { eyebrow: en.landing.artifacts.variants.handover.eyebrow,   title: en.landing.artifacts.variants.handover.title},
+                tierStatic: { eyebrow: en.landing.artifacts.variants.tierStatic.eyebrow, title: en.landing.artifacts.variants.tierStatic.title},
+                tierApp:    { eyebrow: en.landing.artifacts.variants.tierApp.eyebrow,    title: en.landing.artifacts.variants.tierApp.title},
+                tierFull:   { eyebrow: en.landing.artifacts.variants.tierFull.eyebrow,   title: en.landing.artifacts.variants.tierFull.title},
+            },
         },
         testimonials: {
             eyebrow: 'Μαρτυρίες',
