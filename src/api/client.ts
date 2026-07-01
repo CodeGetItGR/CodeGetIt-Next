@@ -5,7 +5,7 @@ import {getCurrentLocale} from "@/i18n/locale-storage";
 import {AUTH_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY} from "@/auth/constants";
 
 
-const baseURL = process.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
 
 // Entries with a method are matched exactly; entries without a method match any method.
 const PUBLIC_ENDPOINTS: { path: string; method?: string }[] = [
