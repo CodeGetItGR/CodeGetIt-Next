@@ -53,17 +53,17 @@ export function HeroSection() {
 
         <motion.div
           {...fadeRise(T.ctas + 0.1, reduced)}
-          className="relative mx-auto w-full max-w-[430px] lg:mx-0 lg:justify-self-end"
+          className="relative mx-auto w-full max-w-107.5 lg:mx-0 lg:justify-self-end"
         >
           <div className="absolute -left-5 top-10 hidden h-28 w-24 rotate-[-5deg] border border-slate-900/10 bg-white/80 shadow-sm lg:block" />
           <ArtifactPlate
             variant="idea"
             plate="Plate 00"
             eyebrow={copy.plates.idea.eyebrow}
-            caption={copy.plates.idea.caption}
+            caption={''}
             compact
             depth
-            className="relative rotate-[1deg]"
+            className="relative rotate-1 mb-6"
             delay={T.ctas + 0.18}
           />
           <ArtifactPlate
@@ -73,7 +73,7 @@ export function HeroSection() {
             caption={copy.plates.brief.caption}
             compact
             depth
-            className="-mt-10 ml-auto max-w-[86%] rotate-[-1deg]"
+            className="-mt-10 ml-auto max-w-[86%] -rotate-1"
             delay={T.ctas + 0.28}
           />
         </motion.div>

@@ -493,7 +493,7 @@ export function ArtifactPlate({
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                         {eyebrow ?? meta.eyebrow}
                     </p>
-                    <p className="mt-1 text-sm font-semibold leading-5 text-slate-800">{caption || meta.title}</p>
+                    <p className="mt-1 text-sm font-semibold leading-5 text-slate-800">{caption}</p>
                     {/*<p className="mt-1 text-xs leading-5 text-slate-500">{meta.note}</p>*/}
                 </div>
             </figcaption>

@@ -199,6 +199,19 @@ export function ServicesSection() {
                                     isRecommended ? 'bg-brand-600/4' : 'bg-white',
                                     'shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
                                 )}>
+                                    <div className={'flex justify-between items-center'}>
+
+                                        {/* Icon */}
+                                        <div className={cn(
+                                            'inline-flex w-fit rounded-xl p-2.5',
+                                            TIER_CHIP_STYLES[index] ?? TIER_CHIP_STYLES[0],
+                                        )}>
+                                            <Icon />
+                                        </div>
+
+                                        <h3 className="font-display text-xl font-semibold text-slate-900">{service.title}</h3>
+                                    </div>
+
                                     <ArtifactPlate
                                         variant={SERVICE_ARTIFACTS[index] ?? SERVICE_ARTIFACTS[0]}
                                         plate={`Receive ${index + 1}`}
@@ -206,18 +219,9 @@ export function ServicesSection() {
                                         caption={service.title}
                                         compact
                                         delay={0.1 + index * 0.06}
-                                        className="mb-6 shadow-none"
+                                        className="shadow-none my-6"
                                     />
 
-                                    {/* Icon */}
-                                    <div className={cn(
-                                        'mb-5 inline-flex w-fit rounded-xl p-2.5',
-                                        TIER_CHIP_STYLES[index] ?? TIER_CHIP_STYLES[0],
-                                    )}>
-                                        <Icon />
-                                    </div>
-
-                                    <h3 className="font-display text-xl font-semibold text-slate-900">{service.title}</h3>
                                     <p className="mt-2 text-sm leading-7 text-slate-500">{service.description}</p>
 
                                     {/* Features */}

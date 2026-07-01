@@ -38,7 +38,7 @@ export function ProjectsSection() {
                         className="flex flex-col gap-6"
                     >
                         <div>
-                            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">First live reference</p>
+                            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Featured Project</p>
                             <h2 className="font-display text-4xl font-bold leading-[1.06] tracking-tight text-slate-900 lg:text-6xl">
                                 {project.title}
                                 <DeliveredPeriod show={isInView} delay={0.3} />

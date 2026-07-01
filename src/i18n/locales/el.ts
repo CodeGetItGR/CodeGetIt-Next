@@ -313,9 +313,9 @@ export const el: Translations = {
             // "Previous It" is the same wordplay device as the Acts — left in English.
             eyebrow: en.landing.projects.eyebrow,
             artifactEyebrow: en.landing.projects.artifactEyebrow,
-            artifactCaption: 'Μια μικρή πρώτη κατασκευή, παραδοτέα και στα χέρια σου.',
-            title: 'Μια ιδέα, υλοποιημένη',
-            description: 'Μια πιο κοντινή ματιά σε πώς μια ιδέα έγινε ένα ολοκληρωμένο προϊόν — το πρόβλημα, η προσέγγιση και το αποτέλεσμα.',
+            artifactCaption: 'Κατασκευάστηκε, παραδόθηκε και ανήκει σε σένα.',
+            title: 'Δουλειά που παραμένει',
+            description: 'Κάθε έργο σχεδιάζεται με ακρίβεια, υλοποιείται με επιμέλεια και παραδίδεται στο σύνολό του — ένα προϊόν που σου ανήκει εξ ολοκλήρου.',
             challengeLabel: 'Η Πρόκληση',
             solutionLabel: 'Η Λύση',
             visitSite: 'Επισκέψου την ιστοσελίδα',
