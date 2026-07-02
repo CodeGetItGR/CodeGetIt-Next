@@ -44,12 +44,12 @@ export const T = {
  * itself is handled.
  */
 export const ACT2 = {
-  /** Scroll budget (vh): a beat of stillness, one segment per item, resolution. */
+  /** Scroll budget (vh): a beat of stillness, one segment per item, resolution.
+   * Desktop-only — the pinned scene no longer renders on mobile, so there's no
+   * shortened `compact` variant. */
   introVh: 42,
   perItemVh: 55,
   closingVh: 35,
-  /** Shorter pin under lg — gesture scrolling makes every pinned vh dearer. */
-  compact: { introVh: 36, perItemVh: 48, closingVh: 28 },
   slow: {
     outerEnter: 0.55,
     outerExit: 0.25,

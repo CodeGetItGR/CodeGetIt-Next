@@ -8,7 +8,7 @@ import type { Translations } from '@/i18n/types';
 import { cn } from '@/lib/utils';
 
 import { ArtifactPlate, type ArtifactVariant } from './ArtifactPlate';
-import { ACT2, ActLine, EASE } from './it';
+import { ACT2, ActLine, EASE, fadeRiseInView } from './it';
 
 type CodeCopy = Translations['landing']['story']['code'];
 type CodeItem = CodeCopy['items'][number];
@@ -354,16 +354,9 @@ function IdleNudge({ label, show }: { label: string; show: boolean }) {
 function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: string }) {
   const total = copy.items.length;
 
-  // Pacing: a shorter pin under lg — gesture scrolling tires faster than a wheel.
-  const [compactPin, setCompactPin] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 1023px)');
-    const update = () => setCompactPin(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
-  const { introVh, perItemVh, closingVh } = compactPin ? ACT2.compact : ACT2;
+  // Desktop-only scene (mounted at lg+), so the wheel-paced budget is the only
+  // one needed — the old mobile-shortened `compact` variant no longer applies.
+  const { introVh, perItemVh, closingVh } = ACT2;
 
   const trackVh = introVh + perItemVh * total + closingVh;
   const introFrac = introVh / trackVh;
@@ -565,8 +558,15 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
   );
 }
 
-/** Reduced motion: no pin, no traveler — the story survives as punctuation. */
-function StaticActCode({ copy }: { copy: CodeCopy }) {
+/**
+ * The plain, self-sizing stacked layout — used on mobile (where the pinned
+ * scroll-hijack fights the browser toolbars) and for reduced motion. No pin, no
+ * traveler, no rail: just the story as a normal section that scrolls like the
+ * rest of the page. Each build fades/rises in as it's reached (a no-op under
+ * reduced motion via `fadeRiseInView`).
+ */
+function StackedActCode({ copy }: { copy: CodeCopy }) {
+  const reduced = useReducedMotion();
   return (
     <section id="build" className="relative py-28 lg:py-36">
       <div className="mx-auto w-full max-w-6xl px-6 lg:px-10">
@@ -576,7 +576,11 @@ function StaticActCode({ copy }: { copy: CodeCopy }) {
 
         <ul className="mt-14 space-y-10">
           {copy.items.map((entry, i) => (
-            <li key={entry.title} className="border-t border-slate-900/10 pt-8 lg:grid lg:grid-cols-12 lg:gap-8">
+            <motion.li
+              key={entry.title}
+              {...fadeRiseInView(i * 0.05, reduced)}
+              className="border-t border-slate-900/10 pt-8 lg:grid lg:grid-cols-12 lg:gap-8"
+            >
               <div className="lg:col-span-5">
                 <Glyph shapes={GLYPHS[i % GLYPHS.length]} animated={false} />
               </div>
@@ -599,7 +603,7 @@ function StaticActCode({ copy }: { copy: CodeCopy }) {
                   ))}
                 </div>
               </div>
-            </li>
+            </motion.li>
           ))}
         </ul>
       </div>
@@ -608,18 +612,33 @@ function StaticActCode({ copy }: { copy: CodeCopy }) {
 }
 
 /**
- * Act II — "We code it", performed as a pinned scene. Scroll is the timeline:
- * the section holds the viewport while the dot hops down the build list, each
- * line is inked as it's read, and its spec card sweeps in from the left.
+ * Act II — "We code it". The pinned scroll-hijack scene is a desktop nicety:
+ * it depends on a stable viewport height, which mobile browsers break as their
+ * toolbars retract (title clipped under the navbar, rail jammed against the
+ * bottom bar, dead space, janky momentum scroll). So it runs only at `lg+` with
+ * motion allowed; every other case (mobile, reduced motion) gets the plain,
+ * self-sizing stacked layout that scrolls like any normal section.
  */
 export function ActCodeSection() {
   const { t } = useLocale();
   const copy = t.landing.story.code;
   const reduced = useReducedMotion();
 
-  return reduced ? (
-    <StaticActCode copy={copy} />
-  ) : (
+  // SSR-safe: start `false` (mobile-safe) so the broken pinned scene is never
+  // the initial render on a phone. Section 2 is below the fold, so this settles
+  // while the user is still on the hero — no visible static→pinned swap.
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  return !reduced && isDesktop ? (
     <PinnedActCode copy={copy} closingNote={t.landing.whispers.code} />
+  ) : (
+    <StackedActCode copy={copy} />
   );
 }
