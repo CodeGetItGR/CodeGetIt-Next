@@ -44,6 +44,14 @@ export const ACT2 = {
   cardEnterDelay: 0.26,
   cardExit: 0.18,
   cardEnter: 0.42,
+  /**
+   * Fast-flick timings (s). When scroll velocity is high the caused chain
+   * can't drain in time, so it stacks up and lags. These near-zero durations
+   * collapse the choreography to a clean snap, so the scene tracks the finger
+   * instead of queuing swaps; the full timings above return once scrolling
+   * settles.
+   */
+  fast: { cardEnterDelay: 0, cardExit: 0.05, cardEnter: 0.001 },
 } as const;
 
 /**

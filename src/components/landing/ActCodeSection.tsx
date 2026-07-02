@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform, useVelocity, type MotionValue } from 'framer-motion';
 
 import { useLocale } from '@/i18n/UseLocale';
 import type { Translations } from '@/i18n/types';
 import { cn } from '@/lib/utils';
 
 import { ArtifactPlate, type ArtifactVariant } from './ArtifactPlate';
-import { ACT2, ActLine, EASE, fadeRiseInView } from './it';
+import { ACT2, ActLine, EASE } from './it';
 
 type CodeCopy = Translations['landing']['story']['code'];
 type CodeItem = CodeCopy['items'][number];
@@ -118,26 +118,31 @@ function Glyph({ shapes, animated, delay = 0, tiled = false }: { shapes: Shape[]
  * the other half of that — by explicit request, this is the one place on the
  * spine where Law 4 is relaxed alongside Law 1).
  */
-const cardVariants = {
+type SwapTiming = { cardEnter: number; cardExit: number; cardEnterDelay: number };
+
+const cardVariantsFor = (timing: SwapTiming) => ({
   enter: { opacity: 0, x: -48, rotateY: -10, scale: 0.97 },
   center: {
     opacity: 1,
     x: 0,
     rotateY: 0,
     scale: 1,
-    transition: { duration: ACT2.cardEnter, ease: EASE, delay: ACT2.cardEnterDelay },
+    transition: { duration: timing.cardEnter, ease: EASE, delay: timing.cardEnterDelay },
   },
-  exit: { opacity: 0, x: 40, rotateY: 10, scale: 0.97, transition: { duration: ACT2.cardExit, ease: EASE } },
-};
+  exit: { opacity: 0, x: 40, rotateY: 10, scale: 0.97, transition: { duration: timing.cardExit, ease: EASE } },
+});
 
 const ACT2_ARTIFACTS: ArtifactVariant[] = ['tierStatic', 'tierApp', 'tierFull'];
 
-function SpecCard({ item, index, artifactEyebrow }: { item: CodeItem; index: number; artifactEyebrow: string }) {
+function SpecCard({ item, index, artifactEyebrow, fast }: { item: CodeItem; index: number; artifactEyebrow: string; fast: boolean }) {
+  const timing = fast ? ACT2.fast : ACT2;
   // Children count time from the card's mount (after the old card's exit) —
   // adding the enter delay keeps them synced to the card's actual arrival.
-  const base = ACT2.cardEnterDelay;
+  const base = timing.cardEnterDelay;
+  // On a fast flick the child wipes/tags would trail the snap, so collapse them too.
+  const dur = (slow: number) => (fast ? 0.001 : slow);
   return (
-    <motion.div variants={cardVariants} initial="enter" animate="center" exit="exit" style={{ transformPerspective: 1000 }}>
+    <motion.div variants={cardVariantsFor(timing)} initial="enter" animate="center" exit="exit" style={{ transformPerspective: 1000 }}>
       <ArtifactPlate
         variant={ACT2_ARTIFACTS[index % ACT2_ARTIFACTS.length]}
         plate={`Plate ${String(index + 2).padStart(2, '0')}`}
@@ -151,7 +156,7 @@ function SpecCard({ item, index, artifactEyebrow }: { item: CodeItem; index: num
       <motion.p
         initial={{ clipPath: 'inset(0 100% 0 0)', x: -10 }}
         animate={{ clipPath: 'inset(0 -2% 0 0)', x: 0 }}
-        transition={{ duration: 0.55, ease: EASE, delay: base + 0.12 }}
+        transition={{ duration: dur(0.55), ease: EASE, delay: base + (fast ? 0 : 0.12) }}
         className="mt-5 max-w-[42ch] text-[0.95rem] leading-[1.7] text-slate-600 text-pretty lg:text-[0.98rem]"
       >
         {item.description}
@@ -163,7 +168,7 @@ function SpecCard({ item, index, artifactEyebrow }: { item: CodeItem; index: num
             key={tag}
             initial={{ opacity: 0, x: -14 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.45, ease: EASE, delay: base + 0.24 + i * 0.06 }}
+            transition={{ duration: dur(0.45), ease: EASE, delay: base + (fast ? 0 : 0.24 + i * 0.06) }}
             className="rounded-full bg-brand-600/6 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.12em] text-brand-700 ring-1 ring-brand-600/15"
           >
             {tag}
@@ -236,37 +241,81 @@ function TitleNode({ text }: { text: string }) {
 }
 
 /**
- * The top scrubber bar — a bold, video/story-style progress bar fixed across
- * the very top of the viewport, visible at every breakpoint (the previous
- * `ProgressTrack` was a thin edge hairline hidden below `sm`, easy to miss
- * even on desktop). Same `scrollYProgress` already driving the sequence,
- * just remapped to `width` instead of vertical `top`. Per-item ticks make
- * "N steps, here's where you are" legible at a glance. Sits in the ~16px gap
- * above the navbar's floating pill (which starts at `mt-4`, not flush to the
- * edge), at a lower z-index than the navbar (z-50) so it never competes.
+ * One build's slot on the rail — a rounded hairline track that inks teal as
+ * its segment of the scroll fills. Broken out so each segment owns its own
+ * `useTransform` (hooks must not run in a loop).
  */
-function TopScrubberBar({
+function BuildSegment({ progress, i, introFrac, perFrac }: { progress: MotionValue<number>; i: number; introFrac: number; perFrac: number }) {
+  const fill = useTransform(progress, (p) => {
+    const local = (p - introFrac - i * perFrac) / perFrac;
+    return Math.min(1, Math.max(0, local));
+  });
+  return (
+    <div className="relative h-full flex-1 overflow-hidden rounded-full bg-slate-900/10">
+      <motion.div style={{ scaleX: fill }} className="absolute inset-0 origin-left rounded-full bg-brand-600" />
+    </div>
+  );
+}
+
+/**
+ * The build rail — a slim, in-scene progress scrubber tailored to Act II: one
+ * segment per build, a spring-smoothed teal fill, a square "now" marker (Law 2:
+ * the only circle is It), and a "which build of how many" counter. It borrows
+ * the How-We-Work section's progress language (hairline track + brand fill +
+ * haloed square marker) but lives *inside* the pinned stage, constrained to the
+ * content width and anchored near the bottom where it's actually seen on mobile
+ * — replacing the old edge-of-viewport hairline nobody noticed.
+ */
+function BuildProgress({
   progress,
   total,
+  index,
   introFrac,
   perFrac,
 }: {
   progress: MotionValue<number>;
   total: number;
+  index: number;
   introFrac: number;
   perFrac: number;
 }) {
-  const width = useTransform(progress, [0, 1], ['0%', '100%']);
+  // Marker rides the front of the fill across the whole item region (intro and
+  // closing pin it to the two ends).
+  const markerLeft = useTransform(progress, (p) => {
+    const f = Math.min(1, Math.max(0, (p - introFrac) / (perFrac * total)));
+    return `${f * 100}%`;
+  });
+  const active = index >= 0 && index < total;
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-40 h-0.75 bg-slate-900/10">
-      <motion.div style={{ width }} className="h-full bg-brand-600" />
-      {Array.from({ length: total }, (_, i) => introFrac + (i + 1) * perFrac).map((t, i) => (
-        <span
-          key={i}
-          style={{ left: `${t * 100}%` }}
-          className="absolute top-0 h-full w-px -translate-x-1/2 bg-[#fafafa]"
-        />
-      ))}
+    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-20">
+      <div className="mx-auto w-full max-w-6xl px-6 pb-5 lg:px-10 lg:pb-7">
+        {/* Right-aligned so it clears the It dot's bottom-left resting spot. */}
+        <div className="mb-2 h-4 text-right text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+          <AnimatePresence mode="wait" initial={false}>
+            {active && (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2, ease: EASE }}
+                className="inline-block"
+              >
+                {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
+        <div className="relative flex h-1 items-center gap-1.5">
+          {Array.from({ length: total }, (_, i) => (
+            <BuildSegment key={i} progress={progress} i={i} introFrac={introFrac} perFrac={perFrac} />
+          ))}
+          <motion.span
+            style={{ left: markerLeft }}
+            className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 bg-brand-600 shadow-[0_0_0_5px_rgba(13,148,136,0.15)]"
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -281,7 +330,7 @@ function IdleNudge({ label, show }: { label: string; show: boolean }) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } }}
           exit={{ opacity: 0, y: 8, transition: { duration: 0.2, ease: EASE } }}
-          className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center lg:bottom-12"
+          className="pointer-events-none absolute inset-x-0 bottom-16 z-20 flex justify-center lg:bottom-20"
         >
           <motion.span
             animate={{ y: [0, 6, 0] }}
@@ -329,12 +378,21 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
 
   const [index, setIndex] = useState(-1);
   const [idle, setIdle] = useState(false);
+  // `fast` = the user is flicking hard enough that the full caused choreography
+  // can't drain in time. When set, swaps collapse to a snap so nothing queues
+  // up; it relaxes back to the elegant timings the moment scrolling settles.
+  const [fast, setFast] = useState(false);
+  const fastRef = useRef(false);
 
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
+  // The rail's fill/marker glide off a spring-smoothed copy of the progress so
+  // it never jitters under momentum scrolling on mobile.
+  const railProgress = useSpring(scrollYProgress, { stiffness: 300, damping: 40 });
+  const scrollVelocity = useVelocity(scrollYProgress);
   const engaged = useInView(stageRef, { once: true, amount: 0.75 });
   // Unlike `engaged` (sticky once true), this tracks whether the pinned stage
-  // is *currently* on screen — the fixed top scrubber bar should only show
-  // while this scene actually holds the viewport, not for the rest of the page.
+  // is *currently* on screen — the build rail should only show while this scene
+  // actually holds the viewport, not for the rest of the page.
   const stageOnScreen = useInView(trackRef, { amount: 0 });
 
   // Scroll progress → sequence index (and travel direction for the swaps).
@@ -354,6 +412,29 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
     compute(scrollYProgress.get());
     return scrollYProgress.on('change', compute);
   }, [scrollYProgress, introFrac, perFrac, closingFrac, total]);
+
+  // Velocity → fast/slow. Above the threshold we snap; a short idle debounce
+  // drops back to the full choreography so the resting state always plays it.
+  // Threshold is in progress-fraction/second over the whole track (~2 ≈ a
+  // brisk flick); tune to taste.
+  useEffect(() => {
+    const FAST_THRESHOLD = 2;
+    let relax: ReturnType<typeof setTimeout>;
+    const setFastState = (v: boolean) => {
+      if (fastRef.current === v) return;
+      fastRef.current = v;
+      setFast(v);
+    };
+    const unsub = scrollVelocity.on('change', (v) => {
+      if (Math.abs(v) > FAST_THRESHOLD) setFastState(true);
+      clearTimeout(relax);
+      relax = setTimeout(() => setFastState(false), 120);
+    });
+    return () => {
+      unsub();
+      clearTimeout(relax);
+    };
+  }, [scrollVelocity]);
 
   // Idle-scroll nudge: if the user pauses mid-sequence (not the intro, which
   // already has its own cue), say so — but only once scrolling has actually
@@ -384,15 +465,17 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
       style={{ height: `calc(100vh + ${trackVh}vh)` }}
     >
       <div ref={stageRef} className="sticky top-0 h-screen overflow-hidden supports-[height:100svh]:h-svh">
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-4 pt-28 md:pt-20 lg:pb-8 lg:px-10">
-          <AnimatePresence mode="wait">
+        {/* Bottom padding reserves clearance for the build rail so centered
+            content never crowds it on short mobile viewports. */}
+        <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-16 pt-28 md:pt-20 lg:pb-20 lg:px-10">
+          <AnimatePresence mode={fast ? 'popLayout' : 'wait'}>
             {index < 0 || index >= total ? (
               /* ── Framing: centered, bookends the sequence ── */
               <motion.div
                 key="framing"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } }}
-                exit={{ opacity: 0, y: -10, transition: { duration: 0.25, ease: EASE } }}
+                animate={{ opacity: 1, y: 0, transition: { duration: fast ? 0.001 : 0.55, ease: EASE } }}
+                exit={{ opacity: 0, y: -10, transition: { duration: fast ? 0.05 : 0.25, ease: EASE } }}
                 className="flex w-full flex-col items-center text-center"
               >
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
@@ -418,8 +501,8 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
               <motion.div
                 key="sequence"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { duration: 0.4, ease: EASE } }}
-                exit={{ opacity: 0, transition: { duration: 0.25, ease: EASE } }}
+                animate={{ opacity: 1, transition: { duration: fast ? 0.001 : 0.4, ease: EASE } }}
+                exit={{ opacity: 0, transition: { duration: fast ? 0.05 : 0.25, ease: EASE } }}
                 className="w-full lg:grid lg:grid-cols-[5fr_7fr] lg:items-start lg:gap-x-14"
               >
                 {/* Left: label + live title + subtitle + build queue */}
@@ -428,12 +511,12 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
                     {copy.actLabel}
                   </p>
                   <div className="relative mt-4">
-                    <AnimatePresence mode="wait" initial={false}>
+                    <AnimatePresence mode={fast ? 'popLayout' : 'wait'} initial={false}>
                       <motion.h2
                         key={`item-${index}`}
                         initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } }}
-                        exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: EASE } }}
+                        animate={{ opacity: 1, y: 0, transition: { duration: fast ? 0.001 : 0.6, ease: EASE } }}
+                        exit={{ opacity: 0, y: -10, transition: { duration: fast ? 0.05 : 0.2, ease: EASE } }}
                         className="font-display text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900 lg:text-[clamp(1.9rem,3.5vw,3rem)]"
                       >
                         {copy.items[index].title}
@@ -460,8 +543,8 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
                   aria-hidden
                   className="relative mt-6 min-h-50 border-t border-slate-900/10 pt-4 lg:mt-0 lg:min-h-80 lg:border-0 lg:pt-0"
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <SpecCard key={index} item={copy.items[index]} index={index} artifactEyebrow={copy.artifactEyebrow} />
+                  <AnimatePresence mode={fast ? 'popLayout' : 'wait'} initial={false}>
+                    <SpecCard key={index} item={copy.items[index]} index={index} artifactEyebrow={copy.artifactEyebrow} fast={fast} />
                   </AnimatePresence>
                 </div>
               </motion.div>
@@ -477,7 +560,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25, ease: EASE }}
             >
-              <TopScrubberBar progress={scrollYProgress} total={total} introFrac={introFrac} perFrac={perFrac} />
+              <BuildProgress progress={railProgress} total={total} index={index} introFrac={introFrac} perFrac={perFrac} />
             </motion.div>
           )}
         </AnimatePresence>
