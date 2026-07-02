@@ -56,7 +56,7 @@ export function ComparisonSection() {
             <div className="mx-auto max-w-5xl">
                 <SectionHeading eyebrow={comparison.eyebrow} title={comparison.title} description={comparison.description} accent="teal" />
 
-                <div className="mt-10 grid gap-4 md:grid-cols-3">
+                <div className="mt-10 hidden lg:grid gap-4 md:grid-cols-3">
                     <ArtifactPlate
                         variant="tierStatic"
                         plate="Tier 01"

@@ -546,7 +546,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
               past the available height and get clipped by `overflow-hidden`
               above — fade it out instead of a hard cut so it reads as
               intentional, not broken. */}
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-[#fafafa]" />
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-linear-to-b from-transparent to-[#fafafa]" />
         </div>
 
         {/* Lives in normal flow (not fixed/absolute), so it's naturally scoped
@@ -581,14 +581,20 @@ function StackedActCode({ copy }: { copy: CodeCopy }) {
               {...fadeRiseInView(i * 0.05, reduced)}
               className="border-t border-slate-900/10 pt-8 lg:grid lg:grid-cols-12 lg:gap-8"
             >
-              <div className="lg:col-span-5">
-                <Glyph shapes={GLYPHS[i % GLYPHS.length]} animated={false} />
-              </div>
               <div className="mt-4 lg:col-span-7 lg:mt-0">
                 <h3 className="font-display text-[clamp(1.5rem,3.4vw,2.4rem)] font-bold leading-[1.15] tracking-[-0.02em] text-slate-900">
                   {entry.title}
                   <span aria-hidden className="ml-[0.14em] inline-block h-[0.12em] w-[0.12em] rounded-full bg-brand-600 align-baseline" />
                 </h3>
+                <ArtifactPlate
+                    variant={ACT2_ARTIFACTS[i % ACT2_ARTIFACTS.length]}
+                    plate={`Plate ${String(i + 2).padStart(2, '0')}`}
+                    eyebrow={copy.artifactEyebrow}
+                    caption={entry.title}
+                    compact
+                    delay={0}
+                    className={'my-4'}
+                />
                 <p className="mt-3 max-w-[48ch] text-[0.98rem] leading-[1.75] text-slate-600 text-pretty">
                   {entry.description}
                 </p>

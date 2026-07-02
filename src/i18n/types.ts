@@ -161,6 +161,8 @@ export interface Translations {
             priceDisclaimer: string;
             timeEstimateDisclaimer: string;
             pricingFactorsLabel: string;
+            showFactorsCta: string;
+            hideFactorsCta: string;
             pricingFactors: Array<{ label: string; description: string }>;
             items: Array<{
                 title: string;

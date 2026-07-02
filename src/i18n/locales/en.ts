@@ -636,6 +636,8 @@ export const en: Translations = {
             priceDisclaimer: 'These are honest starting points — not fixed quotes. Every project is scoped in a brief discovery call, so the number you pay reflects what you actually need.',
             timeEstimateDisclaimer: 'Timelines are refined after discovery, scope clarification, and an assessment of technical complexity and current availability.',
             pricingFactorsLabel: 'What shapes the final number',
+            showFactorsCta: 'See the 7 factors that shape your price',
+            hideFactorsCta: 'Hide pricing factors',
             pricingFactors: [
                 { label: 'Scope & features', description: 'More screens, user flows, and functionality add design and build time.' },
                 { label: 'Design complexity', description: 'Custom motion, illustration, and branding systems require more craft time.' },

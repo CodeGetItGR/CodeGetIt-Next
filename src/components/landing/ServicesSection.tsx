@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useInView, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
 import { useQuery } from '@tanstack/react-query';
@@ -98,6 +98,7 @@ export function ServicesSection() {
     const [hoverFeature,  setHoverFeature]  = useState<string | null>(null);
     const [lockedFeature, setLockedFeature] = useState<string | null>(null);
     const activeFeature = lockedFeature ?? hoverFeature;
+    const [factorsOpen, setFactorsOpen] = useState(false);
 
     const settingsQuery = useQuery({
         queryKey: queryKeys.settings.list,
@@ -319,23 +320,52 @@ export function ServicesSection() {
                         {services.priceDisclaimer}
                     </p>
 
-                    <div className="mt-7 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-slate-100 pt-7 sm:grid-cols-2 lg:grid-cols-3">
-                        {services.pricingFactors.map((factor, i) => (
-                            <div key={factor.label} className="flex gap-3.5">
-                                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-900/6 text-slate-500">
-                                    {FACTOR_ICONS[i]}
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-slate-800">{factor.label}</p>
-                                    <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{factor.description}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setFactorsOpen((o) => !o)}
+                        aria-expanded={factorsOpen}
+                        className="mt-5 inline-flex items-center gap-2 rounded-full bg-slate-100 py-2.5 pl-4 pr-3 text-xs font-semibold text-slate-700 transition-colors duration-200 hover:bg-slate-200"
+                    >
+                        {factorsOpen ? services.hideFactorsCta : services.showFactorsCta}
+                        <span className={cn(
+                            'flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 transition-transform duration-300 ease-premium',
+                            factorsOpen && 'rotate-180',
+                        )}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </span>
+                    </button>
 
-                    <p className="mt-7 border-t border-slate-100 pt-5 text-xs leading-5 text-slate-500">
-                        {services.timeEstimateDisclaimer}
-                    </p>
+                    <AnimatePresence>
+                        {factorsOpen && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+                                className="overflow-hidden"
+                            >
+                                <div className="mt-7 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-slate-100 pt-7 sm:grid-cols-2 lg:grid-cols-3">
+                                    {services.pricingFactors.map((factor, i) => (
+                                        <div key={factor.label} className="flex gap-3.5">
+                                            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-900/6 text-slate-500">
+                                                {FACTOR_ICONS[i]}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-semibold text-slate-800">{factor.label}</p>
+                                                <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{factor.description}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <p className="mt-7 border-t border-slate-100 pt-5 text-xs leading-5 text-slate-500">
+                                    {services.timeEstimateDisclaimer}
+                                </p>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 <Whisper text={t.landing.whispers.services} className="mt-14" />
