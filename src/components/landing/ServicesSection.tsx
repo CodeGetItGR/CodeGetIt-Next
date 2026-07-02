@@ -180,10 +180,10 @@ export function ServicesSection() {
                                 transition={{ duration: 0.7, delay: index * 0.12, ease: [0.32, 0.72, 0, 1] }}
                                 whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 24 } }}
                                 className={cn(
-                                    'relative flex flex-col rounded-[1.5rem] p-1.5 scroll-mt-28 transition-all duration-500',
+                                    'relative flex flex-col rounded-[1.5rem] p-7 scroll-mt-28 transition-all duration-500',
                                     isRecommended
-                                        ? 'ring-2 ring-slate-900/80 soft-shadow-lg'
-                                        : 'ring-1 ring-slate-900/6 soft-shadow',
+                                        ? 'ring-1 ring-slate-900/15 bg-brand-600/4'
+                                        : 'ring-1 ring-slate-900/8 bg-white',
                                     isSpotlight && 'ring-2 ring-slate-900 ring-offset-2 ring-offset-[#fafafa] drop-shadow-[0_0_24px_rgba(15,23,42,0.18)]',
                                 )}
                             >
@@ -194,117 +194,111 @@ export function ServicesSection() {
                                     </div>
                                 )}
 
-                                {/* Inner core */}
-                                <div className={cn(
-                                    'flex flex-1 flex-col rounded-[calc(1.5rem-6px)] p-7',
-                                    isRecommended ? 'bg-brand-600/4' : 'bg-white',
-                                    'shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]'
-                                )}>
-                                    <div className={'flex justify-between items-center'}>
+                                <div className={'flex justify-between items-center'}>
 
-                                        {/* Icon */}
-                                        <div className={cn(
-                                            'inline-flex w-fit rounded-xl p-2.5',
-                                            TIER_CHIP_STYLES[index] ?? TIER_CHIP_STYLES[0],
-                                        )}>
-                                            <Icon />
-                                        </div>
-
-                                        <h3 className="font-display text-xl font-semibold text-slate-900">{service.title}</h3>
+                                    {/* Icon */}
+                                    <div className={cn(
+                                        'inline-flex w-fit rounded-xl p-2.5',
+                                        TIER_CHIP_STYLES[index] ?? TIER_CHIP_STYLES[0],
+                                    )}>
+                                        <Icon />
                                     </div>
 
-                                    <ArtifactPlate
-                                        variant={SERVICE_ARTIFACTS[index] ?? SERVICE_ARTIFACTS[0]}
-                                        plate={`Receive ${index + 1}`}
-                                        eyebrow={services.artifactEyebrow}
-                                        caption={service.title}
-                                        compact
-                                        delay={0.1 + index * 0.06}
-                                        className="shadow-none my-6"
-                                    />
+                                    <h3 className="font-display text-xl font-semibold text-slate-900">{service.title}</h3>
+                                </div>
 
-                                    <p className="mt-2 text-sm leading-7 text-slate-500">{service.description}</p>
+                                <ArtifactPlate
+                                    variant={SERVICE_ARTIFACTS[index] ?? SERVICE_ARTIFACTS[0]}
+                                    plate={`Receive ${index + 1}`}
+                                    eyebrow={services.artifactEyebrow}
+                                    caption={service.title}
+                                    compact
+                                    delay={0.1 + index * 0.06}
+                                    className="shadow-none my-6"
+                                    framed={false}
+                                />
 
-                                    {/* Features */}
-                                    <ul className="mt-6 flex-1 space-y-2.5">
-                                        {features.map((feature) => {
-                                            const isActive = activeFeature === feature;
-                                            return (
-                                                <li
-                                                    key={feature}
-                                                    onMouseEnter={() => handleFeatureEnter(feature)}
-                                                    onMouseLeave={handleFeatureLeave}
-                                                    onClick={() => toggleLock(feature)}
-                                                    className={cn(
-                                                        'flex cursor-pointer items-start gap-2.5 text-sm select-none',
-                                                        'transition-colors duration-300',
-                                                        isActive ? 'text-slate-900' : 'text-slate-500'
-                                                    )}
-                                                >
-                                                    <div className={cn(
-                                                        // square ink tick — a filled circle would counterfeit It
-                                                        'mt-1.5 h-1.25 w-1.25 shrink-0 transition-all duration-300',
-                                                        isActive ? 'scale-125 bg-slate-900' : 'bg-slate-300'
-                                                    )} />
-                                                    <span>{feature}</span>
-                                                    {lockedFeature === feature && (
-                                                        <span className="ml-auto text-slate-500">
-                                                            <ArrowLeftIcon />
-                                                        </span>
-                                                    )}
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
+                                <p className="mt-2 text-sm leading-7 text-slate-500">{service.description}</p>
 
-                                    {/* Price + CTA — pinned to bottom */}
-                                    <div className="mt-auto pt-6">
-                                        {discountedPrice !== null ? (
-                                            <div>
-                                                <p className="font-display text-sm text-slate-500 line-through">
-                                                    {formatPrice(price)}
-                                                </p>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="font-display text-2xl font-bold text-slate-900">
-                                                        {formatPrice(String(discountedPrice))}
-                                                    </p>
-                                                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200">
-                                                        -{discountPct}%
+                                {/* Features */}
+                                <ul className="mt-6 flex-1 space-y-2.5">
+                                    {features.map((feature) => {
+                                        const isActive = activeFeature === feature;
+                                        return (
+                                            <li
+                                                key={feature}
+                                                onMouseEnter={() => handleFeatureEnter(feature)}
+                                                onMouseLeave={handleFeatureLeave}
+                                                onClick={() => toggleLock(feature)}
+                                                className={cn(
+                                                    'flex cursor-pointer items-start gap-2.5 text-sm select-none',
+                                                    'transition-colors duration-300',
+                                                    isActive ? 'text-slate-900' : 'text-slate-500'
+                                                )}
+                                            >
+                                                <div className={cn(
+                                                    // square ink tick — a filled circle would counterfeit It
+                                                    'mt-1.5 h-1.25 w-1.25 shrink-0 transition-all duration-300',
+                                                    isActive ? 'scale-125 bg-slate-900' : 'bg-slate-300'
+                                                )} />
+                                                <span>{feature}</span>
+                                                {lockedFeature === feature && (
+                                                    <span className="ml-auto text-slate-500">
+                                                        <ArrowLeftIcon />
                                                     </span>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <p className="font-display text-2xl font-bold text-slate-900">
+                                                )}
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+
+                                {/* Price + CTA — pinned to bottom */}
+                                <div className="mt-auto pt-6">
+                                    {discountedPrice !== null ? (
+                                        <div>
+                                            <p className="font-display text-sm text-slate-500 line-through">
                                                 {formatPrice(price)}
                                             </p>
-                                        )}
-                                        <p className="mt-1 text-xs text-slate-500">
-                                            {services.estimatedTimelineLabel}: {services.timelineEstimates[index]}
+                                            <div className="flex items-center gap-2">
+                                                <p className="font-display text-2xl font-bold text-slate-900">
+                                                    {formatPrice(String(discountedPrice))}
+                                                </p>
+                                                <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200">
+                                                    -{discountPct}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="font-display text-2xl font-bold text-slate-900">
+                                            {formatPrice(price)}
                                         </p>
+                                    )}
+                                    <p className="mt-1 text-xs text-slate-500">
+                                        {services.estimatedTimelineLabel}: {services.timelineEstimates[index]}
+                                    </p>
 
-                                        <button
-                                            type="button"
-                                            onClick={() => handleGetStarted(index)}
-                                            className={cn(
-                                                'group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold',
-                                                'transition-all duration-300 ease-premium active:scale-[0.98]',
-                                                isRecommended
-                                                    ? 'bg-brand-600 text-white hover:bg-brand-700'
-                                                    : 'bg-slate-100 text-slate-800 hover:bg-slate-200',
-                                            )}
-                                        >
-                                            <Socket />
-                                            {services.getStarted}
-                                            <span className={cn(
-                                                'flex h-6 w-6 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-0.5',
-                                                isRecommended ? 'bg-white/15' : 'bg-slate-200',
-                                            )}>
-                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M7 17 17 7M9 7h8v8" />
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleGetStarted(index)}
+                                        className={cn(
+                                            'group mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold',
+                                            'transition-all duration-300 ease-premium active:scale-[0.98]',
+                                            isRecommended
+                                                ? 'bg-brand-600 text-white hover:bg-brand-700'
+                                                : 'bg-slate-100 text-slate-800 hover:bg-slate-200',
+                                        )}
+                                    >
+                                        <Socket />
+                                        {services.getStarted}
+                                        <span className={cn(
+                                            'flex h-6 w-6 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-0.5',
+                                            isRecommended ? 'bg-white/15' : 'bg-slate-200',
+                                        )}>
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M7 17 17 7M9 7h8v8" />
+                                            </svg>
+                                        </span>
+                                    </button>
                                 </div>
                             </motion.article>
                         );
@@ -312,7 +306,7 @@ export function ServicesSection() {
                 </div>
 
                 {/* Pricing context — factors + reassurance */}
-                <div className="mt-10 rounded-2xl bg-white px-8 py-8 shadow-[0_4px_24px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/8">
+                <div className="mt-14 border-t border-slate-900/10 pt-10">
                     <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
                         {services.pricingFactorsLabel}
                     </p>

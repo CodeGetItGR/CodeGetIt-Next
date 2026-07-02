@@ -32,6 +32,13 @@ interface ArtifactPlateProps {
      * so the page feels alive without going glossy everywhere. Never gates content.
      */
     depth?: boolean;
+    /**
+     * On by default — draws the illustration-plate card chrome (border, white
+     * fill, soft-shadow). Set false to render the scene as illustration only,
+     * with no card framing (e.g. Act II, where the plate should blend into the
+     * page rather than read as a boxed card).
+     */
+    framed?: boolean;
 }
 
 /**
@@ -456,6 +463,7 @@ export function ArtifactPlate({
     delay = 0,
     compact = false,
     depth = false,
+    framed = true,
 }: ArtifactPlateProps) {
     const { t } = useLocale();
     const reduced = useReducedMotion();
@@ -474,20 +482,23 @@ export function ArtifactPlate({
             viewport={{ once: true, margin: '0px 0px -12% 0px' }}
             transition={{ duration: reduced ? 0 : 0.6, ease: EASE, delay }}
             className={cn(
-                'group relative overflow-hidden rounded-[1.15rem] border border-slate-900/10 bg-white p-1.5',
-                // Depth is a desktop-friendly lift; on touch it's just a richer
-                // resting shadow (no hover gating — the scene reads without it).
-                depth
-                    ? 'soft-shadow-lg lg:transition-transform lg:duration-500 lg:ease-out lg:hover:-translate-y-1.5'
-                    : 'soft-shadow',
+                'group relative overflow-hidden rounded-[1.15rem]',
+                framed && [
+                    'border border-slate-900/10 bg-white p-1.5',
+                    // Depth is a desktop-friendly lift; on touch it's just a richer
+                    // resting shadow (no hover gating — the scene reads without it).
+                    depth
+                        ? 'soft-shadow-lg lg:transition-transform lg:duration-500 lg:ease-out lg:hover:-translate-y-1.5'
+                        : 'soft-shadow',
+                ],
                 className,
             )}
         >
-            <div className="overflow-hidden rounded-[calc(1.15rem-6px)] border border-slate-900/4">
+            <div className={cn('overflow-hidden rounded-[1.15rem]', framed && 'rounded-[calc(1.15rem-6px)] border border-slate-900/4')}>
                 <ArtifactVisual variant={variant} active={active} />
             </div>
 
-            <figcaption className={cn('grid gap-3 px-4 pb-4 pt-3', compact ? 'grid-cols-1' : 'sm:grid-cols-[auto_1fr]')}>
+            <figcaption className={cn('grid gap-3 pt-3', framed ? 'px-4 pb-4' : 'px-1 pb-0', compact ? 'grid-cols-1' : 'sm:grid-cols-[auto_1fr]')}>
                 {/*<div className="font-display text-xs font-bold uppercase tracking-[0.18em] text-slate-900">{plate}</div>*/}
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">

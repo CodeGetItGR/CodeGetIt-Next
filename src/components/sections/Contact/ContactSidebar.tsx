@@ -30,7 +30,7 @@ export const ContactSidebar = ({
         transition={{ duration: premiumMotion.normal, delay: 0.1, ease: premiumEase }}
         className={className}
     >
-        <div className="sticky top-32 space-y-10 rounded-3xl border border-slate-900/[0.06] bg-white p-8 soft-shadow">
+        <div className="sticky top-32 space-y-10 rounded-3xl border border-slate-900/6 bg-white p-8 soft-shadow">
             <div>
                 <p className="mb-3 text-sm font-medium tracking-wider text-slate-500 uppercase">{emailLabel}</p>
                 <a
@@ -55,7 +55,7 @@ export const ContactSidebar = ({
                 </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-900/[0.06] bg-slate-50 px-4 py-4">
+            <div className="rounded-2xl border border-slate-900/6 bg-slate-50 px-4 py-4">
                 <p className="text-sm leading-relaxed text-slate-600">{trustNote}</p>
             </div>
 
@@ -67,6 +67,7 @@ export const ContactSidebar = ({
                 compact
                 className="shadow-none"
                 delay={0.12}
+                framed={false}
             />
         </div>
     </motion.div>

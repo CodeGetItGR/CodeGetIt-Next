@@ -65,6 +65,7 @@ export function ComparisonSection() {
                         compact
                         delay={0.05}
                         className="shadow-none"
+                        framed={false}
                     />
                     <ArtifactPlate
                         variant="tierApp"
@@ -74,6 +75,7 @@ export function ComparisonSection() {
                         compact
                         delay={0.12}
                         className="shadow-none"
+                        framed={false}
                     />
                     <ArtifactPlate
                         variant="tierFull"
@@ -83,14 +85,14 @@ export function ComparisonSection() {
                         compact
                         delay={0.19}
                         className="shadow-none"
+                        framed={false}
                     />
                 </div>
 
                 <div className="mt-14">
                     {/* ── Desktop table ── */}
-                    <div className="hidden rounded-[1.5rem] p-1.5 ring-1 ring-slate-900/6 soft-shadow md:block">
-                        <div className="overflow-hidden rounded-[calc(1.5rem-6px)] bg-white">
-                            <table className="min-w-full text-left">
+                    <div className="hidden overflow-hidden rounded-2xl bg-white md:block">
+                        <table className="min-w-full text-left">
                                 <thead>
                                     <tr className="border-b border-slate-100">
                                         <th scope="col" className="px-7 py-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -146,12 +148,11 @@ export function ComparisonSection() {
                                         );
                                     })}
                                 </tbody>
-                            </table>
-                        </div>
+                        </table>
                     </div>
 
                     {/* ── Mobile matrix ── */}
-                    <div className="overflow-hidden rounded-2xl ring-1 ring-slate-900/6 soft-shadow md:hidden">
+                    <div className="overflow-hidden rounded-2xl md:hidden">
                         <div className="grid grid-cols-[1fr_52px_60px_64px] items-center border-b border-slate-100 bg-white">
                             <div className="px-3 py-3 text-[10px] font-semibold uppercase tracking-widest text-slate-500">{comparison.headers.feature}</div>
                             <div className="px-1 py-3 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-500">{comparison.headers.staticWebsite}</div>

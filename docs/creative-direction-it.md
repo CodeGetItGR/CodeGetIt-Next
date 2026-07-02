@@ -86,6 +86,10 @@ Borrowed from comedic timing: **anticipate → travel → settle.**
 - De-teal the interior sections (services, comparison, process, projects, FAQ,
   contact) so Law 1 holds everywhere; teal kickers/pills become slate.
 - Favicon → the dot alone. Loading states → the dot bouncing.
+- Act II's `ArtifactPlate`s render with `framed={false}` (illustration only, no
+  border/shadow/white card) — the plates blend into the page there instead of
+  reading as boxed cards; the illustration-plate exception's card chrome stays
+  the default (`framed` defaults `true`) everywhere else.
 - Optional It-alics hover layer in body copy.
 
 ## Success test

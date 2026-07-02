@@ -5,7 +5,6 @@ import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpr
 
 import { useLocale } from '@/i18n/UseLocale';
 import type { Translations } from '@/i18n/types';
-import { cn } from '@/lib/utils';
 
 import { ArtifactPlate, type ArtifactVariant } from './ArtifactPlate';
 import { ACT2, ActLine, EASE, fadeRiseInView } from './it';
@@ -13,104 +12,7 @@ import { ACT2, ActLine, EASE, fadeRiseInView } from './it';
 type CodeCopy = Translations['landing']['story']['code'];
 type CodeItem = CodeCopy['items'][number];
 
-/* ── Spec-card glyphs ──────────────────────────────────────────────────────
- * Hairline ink line-work, deliberately rectilinear: the only circle on the
- * page is It, and color belongs to It — so the glyphs stay ink and angular.
- */
-
-type Shape =
-  | { kind: 'rect'; x: number; y: number; w: number; h: number }
-  | { kind: 'line'; x1: number; y1: number; x2: number; y2: number }
-  | { kind: 'path'; d: string };
-
-const GLYPHS: Shape[][] = [
-  // Full-stack applications — interface above, engine below, one wire between
-  [
-    { kind: 'rect', x: 3.75, y: 3.75, w: 16.5, h: 6.25 },
-    { kind: 'rect', x: 3.75, y: 14, w: 16.5, h: 6.25 },
-    { kind: 'line', x1: 12, y1: 10, x2: 12, y2: 14 },
-  ],
-  // Custom websites — a typeset page: headline rule, body rules
-  [
-    { kind: 'rect', x: 4.75, y: 3.25, w: 14.5, h: 17.5 },
-    { kind: 'line', x1: 8, y1: 8.5, x2: 16, y2: 8.5 },
-    { kind: 'line', x1: 8, y1: 12, x2: 16, y2: 12 },
-    { kind: 'line', x1: 8, y1: 15.5, x2: 12.5, y2: 15.5 },
-  ],
-  // Landing pages — the descent onto a baseline
-  [
-    { kind: 'line', x1: 12, y1: 3.5, x2: 12, y2: 14.5 },
-    { kind: 'path', d: 'M8 10.5 12 14.5 16 10.5' },
-    { kind: 'line', x1: 5, y1: 19.5, x2: 19, y2: 19.5 },
-  ],
-  // Web platforms — four modules
-  [
-    { kind: 'rect', x: 4.25, y: 4.25, w: 6.5, h: 6.5 },
-    { kind: 'rect', x: 13.25, y: 4.25, w: 6.5, h: 6.5 },
-    { kind: 'rect', x: 4.25, y: 13.25, w: 6.5, h: 6.5 },
-    { kind: 'rect', x: 13.25, y: 13.25, w: 6.5, h: 6.5 },
-  ],
-];
-
-const drawShape = {
-  hidden: { pathLength: 0, opacity: 0 },
-  visible: (delay: number) => ({
-    pathLength: 1,
-    opacity: 1,
-    transition: {
-      pathLength: { duration: 0.5, ease: EASE, delay },
-      opacity: { duration: 0.01, delay },
-    },
-  }),
-};
-
-/**
- * `tiled` echoes the dot with a soft teal tile + lift behind the glyph — the
- * same bg-brand-600/8 + text-brand-600 chip language already used for icons
- * in the interior sections (Services factors, Comparison rows), brought onto
- * the spine by explicit request. The glyph itself stays rectilinear ink
- * line-work; only its color and the tile around it carry the accent.
- */
-function Glyph({ shapes, animated, delay = 0, tiled = false }: { shapes: Shape[]; animated: boolean; delay?: number; tiled?: boolean }) {
-  const svg = (
-    <svg
-      viewBox="0 0 24 24"
-      className={cn('h-9 w-9 lg:h-10 lg:w-10', tiled ? 'text-slate-700' : 'text-slate-900')}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="square"
-      aria-hidden
-    >
-      {shapes.map((shape, i) => {
-        const anim = {
-          variants: drawShape,
-          initial: animated ? ('hidden' as const) : (false as const),
-          animate: 'visible' as const,
-          custom: delay + 0.15 + i * 0.1,
-        };
-        if (shape.kind === 'rect') {
-          return <motion.rect key={i} x={shape.x} y={shape.y} width={shape.w} height={shape.h} {...anim} />;
-        }
-        if (shape.kind === 'line') {
-          return <motion.line key={i} x1={shape.x1} y1={shape.y1} x2={shape.x2} y2={shape.y2} {...anim} />;
-        }
-        return <motion.path key={i} d={shape.d} {...anim} />;
-      })}
-    </svg>
-  );
-
-  if (!tiled) return svg;
-
-  return (
-    <span className="inline-flex rounded-2xl bg-slate-900/6 p-4 ring-1 ring-slate-900/10 soft-shadow">
-      {svg}
-    </span>
-  );
-}
-
 /* ── Pinned-scene pieces ─────────────────────────────────────────────────── */
-
 /**
  * The card swap. Enter waits out `timing.cardEnterDelay` so the ink visibly
  * takes first — dot, then title, then card. Direction lives in the rolling
@@ -137,7 +39,7 @@ const ACT2_ARTIFACTS: ArtifactVariant[] = ['tierStatic', 'tierApp', 'tierFull'];
 function SpecCard({ item, index, artifactEyebrow, fast }: { item: CodeItem; index: number; artifactEyebrow: string; fast: boolean }) {
   const timing = fast ? ACT2.fast : ACT2.slow;
   // Children count time from the card's mount (after the old card's exit) —
-  // adding the enter delay keeps them synced to the card's actual arrival.
+  // adding the entrance delay keeps them synced to the card's actual arrival.
   const base = timing.cardEnterDelay;
   // On a fast flick the child wipes/tags would trail the snap, so collapse them too.
   const dur = (slow: number) => (fast ? 0.001 : slow);
@@ -149,6 +51,7 @@ function SpecCard({ item, index, artifactEyebrow, fast }: { item: CodeItem; inde
         eyebrow={artifactEyebrow}
         caption={item.title}
         compact
+        framed={false}
         delay={base}
       />
 
@@ -179,7 +82,7 @@ function SpecCard({ item, index, artifactEyebrow, fast }: { item: CodeItem; inde
   );
 }
 
-/** The resolution — fills the card slot while the dot returns to the line. */
+/** The resolution fills the card slot while the dot returns to the line. */
 function ClosingNote({ text, fast }: { text: string; fast: boolean }) {
   const timing = fast ? ACT2.fast : ACT2.slow;
   return (
@@ -264,8 +167,8 @@ function BuildSegment({ progress, i, introFrac, perFrac }: { progress: MotionVal
  * the only circle is It), and a "which build of how many" counter. It borrows
  * the How-We-Work section's progress language (hairline track + brand fill +
  * haloed square marker) but lives *inside* the pinned stage, constrained to the
- * content width and anchored near the bottom where it's actually seen on mobile
- * — replacing the old edge-of-viewport hairline nobody noticed.
+ * content width and anchored near the bottom where it's actually seen on mobile,
+ * replacing the old edge-of-viewport hairline nobody noticed.
  */
 function BuildProgress({
   progress,
@@ -370,20 +273,20 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
   const [index, setIndex] = useState(-1);
   const [idle, setIdle] = useState(false);
   // `fast` = the user is flicking hard enough that the full caused choreography
-  // can't drain in time. When set, swaps collapse to a snap so nothing queues
+  // can't drain in time. When set, swaps collapse to a snap, so nothing queues
   // up; it relaxes back to the elegant timings the moment scrolling settles.
   const [fast, setFast] = useState(false);
   const fastRef = useRef(false);
 
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
-  // The rail's fill/marker glide off a spring-smoothed copy of the progress so
+  // The rail's fill/marker glide off a spring-smoothed copy of the progress so,
   // it never jitters under momentum scrolling on mobile.
   const railProgress = useSpring(scrollYProgress, { stiffness: 300, damping: 40 });
   const scrollVelocity = useVelocity(scrollYProgress);
   const engaged = useInView(stageRef, { once: true, amount: 0.75 });
 
   // Scroll progress → sequence index (and travel direction for the swaps).
-  // -1 = intro cue · 0..total-1 = items · total = the closing return.
+  // -1 = intro cue · 0.total-1 = items · total = the closing return.
   useEffect(() => {
     const compute = (p: number) => {
       let next: number;
@@ -455,7 +358,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
     >
       <div ref={stageRef} className="sticky top-0 flex h-screen flex-col overflow-hidden supports-[height:100svh]:h-svh">
         {/* `flex-1 min-h-0 overflow-hidden` reserves the rail's row below in
-            normal flow, so long content (e.g. wrapped deliverable tags on
+            normal flow, so long content (e.g., wrapped deliverable tags on
             narrow phones) clips here instead of visually overlapping the
             rail — it can never grow into space the rail already owns. */}
         <div className="relative mx-auto flex w-full min-h-0 max-w-6xl flex-1 flex-col justify-center overflow-hidden px-6 pt-28 md:pt-20 lg:px-10">
@@ -592,6 +495,7 @@ function StackedActCode({ copy }: { copy: CodeCopy }) {
                     eyebrow={copy.artifactEyebrow}
                     caption={entry.title}
                     compact
+                    framed={false}
                     delay={0}
                     className={'my-4'}
                 />
