@@ -112,11 +112,11 @@ function Glyph({ shapes, animated, delay = 0, tiled = false }: { shapes: Shape[]
 /* ── Pinned-scene pieces ─────────────────────────────────────────────────── */
 
 /**
- * The card swap. Enter waits out ACT2.cardEnterDelay so the ink visibly takes
- * first — dot, then title, then card. Direction lives in the rolling index.
- * A slight rotateY/scale gives the swap real depth (the tiled glyph above is
- * the other half of that — by explicit request, this is the one place on the
- * spine where Law 4 is relaxed alongside Law 1).
+ * The card swap. Enter waits out `timing.cardEnterDelay` so the ink visibly
+ * takes first — dot, then title, then card. Direction lives in the rolling
+ * index. A slight rotateY/scale gives the swap real depth (the tiled glyph
+ * above is the other half of that — by explicit request, this is the one
+ * place on the spine where Law 4 is relaxed alongside Law 1).
  */
 type SwapTiming = { cardEnter: number; cardExit: number; cardEnterDelay: number };
 
@@ -135,7 +135,7 @@ const cardVariantsFor = (timing: SwapTiming) => ({
 const ACT2_ARTIFACTS: ArtifactVariant[] = ['tierStatic', 'tierApp', 'tierFull'];
 
 function SpecCard({ item, index, artifactEyebrow, fast }: { item: CodeItem; index: number; artifactEyebrow: string; fast: boolean }) {
-  const timing = fast ? ACT2.fast : ACT2;
+  const timing = fast ? ACT2.fast : ACT2.slow;
   // Children count time from the card's mount (after the old card's exit) —
   // adding the enter delay keeps them synced to the card's actual arrival.
   const base = timing.cardEnterDelay;
@@ -180,7 +180,8 @@ function SpecCard({ item, index, artifactEyebrow, fast }: { item: CodeItem; inde
 }
 
 /** The resolution — fills the card slot while the dot returns to the line. */
-function ClosingNote({ text }: { text: string }) {
+function ClosingNote({ text, fast }: { text: string; fast: boolean }) {
+  const timing = fast ? ACT2.fast : ACT2.slow;
   return (
     <motion.p
       aria-hidden
@@ -188,9 +189,9 @@ function ClosingNote({ text }: { text: string }) {
       animate={{
         opacity: 1,
         x: 0,
-        transition: { duration: 0.45, ease: EASE, delay: ACT2.cardEnterDelay },
+        transition: { duration: fast ? 0.001 : 0.45, ease: EASE, delay: timing.cardEnterDelay },
       }}
-      exit={{ opacity: 0, transition: { duration: 0.18, ease: EASE } }}
+      exit={{ opacity: 0, transition: { duration: timing.cardExit, ease: EASE } }}
       className="text-sm italic text-slate-500"
     >
       {text}
@@ -287,34 +288,31 @@ function BuildProgress({
   });
   const active = index >= 0 && index < total;
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-20">
-      <div className="mx-auto w-full max-w-6xl px-6 pb-5 lg:px-10 lg:pb-7">
-        {/* Right-aligned so it clears the It dot's bottom-left resting spot. */}
-        <div className="mb-2 h-4 text-right text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-          <AnimatePresence mode="wait" initial={false}>
-            {active && (
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.2, ease: EASE }}
-                className="inline-block"
-              >
-                {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </div>
-        <div className="relative flex h-1 items-center gap-1.5">
-          {Array.from({ length: total }, (_, i) => (
-            <BuildSegment key={i} progress={progress} i={i} introFrac={introFrac} perFrac={perFrac} />
-          ))}
-          <motion.span
-            style={{ left: markerLeft }}
-            className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 bg-brand-600 shadow-[0_0_0_5px_rgba(13,148,136,0.15)]"
-          />
-        </div>
+    <div aria-hidden className="pointer-events-none mx-auto w-full max-w-6xl shrink-0 px-6 pb-5 lg:px-10 lg:pb-7">
+      {/* Right-aligned so it clears the It dot's bottom-left resting spot. */}
+      <div className="mb-2 h-4 text-right text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+        <AnimatePresence mode="wait" initial={false}>
+          {active && (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE } }}
+              exit={{ opacity: 0, y: -4, transition: { duration: 0.15, ease: EASE } }}
+              className="inline-block"
+            >
+              {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+      <div className="relative flex h-1 items-center gap-1.5">
+        {Array.from({ length: total }, (_, i) => (
+          <BuildSegment key={i} progress={progress} i={i} introFrac={introFrac} perFrac={perFrac} />
+        ))}
+        <motion.span
+          style={{ left: markerLeft }}
+          className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 bg-brand-600 shadow-[0_0_0_5px_rgba(13,148,136,0.15)]"
+        />
       </div>
     </div>
   );
@@ -330,7 +328,7 @@ function IdleNudge({ label, show }: { label: string; show: boolean }) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } }}
           exit={{ opacity: 0, y: 8, transition: { duration: 0.2, ease: EASE } }}
-          className="pointer-events-none absolute inset-x-0 bottom-16 z-20 flex justify-center lg:bottom-20"
+          className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center lg:bottom-12"
         >
           <motion.span
             animate={{ y: [0, 6, 0] }}
@@ -390,10 +388,6 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
   const railProgress = useSpring(scrollYProgress, { stiffness: 300, damping: 40 });
   const scrollVelocity = useVelocity(scrollYProgress);
   const engaged = useInView(stageRef, { once: true, amount: 0.75 });
-  // Unlike `engaged` (sticky once true), this tracks whether the pinned stage
-  // is *currently* on screen — the build rail should only show while this scene
-  // actually holds the viewport, not for the rest of the page.
-  const stageOnScreen = useInView(trackRef, { amount: 0 });
 
   // Scroll progress → sequence index (and travel direction for the swaps).
   // -1 = intro cue · 0..total-1 = items · total = the closing return.
@@ -457,6 +451,8 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
     };
   }, [engaged, scrollYProgress, total]);
 
+  const timing = fast ? ACT2.fast : ACT2.slow;
+
   return (
     <section
       ref={trackRef}
@@ -464,18 +460,20 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
       className="relative"
       style={{ height: `calc(100vh + ${trackVh}vh)` }}
     >
-      <div ref={stageRef} className="sticky top-0 h-screen overflow-hidden supports-[height:100svh]:h-svh">
-        {/* Bottom padding reserves clearance for the build rail so centered
-            content never crowds it on short mobile viewports. */}
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-6 pb-16 pt-28 md:pt-20 lg:pb-20 lg:px-10">
-          <AnimatePresence mode={fast ? 'popLayout' : 'wait'}>
+      <div ref={stageRef} className="sticky top-0 flex h-screen flex-col overflow-hidden supports-[height:100svh]:h-svh">
+        {/* `flex-1 min-h-0 overflow-hidden` reserves the rail's row below in
+            normal flow, so long content (e.g. wrapped deliverable tags on
+            narrow phones) clips here instead of visually overlapping the
+            rail — it can never grow into space the rail already owns. */}
+        <div className="relative mx-auto flex w-full min-h-0 max-w-6xl flex-1 flex-col justify-center overflow-hidden px-6 pt-28 md:pt-20 lg:px-10">
+          <AnimatePresence mode="wait">
             {index < 0 || index >= total ? (
               /* ── Framing: centered, bookends the sequence ── */
               <motion.div
                 key="framing"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0, transition: { duration: fast ? 0.001 : 0.55, ease: EASE } }}
-                exit={{ opacity: 0, y: -10, transition: { duration: fast ? 0.05 : 0.25, ease: EASE } }}
+                animate={{ opacity: 1, y: 0, transition: { duration: timing.outerEnter, ease: EASE } }}
+                exit={{ opacity: 0, y: -10, transition: { duration: timing.outerExit, ease: EASE } }}
                 className="flex w-full flex-col items-center text-center"
               >
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
@@ -492,7 +490,7 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
                   {index < 0 ? (
                     <ScrollCue label={copy.scrollCue} />
                   ) : (
-                    <ClosingNote text={closingNote} />
+                    <ClosingNote text={closingNote} fast={fast} />
                   )}
                 </div>
               </motion.div>
@@ -501,8 +499,8 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
               <motion.div
                 key="sequence"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { duration: fast ? 0.001 : 0.4, ease: EASE } }}
-                exit={{ opacity: 0, transition: { duration: fast ? 0.05 : 0.25, ease: EASE } }}
+                animate={{ opacity: 1, transition: { duration: timing.seqEnter, ease: EASE } }}
+                exit={{ opacity: 0, transition: { duration: timing.seqExit, ease: EASE } }}
                 className="w-full lg:grid lg:grid-cols-[5fr_7fr] lg:items-start lg:gap-x-14"
               >
                 {/* Left: label + live title + subtitle + build queue */}
@@ -511,12 +509,12 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
                     {copy.actLabel}
                   </p>
                   <div className="relative mt-4">
-                    <AnimatePresence mode={fast ? 'popLayout' : 'wait'} initial={false}>
+                    <AnimatePresence mode="wait" initial={false}>
                       <motion.h2
                         key={`item-${index}`}
                         initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0, transition: { duration: fast ? 0.001 : 0.6, ease: EASE } }}
-                        exit={{ opacity: 0, y: -10, transition: { duration: fast ? 0.05 : 0.2, ease: EASE } }}
+                        animate={{ opacity: 1, y: 0, transition: { duration: timing.titleEnter, ease: EASE } }}
+                        exit={{ opacity: 0, y: -10, transition: { duration: timing.titleExit, ease: EASE } }}
                         className="font-display text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-balance text-slate-900 lg:text-[clamp(1.9rem,3.5vw,3rem)]"
                       >
                         {copy.items[index].title}
@@ -543,28 +541,25 @@ function PinnedActCode({ copy, closingNote }: { copy: CodeCopy; closingNote: str
                   aria-hidden
                   className="relative mt-6 min-h-50 border-t border-slate-900/10 pt-4 lg:mt-0 lg:min-h-80 lg:border-0 lg:pt-0"
                 >
-                  <AnimatePresence mode={fast ? 'popLayout' : 'wait'} initial={false}>
+                  <AnimatePresence mode="wait" initial={false}>
                     <SpecCard key={index} item={copy.items[index]} index={index} artifactEyebrow={copy.artifactEyebrow} fast={fast} />
                   </AnimatePresence>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
+          <IdleNudge label={copy.scrollCue} show={idle} />
+          {/* On short viewports the card's tail (description/tags) can run
+              past the available height and get clipped by `overflow-hidden`
+              above — fade it out instead of a hard cut so it reads as
+              intentional, not broken. */}
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-[#fafafa]" />
         </div>
 
-        <AnimatePresence>
-          {stageOnScreen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25, ease: EASE }}
-            >
-              <BuildProgress progress={railProgress} total={total} index={index} introFrac={introFrac} perFrac={perFrac} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <IdleNudge label={copy.scrollCue} show={idle} />
+        {/* Lives in normal flow (not fixed/absolute), so it's naturally scoped
+            to this sticky stage — no separate "is the scene on screen" gate
+            needed the way the old page-fixed bar required. */}
+        <BuildProgress progress={railProgress} total={total} index={index} introFrac={introFrac} perFrac={perFrac} />
       </div>
     </section>
   );

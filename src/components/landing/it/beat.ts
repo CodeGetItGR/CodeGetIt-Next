@@ -28,6 +28,20 @@ export const T = {
 /**
  * Act II pinned-scene choreography — the causal chain per hop:
  * scroll moves the dot → its landing inks the title → the ink summons the card.
+ *
+ * All three swaps (framing↔sequence, title, card) run their `AnimatePresence`
+ * in a permanent `mode="wait"` — this must never be toggled at runtime (e.g.
+ * based on scroll speed): Framer Motion doesn't support changing `mode` on a
+ * live AnimatePresence, and switching it (even to "popLayout") corrupts its
+ * transition state. `mode="popLayout"` also isn't safe as a blanket default
+ * here specifically because the card's `ArtifactPlate` uses `whileInView` +
+ * `viewport={{ once: true }}` and mounts already on-screen — under popLayout
+ * that races Framer's own initial-style application and throws the same
+ * "animate opacity from undefined" warning. `slow` is the full choreography;
+ * `fast` collapses every duration near zero so a hard flick's swaps each
+ * drain in well under a frame's worth of scroll instead of queuing up a
+ * backlog — the snap comes from speed, never from changing how presence
+ * itself is handled.
  */
 export const ACT2 = {
   /** Scroll budget (vh): a beat of stillness, one segment per item, resolution. */
@@ -36,22 +50,30 @@ export const ACT2 = {
   closingVh: 35,
   /** Shorter pin under lg — gesture scrolling makes every pinned vh dearer. */
   compact: { introVh: 36, perItemVh: 48, closingVh: 28 },
-  /**
-   * Card enter starts this long after the old card finishes exiting (s) —
-   * with the exit, the card lands ≈0.44s after the hop starts, once the ink
-   * has visibly taken. The empty beat is what makes the card feel caused.
-   */
-  cardEnterDelay: 0.26,
-  cardExit: 0.18,
-  cardEnter: 0.42,
-  /**
-   * Fast-flick timings (s). When scroll velocity is high the caused chain
-   * can't drain in time, so it stacks up and lags. These near-zero durations
-   * collapse the choreography to a clean snap, so the scene tracks the finger
-   * instead of queuing swaps; the full timings above return once scrolling
-   * settles.
-   */
-  fast: { cardEnterDelay: 0, cardExit: 0.05, cardEnter: 0.001 },
+  slow: {
+    outerEnter: 0.55,
+    outerExit: 0.25,
+    seqEnter: 0.4,
+    seqExit: 0.25,
+    titleEnter: 0.6,
+    titleExit: 0.2,
+    /** Card lands ≈0.44s after the hop starts (0.18s exit + 0.26s delay),
+     * once the ink has visibly taken. */
+    cardEnter: 0.42,
+    cardExit: 0.18,
+    cardEnterDelay: 0.26,
+  },
+  fast: {
+    outerEnter: 0.001,
+    outerExit: 0.05,
+    seqEnter: 0.001,
+    seqExit: 0.05,
+    titleEnter: 0.001,
+    titleExit: 0.05,
+    cardEnter: 0.001,
+    cardExit: 0.05,
+    cardEnterDelay: 0,
+  },
 } as const;
 
 /**
